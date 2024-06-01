@@ -9,7 +9,9 @@ class AksesAdmin extends Model
 {
     protected $table = 'akses_admin';
 
-    public $incrementing = true;
+    protected $primaryKey = 'nip';
+
+    public $incrementing = false;
 
     public $timestamps = false;
 

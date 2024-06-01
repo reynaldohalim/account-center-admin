@@ -12,15 +12,13 @@ use App\Models\LiburKaryawan;
 use App\Models\AksesAdmin;
 use App\Models\Admin;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 use Carbon\Carbon;
-
-
-
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -133,7 +131,7 @@ class DashboardController extends Controller
         $pageTitle = 'Detail Karyawan';
         $breadcrumb = ['Admin', 'Data Karyawan', $pageTitle];
 
-        return view('data_karyawan_details', compact('dataPribadiAdmin', 'pageTitle', 'breadcrumb', 'dataPribadi', 'dataPekerjaan', 'dataLainlain', 'dataKeluarga', 'pendidikan', 'bahasa', 'organisasi', 'pengalamanKerja', 'absensi', 'izin', 'pembaruanData'));
+        return view('data-karyawan-details', compact('dataPribadiAdmin', 'pageTitle', 'breadcrumb', 'dataPribadi', 'dataPekerjaan', 'dataLainlain', 'dataKeluarga', 'pendidikan', 'bahasa', 'organisasi', 'pengalamanKerja', 'absensi', 'izin', 'pembaruanData'));
     }
 
     public function approvePembaruan($id)
@@ -374,139 +372,157 @@ class DashboardController extends Controller
         $admin = auth()->user();
         $dataPribadi = $admin->dataPribadi;
 
-        return view('manajemen-hak-akses', compact('pageTitle', 'breadcrumb', 'dataPribadi'));
-    }
+        $aksesAdmin = AksesAdmin::get();
 
-    public function searchNip(Request $request)
-    {
-        $nip = $request->input('nip');
-
-        // Check if the NIP exists in DataPekerjaan
-        $dataPekerjaan = DataPekerjaan::where('nip', $nip)->first();
-        if (!$dataPekerjaan) {
-            return response()->json(['status' => 'not_found']);
+        foreach ($aksesAdmin as $admin) {
+            $admin->nama = DataPribadi::where('nip', $admin->nip)->first()->nama;
         }
 
-        // Check if the NIP exists in AksesAdmin
-        $aksesAdmin = AksesAdmin::where('nip', $nip)->first();
 
-        // Get DataPribadi
-        $dataPribadi = DataPribadi::where('nip', $nip)->first();
+        return view('manajemen-hak-akses', compact('pageTitle', 'breadcrumb', 'dataPribadi', 'aksesAdmin'));
+    }
 
-        // Fetch options for dropdowns
-        $divisiOptions = DataPekerjaan::distinct('divisi')->pluck('divisi');
-        $jabatanOptions = $aksesAdmin ? DataPekerjaan::where('divisi', $aksesAdmin->divisi)->distinct('jabatan')->pluck('jabatan') : [];
-        $bagianOptions = $aksesAdmin ? DataPekerjaan::where('divisi', $aksesAdmin->divisi)->where('jabatan', $aksesAdmin->jabatan)->distinct('bagian')->pluck('bagian') : [];
-        $groupOptions = $aksesAdmin ? DataPekerjaan::where('divisi', $aksesAdmin->divisi)->where('jabatan', $aksesAdmin->jabatan)->where('bagian', $aksesAdmin->bagian)->distinct('group')->pluck('group') : [];
+    public function search(Request $request)
+    {
+        $nip = $request->input('nip');
+        $dataPekerjaan = DataPekerjaan::where('nip', $nip)->first();
 
-        return response()->json([
-            'status' => 'found',
-            'dataPekerjaan' => $dataPekerjaan,
-            'dataPribadi' => $dataPribadi,
-            'aksesAdmin' => $aksesAdmin,
-            'divisiOptions' => $divisiOptions,
-            'jabatanOptions' => $jabatanOptions,
-            'bagianOptions' => $bagianOptions,
-            'groupOptions' => $groupOptions
+        if ($dataPekerjaan) {
+            $aksesAdmin = AksesAdmin::where('nip', $nip)->first();
+            $dataPribadi = DataPribadi::where('nip', $nip)->first();
+
+            $divisiOptions = DataPekerjaan::distinct()->pluck('divisi');
+            $jabatanOptions = DataPekerjaan::where('divisi', $dataPekerjaan->divisi)->whereNotNull('jabatan')->distinct()->pluck('jabatan');
+            $bagianOptions = DataPekerjaan::where('divisi', $dataPekerjaan->divisi)->where('jabatan', $dataPekerjaan->jabatan)->whereNotNull('bagian')->distinct()->pluck('bagian');
+            $groupOptions = DataPekerjaan::where('divisi', $dataPekerjaan->divisi)->where('jabatan', $dataPekerjaan->jabatan)->where('bagian', $dataPekerjaan->bagian)->whereNotNull('group')->distinct()->pluck('group');
+
+            return response()->json([
+                'status' => 'found',
+                'dataPekerjaan' => $dataPekerjaan,
+                'dataPribadi' => $dataPribadi,
+                'aksesAdmin' => $aksesAdmin,
+                'divisiOptions' => $divisiOptions,
+                'jabatanOptions' => $jabatanOptions,
+                'bagianOptions' => $bagianOptions,
+                'groupOptions' => $groupOptions
+            ]);
+        } else {
+            return response()->json(['status' => 'not found']);
+        }
+    }
+
+    public function add(Request $request)
+    {
+        $validatedData = $request->validate([
+            'nip' => 'required|string',
+            'divisi' => 'nullable|string',
+            'bagian' => 'nullable|string',
+            'jabatan' => 'nullable|string',
+            'group' => 'nullable|string',
+            'approval_izin' => 'required|integer',
         ]);
+
+        // Check if the NIP exists in the Admin model
+        $admin = Admin::where('nip', $validatedData['nip'])->first();
+
+        // If the admin does not exist, create a new one
+        if (!$admin) {
+            $admin = new Admin();
+            $admin->nip = $validatedData['nip'];
+            $admin->password = bcrypt($validatedData['nip']);  // Encrypt the password
+            $admin->isMaster = '0';
+            $admin->save();
+        }
+
+        // Check if the AksesAdmin already exists
+        $aksesAdmin = AksesAdmin::where('nip', $validatedData['nip'])->first();
+
+        if (!$aksesAdmin) {
+            $aksesAdmin = new AksesAdmin();
+        }
+
+        $aksesAdmin->divisi = $validatedData['divisi'];
+        $aksesAdmin->bagian = $validatedData['bagian'];
+        $aksesAdmin->jabatan = $validatedData['jabatan'];
+        $aksesAdmin->group = $validatedData['group'];
+        $aksesAdmin->approval_izin = $validatedData['approval_izin'];
+
+        if ($aksesAdmin->save()) {
+            return response()->json(['status' => 'success']);
+        } else {
+            return response()->json(['status' => 'error']);
+        }
     }
 
-    public function fetchJabatan(Request $request)
+    public function fetchOptions(Request $request)
     {
-        $divisi = $request->input('divisi');
-        $jabatanOptions = DataPekerjaan::where('divisi', $divisi)
-            ->whereNotNull('jabatan')
-            ->distinct()
-            ->pluck('jabatan');
-
-        return response()->json(['jabatanOptions' => $jabatanOptions]);
-    }
-
-    public function fetchBagian(Request $request)
-    {
-        $divisi = $request->input('divisi');
-        $jabatan = $request->input('jabatan');
-        $bagianOptions = DataPekerjaan::where('divisi', $divisi)
-            ->where('jabatan', $jabatan)
-            ->whereNotNull('bagian')
-            ->distinct()
-            ->pluck('bagian');
-
-        return response()->json(['bagianOptions' => $bagianOptions]);
-    }
-
-    public function fetchGroup(Request $request)
-    {
+        $type = $request->input('type');
         $divisi = $request->input('divisi');
         $jabatan = $request->input('jabatan');
         $bagian = $request->input('bagian');
-        $groupOptions = DataPekerjaan::where('divisi', $divisi)
-            ->where('jabatan', $jabatan)
-            ->where('bagian', $bagian)
-            ->whereNotNull('group')
-            ->distinct()
-            ->pluck('group');
 
-        return response()->json(['groupOptions' => $groupOptions]);
+        $options = [];
+
+        switch ($type) {
+            case 'jabatan':
+                $options = DataPekerjaan::where('divisi', $divisi)
+                    ->whereNotNull('jabatan')
+                    ->pluck('jabatan')
+                    ->unique();
+                break;
+            case 'bagian':
+                $options = DataPekerjaan::where('divisi', $divisi)
+                    ->where('jabatan', $jabatan)
+                    ->whereNotNull('bagian')
+                    ->pluck('bagian')
+                    ->unique();
+                break;
+            case 'group':
+                $options = DataPekerjaan::where('divisi', $divisi)
+                    ->where('jabatan', $jabatan)
+                    ->where('bagian', $bagian)
+                    ->whereNotNull('group')
+                    ->pluck('group')
+                    ->unique();
+                break;
+        }
+
+        return response()->json(['options' => $options]);
     }
 
-    public function addOrUpdateAdmin(Request $request)
+    //Ganti password
+    public function ganti_password()
+    {
+        $pageTitle = 'Ganti Password';
+        $breadcrumb = ['Admin', $pageTitle];
+
+        $admin = Auth::user();
+        $dataPribadi = $admin->dataPribadi;
+
+        return view('ganti-password', compact('pageTitle', 'breadcrumb', 'dataPribadi'));
+    }
+
+    public function changePassword(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'nip' => 'required|string',
-            'divisi' => 'required|string',
-            'jabatan' => 'nullable|string',
-            'bagian' => 'nullable|string',
-            'group' => 'nullable|string',
-            'approval_izin' => 'required|in:0,1,2'
+            'old_password' => 'required',
+            'new_password' => 'required|confirmed|min:6',
         ]);
 
         if ($validator->fails()) {
-            Log::error('Validation failed:', ['errors' => $validator->errors()]);
-            return response()->json(['status' => 'error', 'message' => 'Validation Error', 'errors' => $validator->errors()], 422);
+            return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        try {
-            $nip = $request->input('nip');
-            $divisi = $request->input('divisi');
-            $jabatan = $request->input('jabatan');
-            $bagian = $request->input('bagian');
-            $group = $request->input('group');
-            $approval_izin = $request->input('approval_izin');
+        // $admin = Auth::user();
+        $admin = Admin::where('nip', Auth::user()->nip)->first();
 
-            // Log the incoming request data
-            Log::info('addOrUpdateAdmin request data:', $request->all());
-
-            // Update or create AksesAdmin
-            AksesAdmin::updateOrCreate(
-                ['nip' => $nip],
-                [
-                    'divisi' => $divisi,
-                    'jabatan' => $jabatan,
-                    'bagian' => $bagian,
-                    'group' => $group,
-                    'approval_izin' => $approval_izin
-                ]
-            );
-
-            // Log after AksesAdmin operation
-            Log::info('AksesAdmin record added/updated successfully.');
-
-            // Create Admin if not exists
-            Admin::firstOrCreate(
-                ['nip' => $nip],
-                ['password' => bcrypt($nip), 'isMaster' => false]
-            );
-
-            // Log after Admin operation
-            Log::info('Admin record added/checked successfully.');
-
-            return response()->json(['status' => 'success']);
-        } catch (\Exception $e) {
-            // Log the error details
-            Log::error('Error in addOrUpdateAdmin:', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
-
-            return response()->json(['status' => 'error', 'message' => 'Internal Server Error'], 500);
+        if (!Hash::check($request->old_password, $admin->password)) {
+            return redirect()->back()->withErrors(['old_password' => 'Password lama tidak sesuai.'])->withInput();
         }
+
+        $admin->password = Hash::make($request->new_password);
+        $admin->save();
+
+        return redirect()->back()->with('success', 'Password berhasil diubah.');
     }
 }

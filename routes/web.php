@@ -53,11 +53,13 @@ Route::middleware(['auth'])->group(function () {
 
     //IAM Manajemen Hak Akses
     Route::get('manajemen-hak-akses', [DashboardController::class, 'manajemen_hak_akses']);
-    Route::post('/manajemen-hak-akses/search', [DashboardController::class, 'searchNip'])->name('search.nip');
-    Route::post('/manajemen-hak-akses/add', [DashboardController::class, 'addOrUpdateAdmin'])->name('add.admin');
-    Route::post('/fetch-jabatan', [DashboardController::class, 'fetchJabatan'])->name('fetch.jabatan');
-    Route::post('/fetch-bagian', [DashboardController::class, 'fetchBagian'])->name('fetch.bagian');
-    Route::post('/fetch-group', [DashboardController::class, 'fetchGroup'])->name('fetch.group');
+    Route::post('/manajemen-hak-akses/search', [DashboardController::class, 'search'])->name('manajemen-hak-akses.search');
+    Route::post('manajemen-hak-akses/fetchOptions', [DashboardController::class, 'fetchOptions'])->name('manajemen-hak-akses.fetchOptions');
+    Route::post('/manajemen-hak-akses/add', [DashboardController::class, 'add'])->name('manajemen-hak-akses.add');
+
+    //Ganti Password
+    Route::get('ganti-password', [DashboardController::class, 'ganti_password']);
+    Route::post('/admin/change-password', [DashboardController::class, 'changePassword'])->name('admin.change-password');
 });
 
 
