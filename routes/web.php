@@ -56,10 +56,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/manajemen-hak-akses/search', [DashboardController::class, 'search'])->name('manajemen-hak-akses.search');
     Route::post('manajemen-hak-akses/fetchOptions', [DashboardController::class, 'fetchOptions'])->name('manajemen-hak-akses.fetchOptions');
     Route::post('/manajemen-hak-akses/add', [DashboardController::class, 'add'])->name('manajemen-hak-akses.add');
+    Route::post('/manajemen-hak-akses/delete', [DashboardController::class, 'delete'])->name('manajemen-hak-akses.delete');
+
 
     //Ganti Password
     Route::get('ganti-password', [DashboardController::class, 'ganti_password']);
     Route::post('/admin/change-password', [DashboardController::class, 'changePassword'])->name('admin.change-password');
 });
-
-

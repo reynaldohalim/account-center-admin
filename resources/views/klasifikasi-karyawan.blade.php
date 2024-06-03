@@ -56,7 +56,7 @@
                                             <div class="avatar avatar-sm me-3 border-radius-lg">
                                             </div>
                                             <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="text-xs text-secondary mb-0 btn">Lihat semua</h6>
+                                                <h6 class="text-xs text-secondary mb-0 btn">Coming soon</h6>
                                             </div>
                                         </div>
                                     </td>

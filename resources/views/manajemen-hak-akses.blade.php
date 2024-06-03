@@ -1,6 +1,6 @@
 @extends('Layout.app')
 @section('main-content')
-<meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <div class="container-fluid py-4">
         <div class="row">
             <div class="col-lg-10 col-md-10 mx-auto">
@@ -9,14 +9,18 @@
                         <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2" id="headingOne">
                             <div class="bg-gradient-primary shadow-primary border-radius-lg pt-3 pb-1">
                                 <h2 class="mb-0">
-                                    <button class="btn btn-link bg-gradient-primary shadow-primary text-white text-capitalize ps-3 accordion-button" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                    <button
+                                        class="btn btn-link bg-gradient-primary shadow-primary text-white text-capitalize ps-3 accordion-button"
+                                        type="button" data-toggle="collapse" data-target="#collapseOne"
+                                        aria-expanded="true" aria-controls="collapseOne">
                                         Tambah Akses Admin
                                     </button>
                                 </h2>
                             </div>
                         </div>
                         <div class="card-body">
-                            <form class="row gy-3" id="accessForm" aria-labelledby="headingOne" data-parent="#accordionExample">
+                            <form class="row gy-3" id="accessForm" aria-labelledby="headingOne"
+                                data-parent="#accordionExample">
                                 @csrf
                                 <div class="col-12 col-md-4">
                                     <label class="form-label">NIP</label>
@@ -31,12 +35,24 @@
                                 <table class="table align-items-center mb-0 col-12 d-none" id="dataTable">
                                     <thead>
                                         <tr>
-                                            <th class="text text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nama - NIP</th>
-                                            <th class="text text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Jabatan</th>
-                                            <th class="text text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Bagian</th>
-                                            <th class="text text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Divisi</th>
-                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Group</th>
-                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No. HP</th>
+                                            <th
+                                                class="text text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                Nama - NIP</th>
+                                            <th
+                                                class="text text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                                Jabatan</th>
+                                            <th
+                                                class="text text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                                Bagian</th>
+                                            <th
+                                                class="text text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                                Divisi</th>
+                                            <th
+                                                class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                Group</th>
+                                            <th
+                                                class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                No. HP</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -44,7 +60,8 @@
                                             <td>
                                                 <div class="d-flex px-2 py-1">
                                                     <div>
-                                                        <img src="../assets/img/pp.png" class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
+                                                        <img src="../assets/img/pp.png"
+                                                            class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
                                                     </div>
                                                     <div class="d-flex flex-column justify-content-center">
                                                         <h6 class="mb-0 text-sm" id="nama"></h6>
@@ -98,15 +115,17 @@
                                 <div class="col-12 col-md-4 notFound">
                                     <label class="form-label">Approval izin:</label>
                                     <select class="form-control" id="approval_izin" name="approval_izin">
-                                        <option value="0">Tidak ada</option>
+                                        <option value="0" selected>Tidak ada</option>
                                         <option value="1">Approve1</option>
                                         <option value="2">Approve2</option>
                                     </select>
                                 </div>
 
                                 <div class="col-12 notFound">
-                                    <button type="button" class="btn btn-primary me-2" id="deleteAccess">Hapus Akses</button>
-                                    <button type="button" class="btn btn-outline-primary" id="addAccess">Tambah Akses</button>
+                                    <button type="button" class="btn btn-primary me-2" id="deleteAccess">Hapus
+                                        Akses</button>
+                                    <button type="button" class="btn btn-outline-primary" id="addAccess">Tambah
+                                        Akses</button>
                                 </div>
                             </form>
                         </div>
@@ -128,48 +147,57 @@
                         <table class="table align-items-center mb-1">
                             <thead>
                                 <tr>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Nama - NIP</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Akses Divisi</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Akses Bagian</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Akses Jabatan</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Akses Posisi</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Akses Group</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Approval</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        Nama - NIP</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        Akses Divisi</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        Akses Bagian</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        Akses Jabatan</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        Akses Posisi</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        Akses Group</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        Approval</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($aksesAdmin as $admin)
-                                <tr class="data-tr align-middle text-center text-sm" onclick="getDetailAkses({{$admin->nip}})">
-                                    <td>
-                                        <div class="d-flex px-2 py-1">
-                                            <div>
-                                                <img src="../assets/img/pp.png" class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
+                                    <tr class="data-tr text-sm"
+                                        onclick="getDetailAkses({{ $admin->nip }})">
+                                        <td>
+                                            <div class="d-flex px-2 py-1">
+                                                <div>
+                                                    <img src="../assets/img/pp.png"
+                                                        class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
+                                                </div>
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <h6 class="mb-0 text-sm">{{ $admin->nama }}</h6>
+                                                    <p class="text-xs text-secondary mb-0">{{ $admin->nip }}</p>
+                                                </div>
                                             </div>
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">{{ $admin->nama }}</h6>
-                                                <p class="text-xs text-secondary mb-0">{{ $admin->nip }}</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <p class="text-xs font-weight-bold mb-0 align-middle">{{ $admin->divisi }}</p>
-                                    </td>
-                                    <td>
-                                        <p class="text-xs font-weight-bold mb-0">{{ $admin->bagian }}</p>
-                                    </td>
-                                    <td>
-                                        <p class="text-xs font-weight-bold mb-0 text-center">{{ $admin->jabatan }}</p>
-                                    </td>
-                                    <td>
-                                        <p class="text-xs font-weight-bold mb-0">{{ $admin->posisi }}</p>
-                                    </td>
-                                    <td>
-                                        <p class="text-xs font-weight-bold mb-0">{{ $admin->group }}</p>
-                                    </td>
-                                    <td>
-                                        <p class="text-xs font-weight-bold mb-0">{{ $admin->approval_izin }}</p>
-                                    </td>
-                                </tr>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0 align-middle">{{ $admin->divisi }}</p>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0">{{ $admin->bagian }}</p>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0 text-center">{{ $admin->jabatan }}</p>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0">{{ $admin->posisi }}</p>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0">{{ $admin->group }}</p>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0">{{ $admin->approval_izin }}</p>
+                                        </td>
+                                    </tr>
                                 @endforeach
                             </tbody>
                         </table>
@@ -181,9 +209,9 @@
 
     <script>
         var dropdowns = document.getElementsByClassName('notFound');
-                        for (var i = 0; i < dropdowns.length; i++) {
-                            dropdowns[i].classList.add('d-none');
-                        }
+        for (var i = 0; i < dropdowns.length; i++) {
+            dropdowns[i].classList.add('d-none');
+        }
 
         document.getElementById('searchNip').addEventListener('click', function() {
             let nip = document.getElementById('nip').value;
@@ -217,13 +245,18 @@
                         document.getElementById('no_hp').innerText = data.dataPribadi.no_hp;
 
                         // Populate dropdowns with dynamic data
-                        populateDropdown('akses_divisi', data.divisiOptions, data.aksesAdmin ? data.aksesAdmin.divisi : '');
-                        populateDropdown('akses_jabatan', data.jabatanOptions, data.aksesAdmin ? data.aksesAdmin.jabatan : '');
-                        populateDropdown('akses_bagian', data.bagianOptions, data.aksesAdmin ? data.aksesAdmin.bagian : '');
-                        populateDropdown('akses_group', data.groupOptions, data.aksesAdmin ? data.aksesAdmin.group : '');
-                        document.getElementById('approval_izin').value = data.aksesAdmin ? data.aksesAdmin.approval_izin : 0;
+                        populateDropdown('akses_divisi', data.divisiOptions, data.aksesAdmin ? data.aksesAdmin
+                            .divisi : '');
+                        populateDropdown('akses_jabatan', data.jabatanOptions, data.aksesAdmin ? data.aksesAdmin
+                            .jabatan : '');
+                        populateDropdown('akses_bagian', data.bagianOptions, data.aksesAdmin ? data.aksesAdmin
+                            .bagian : '');
+                        populateDropdown('akses_group', data.groupOptions, data.aksesAdmin ? data.aksesAdmin
+                            .group : '');
+                        document.getElementById('approval_izin').value = data.aksesAdmin ? data.aksesAdmin
+                            .approval_izin : 0;
 
-                        if(document.getElementById('akses_divisi').value == '')
+                        if (document.getElementById('akses_divisi').value == '')
                             document.getElementById('deleteAccess').classList.add('d-none');
                         else
                             document.getElementById('deleteAccess').classList.remove('d-none');
@@ -277,23 +310,69 @@
 
         document.getElementById('akses_divisi').addEventListener('change', function() {
             let divisi = this.value;
-            fetchOptions('jabatan', { divisi: divisi }, 'akses_jabatan');
-            fetchOptions('bagian', { divisi: divisi, jabatan: '' }, 'akses_bagian');
-            fetchOptions('group', { divisi: divisi, jabatan: '', bagian: '' }, 'akses_group');
+            fetchOptions('jabatan', {
+                divisi: divisi
+            }, 'akses_jabatan');
+            fetchOptions('bagian', {
+                divisi: divisi,
+                jabatan: ''
+            }, 'akses_bagian');
+            fetchOptions('group', {
+                divisi: divisi,
+                jabatan: '',
+                bagian: ''
+            }, 'akses_group');
         });
 
         document.getElementById('akses_jabatan').addEventListener('change', function() {
             let divisi = document.getElementById('akses_divisi').value;
             let jabatan = this.value;
-            fetchOptions('bagian', { divisi: divisi, jabatan: jabatan }, 'akses_bagian');
-            fetchOptions('group', { divisi: divisi, jabatan: jabatan, bagian: '' }, 'akses_group');
+            fetchOptions('bagian', {
+                divisi: divisi,
+                jabatan: jabatan
+            }, 'akses_bagian');
+            fetchOptions('group', {
+                divisi: divisi,
+                jabatan: jabatan,
+                bagian: ''
+            }, 'akses_group');
         });
 
         document.getElementById('akses_bagian').addEventListener('change', function() {
             let divisi = document.getElementById('akses_divisi').value;
             let jabatan = document.getElementById('akses_jabatan').value;
             let bagian = this.value;
-            fetchOptions('group', { divisi: divisi, jabatan: jabatan, bagian: bagian }, 'akses_group');
+            fetchOptions('group', {
+                divisi: divisi,
+                jabatan: jabatan,
+                bagian: bagian
+            }, 'akses_group');
+        });
+
+        document.getElementById('deleteAccess').addEventListener('click', function() {
+            let nip = document.getElementById('nip').value;
+            if (confirm('Are you sure you want to delete this access?')) {
+                fetch('{{ route('manajemen-hak-akses.delete') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            nip: nip
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            alert('Access deleted successfully.');
+                            location.reload();
+                        } else {
+                            alert('Error deleting access. Please try again.');
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
         });
 
         function fetchOptions(type, params, elementId) {
@@ -314,13 +393,11 @@
                 });
         }
 
-        function getDetailAkses(nip){
+        function getDetailAkses(nip) {
             document.getElementById('nip').value = nip;
             document.getElementById('searchNip').click()
         }
     </script>
-
 @endsection
 @push('custom-scripts')
 @endpush
-

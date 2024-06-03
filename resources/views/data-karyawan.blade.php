@@ -26,30 +26,30 @@
                             <tbody>
                                 @foreach($karyawans->take(5) as $dataKaryawan)
                                 @php
-                                    $dataPribadi = $dataKaryawan->dataPribadi();
-                                    $dataPekerjaan = $dataKaryawan->dataPekerjaan();
+                                    $pribadi = $dataKaryawan->dataPribadi();
+                                    $pekerjaan = $dataKaryawan->dataPekerjaan();
                                 @endphp
-                                <tr class="data-tr" onclick="viewDetails('{{ $dataPribadi->nip }}')">
+                                <tr class="data-tr" onclick="viewDetails('{{ $pekerjaan->nip }}')">
                                     <td>
                                         <div class="d-flex px-2 py-1">
                                             <div>
                                                 <img src="../assets/img/pp.png" class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
                                             </div>
                                             <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">{{ $dataPribadi->nama }}</h6>
-                                                <p class="text-xs text-secondary mb-0">{{ $dataPribadi->nip }}</p>
+                                                <h6 class="mb-0 text-sm">{{ $pribadi->nama }}</h6>
+                                                <p class="text-xs text-secondary mb-0">{{ $pribadi->nip }}</p>
                                             </div>
                                         </div>
                                     </td>
                                     <td>
-                                        <p class="text-xs font-weight-bold mb-0">{{ $dataPekerjaan->jabatan }} {{ $dataPekerjaan->bagian }}</p>
-                                        <p class="text-xs text-secondary mb-0">{{ $dataPekerjaan->divisi }}</p>
+                                        <p class="text-xs font-weight-bold mb-0">{{ $pekerjaan->jabatan }} {{ $pekerjaan->bagian }}</p>
+                                        <p class="text-xs text-secondary mb-0">{{ $pekerjaan->divisi }}</p>
                                     </td>
                                     <td class="align-middle text-center text-sm">
-                                        <p class="text-xs font-weight-bold mb-0">{{ $dataPribadi->no_hp }}</p>
+                                        <p class="text-xs font-weight-bold mb-0">{{ $pribadi->no_hp }}</p>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <p class="text-xs font-weight-bold mb-0">{{ $dataPribadi->tgl_lahir }}</p>
+                                        <p class="text-xs font-weight-bold mb-0">{{ $pribadi->tgl_lahir }}</p>
                                     </td>
                                     <td class="align-middle text-center">
                                         <p class="text-xs font-weight-bold mb-0">96%</p>

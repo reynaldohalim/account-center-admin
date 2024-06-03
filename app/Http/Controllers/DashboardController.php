@@ -27,7 +27,7 @@ class DashboardController extends Controller
     {
         $admin = auth()->user();
         $dataPekerjaan = $admin->dataPekerjaan;
-        $dataPribadi = $admin->dataPribadi;
+        $dataPribadiAdmin = $admin->dataPribadi;
 
         $izinRecords = Izin::orderBy('tgl_ijin', 'asc')->whereNull('approve2')->whereNull('rejected_by')->get();
 
@@ -56,12 +56,17 @@ class DashboardController extends Controller
         $pageTitle = 'Halaman Utama';
         $breadcrumb = ['Admin', $pageTitle];
 
-        return view('dashboard', compact('admin', 'dataPekerjaan', 'dataPribadi', 'izin', 'countIzin', 'pageTitle', 'breadcrumb'));
+        return view('dashboard', compact('admin', 'dataPekerjaan', 'dataPribadiAdmin', 'izin', 'countIzin', 'pageTitle', 'breadcrumb'));
     }
 
     //Data Karyawan
     public function data_karyawan()
     {
+        $admin = auth()->user();
+        $dataPribadiAdmin = $admin->dataPribadi;
+        $pageTitle = 'Data Karyawan';
+        $breadcrumb = ['Admin', $pageTitle];
+
         $nips = DataPekerjaan::distinct()->pluck('nip');
 
         // Create DataKaryawan instances
@@ -74,11 +79,6 @@ class DashboardController extends Controller
             return $dataKaryawan->dataPekerjaan()->divisi;
         });
         $dataKaryawan = $dataKaryawanGrouped;
-
-        $admin = auth()->user();
-        $dataPribadiAdmin = $admin->dataPribadi;
-        $pageTitle = 'Data Karyawan';
-        $breadcrumb = ['Admin', $pageTitle];
 
         return view('data-karyawan', compact('pageTitle', 'breadcrumb', 'dataKaryawan', 'dataPribadiAdmin'));
     }
@@ -113,6 +113,12 @@ class DashboardController extends Controller
 
     public function viewDetails($nip)
     {
+
+        $admin = auth()->user();
+        $dataPribadiAdmin = $admin->dataPribadi;
+        $pageTitle = 'Detail Karyawan';
+        $breadcrumb = ['Admin', 'Data Karyawan', $pageTitle];
+
         $dataKaryawan = new DataKaryawan($nip);
         $dataPribadi = $dataKaryawan->dataPribadi();
         $dataPekerjaan = $dataKaryawan->dataPekerjaan();
@@ -125,11 +131,6 @@ class DashboardController extends Controller
         $absensi = $dataKaryawan->absensi();
         $izin = $dataKaryawan->izin();
         $pembaruanData = PembaruanData::where('nip', $nip)->whereNull('tgl_approval');
-
-        $admin = auth()->user();
-        $dataPribadiAdmin = $admin->dataPribadi;
-        $pageTitle = 'Detail Karyawan';
-        $breadcrumb = ['Admin', 'Data Karyawan', $pageTitle];
 
         return view('data-karyawan-details', compact('dataPribadiAdmin', 'pageTitle', 'breadcrumb', 'dataPribadi', 'dataPekerjaan', 'dataLainlain', 'dataKeluarga', 'pendidikan', 'bahasa', 'organisasi', 'pengalamanKerja', 'absensi', 'izin', 'pembaruanData'));
     }
@@ -182,11 +183,11 @@ class DashboardController extends Controller
         $breadcrumb = ['Admin', $pageTitle];
 
         $admin = auth()->user();
-        $dataPribadi = $admin->dataPribadi;
+        $dataPribadiAdmin = $admin->dataPribadi;
 
         $liburKaryawan = LiburKaryawan::all();
 
-        return view('pengaturan-libur', compact('pageTitle', 'breadcrumb', 'dataPribadi', 'liburKaryawan'));
+        return view('pengaturan-libur', compact('pageTitle', 'breadcrumb', 'dataPribadiAdmin', 'liburKaryawan'));
     }
 
     public function storeLiburKaryawan(Request $request)
@@ -235,7 +236,7 @@ class DashboardController extends Controller
         $breadcrumb = ['Admin', $pageTitle];
 
         $admin = auth()->user();
-        $dataPribadi = $admin->dataPribadi;
+        $dataPribadiAdmin = $admin->dataPribadi;
 
         $nips = PembaruanData::whereNot('tabel', '')->whereNull('tgl_approval')->distinct()->pluck('nip');
         $arrPembaruan = $nips->map(function ($nip) {
@@ -247,7 +248,7 @@ class DashboardController extends Controller
         })->toArray(); // Convert to array to avoid collection issues in Blade
 
 
-        return view('pengajuan-pembaruan', compact('pageTitle', 'breadcrumb', 'dataPribadi', 'arrPembaruan'));
+        return view('pengajuan-pembaruan', compact('pageTitle', 'breadcrumb', 'dataPribadiAdmin', 'arrPembaruan'));
     }
 
     //Pengajuan Izin
@@ -257,7 +258,7 @@ class DashboardController extends Controller
         $breadcrumb = ['Admin', $pageTitle];
 
         $admin = auth()->user();
-        $dataPribadi = $admin->dataPribadi;
+        $dataPribadiAdmin = $admin->dataPribadi;
 
         $izinRecords = Izin::orderBy('tgl_ijin', 'asc')->whereNull('approve2')->whereNull('rejected_by')->get();
 
@@ -289,7 +290,7 @@ class DashboardController extends Controller
         $izin = $mergedIzin;
 
 
-        return view('pengajuan-izin', compact('pageTitle', 'breadcrumb', 'dataPribadi', 'izin'));
+        return view('pengajuan-izin', compact('pageTitle', 'breadcrumb', 'dataPribadiAdmin', 'izin'));
     }
 
     public function izin_approve1(Request $request)
@@ -347,9 +348,9 @@ class DashboardController extends Controller
         $breadcrumb = ['Admin', $pageTitle];
 
         $admin = auth()->user();
-        $dataPribadi = $admin->dataPribadi;
+        $dataPribadiAdmin = $admin->dataPribadi;
 
-        return view('klasifikasi-karyawan', compact('pageTitle', 'breadcrumb', 'dataPribadi'));
+        return view('klasifikasi-karyawan', compact('pageTitle', 'breadcrumb', 'dataPribadiAdmin'));
     }
 
     public function notifikasi()
@@ -358,9 +359,9 @@ class DashboardController extends Controller
         $breadcrumb = ['Admin', $pageTitle];
 
         $admin = auth()->user();
-        $dataPribadi = $admin->dataPribadi;
+        $dataPribadiAdmin = $admin->dataPribadi;
 
-        return view('notifikasi', compact('pageTitle', 'breadcrumb', 'dataPribadi'));
+        return view('notifikasi', compact('pageTitle', 'breadcrumb', 'dataPribadiAdmin'));
     }
 
     // IAM Manajemen Hak Akses
@@ -370,7 +371,7 @@ class DashboardController extends Controller
         $breadcrumb = ['Admin', $pageTitle];
 
         $admin = auth()->user();
-        $dataPribadi = $admin->dataPribadi;
+        $dataPribadiAdmin = $admin->dataPribadi;
 
         $aksesAdmin = AksesAdmin::get();
 
@@ -379,7 +380,7 @@ class DashboardController extends Controller
         }
 
 
-        return view('manajemen-hak-akses', compact('pageTitle', 'breadcrumb', 'dataPribadi', 'aksesAdmin'));
+        return view('manajemen-hak-akses', compact('pageTitle', 'breadcrumb', 'dataPribadiAdmin', 'aksesAdmin'));
     }
 
     public function search(Request $request)
@@ -439,6 +440,7 @@ class DashboardController extends Controller
 
         if (!$aksesAdmin) {
             $aksesAdmin = new AksesAdmin();
+            $aksesAdmin->nip = $validatedData['nip'];
         }
 
         $aksesAdmin->divisi = $validatedData['divisi'];
@@ -490,6 +492,23 @@ class DashboardController extends Controller
         return response()->json(['options' => $options]);
     }
 
+    public function delete(Request $request)
+    {
+        $nip = $request->input('nip');
+
+        try {
+            // Delete AksesAdmin
+            AksesAdmin::where('nip', $nip)->delete();
+
+            // Delete Admin
+            Admin::where('nip', $nip)->delete();
+
+            return response()->json(['status' => 'success']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
     //Ganti password
     public function ganti_password()
     {
@@ -497,9 +516,9 @@ class DashboardController extends Controller
         $breadcrumb = ['Admin', $pageTitle];
 
         $admin = Auth::user();
-        $dataPribadi = $admin->dataPribadi;
+        $dataPribadiAdmin = $admin->dataPribadi;
 
-        return view('ganti-password', compact('pageTitle', 'breadcrumb', 'dataPribadi'));
+        return view('ganti-password', compact('pageTitle', 'breadcrumb', 'dataPribadiAdmin'));
     }
 
     public function changePassword(Request $request)
