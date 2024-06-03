@@ -39,8 +39,8 @@ Route::middleware(['auth'])->group(function () {
 
     //Pengajuan pembaruan
     Route::get('pengajuan-pembaruan', [DashboardController::class, 'pengajuan_pembaruan']);
-    Route::patch('/pembaruan/approve/{id}', [DashboardController::class, 'approvePembaruan'])->name('approvePembaruan');
-    Route::patch('/pembaruan/reject/{id}', [DashboardController::class, 'rejectPembaruan'])->name('rejectPembaruan');
+    Route::patch('/approve-pembaruan/{id}', [DashboardController::class, 'approvePembaruan'])->name('approvePembaruan');
+    Route::patch('/reject-pembaruan/{id}', [DashboardController::class, 'rejectPembaruan'])->name('rejectPembaruan');
 
     //Pengajuan izin
     Route::get('pengajuan-izin', [DashboardController::class, 'pengajuan_izin']);
@@ -53,10 +53,10 @@ Route::middleware(['auth'])->group(function () {
 
     //IAM Manajemen Hak Akses
     Route::get('manajemen-hak-akses', [DashboardController::class, 'manajemen_hak_akses']);
-    Route::post('/manajemen-hak-akses/search', [DashboardController::class, 'search'])->name('manajemen-hak-akses.search');
-    Route::post('manajemen-hak-akses/fetchOptions', [DashboardController::class, 'fetchOptions'])->name('manajemen-hak-akses.fetchOptions');
-    Route::post('/manajemen-hak-akses/add', [DashboardController::class, 'add'])->name('manajemen-hak-akses.add');
-    Route::post('/manajemen-hak-akses/delete', [DashboardController::class, 'delete'])->name('manajemen-hak-akses.delete');
+    Route::post('/manajemen-hak-akses/searchAdmin', [DashboardController::class, 'searchAdmin'])->name('manajemen-hak-akses.search');
+    Route::post('manajemen-hak-akses/fetchOptionsAdmin', [DashboardController::class, 'fetchOptionsAdmin'])->name('manajemen-hak-akses.fetchOptions');
+    Route::post('/manajemen-hak-akses/addAdmin', [DashboardController::class, 'addAdmin'])->name('manajemen-hak-akses.add');
+    Route::post('/manajemen-hak-akses/deleteAdmin', [DashboardController::class, 'deleteAdmin'])->name('manajemen-hak-akses.delete');
 
 
     //Ganti Password

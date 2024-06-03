@@ -30,6 +30,22 @@
             <div class="card widget-card border-light shadow-sm">
                 <div class="card-body p-4">
 
+                    @php
+                        if (!function_exists('checkPembaruan')) {
+                            function checkPembaruan($pembaruanData, $tabel, $label)
+                            {
+                                if (isset($pembaruanData[$tabel])) {
+                                    foreach ($pembaruanData[$tabel] as $pembaruan) {
+                                        if ($pembaruan->label == $label) {
+                                            return "<i class='fas fa-exclamation-triangle warning-icon' data-bs-toggle='modal' data-bs-target='#pembaruanModal-{$pembaruan->id}'></i>";
+                                        }
+                                    }
+                                }
+                                return '';
+                            }
+                        }
+                    @endphp
+
                     <ul class="nav nav-tabs" id="tablist" role="tablist">
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active" id="datapribadi-tab" data-bs-toggle="tab"
@@ -82,152 +98,112 @@
                                 aria-selected="false">Izin</button>
                         </li>
                     </ul>
-
                     <div class="tab-content pt-4" id="tabcontent">
                         <div class="tab-pane show active" id="datapribadi-tab-pane" role="tabpanel"
                             aria-labelledby="datapribadi-tab" tabindex="0">
                             <form action="#!" class="row gy-3 gy-xxl-4">
-                                @php
-                                    $labels = [
-                                        'nama' => 'Nama',
-                                        'jenis_kelamin' => 'Jenis Kelamin',
-                                        'alamat_ktp' => 'Alamat KTP',
-                                        'alamat_domisili' => 'Alamat Domisili',
-                                        'no_hp' => 'No. HP',
-                                        'tempat_lahir' => 'Tempat Lahir',
-                                        'tgl_lahir' => 'Tanggal Lahir',
-                                        'agama' => 'Agama',
-                                        'status_nikah' => 'Status Nikah',
-                                        'jumlah_anak' => 'Jumlah Anak',
-                                        'status_pph21' => 'Status PPh21',
-                                        'pendidikan_terakhir' => 'Pendidikan Terakhir',
-                                    ];
-                                @endphp
-
-                                @foreach ($labels as $field => $label)
-                                    <div class="col-12 @if (in_array($field, [
-                                            'nama',
-                                            'jenis_kelamin',
-                                            'no_hp',
-                                            'tempat_lahir',
-                                            'tgl_lahir',
-                                            'agama',
-                                            'status_nikah',
-                                            'jumlah_anak',
-                                            'status_pph21',
-                                            'pendidikan_terakhir',
-                                        ])) col-md-6 @endif">
-                                        <label for="" class="form-label">{{ $label }}</label>
-                                        @php
-                                            $pembaruan = $pembaruanData->firstWhere('label', $field);
-                                        @endphp
-                                        @if ($pembaruan)
-                                            <i class="fas fa-exclamation-triangle warning-icon" data-bs-toggle="modal"
-                                                data-bs-target="#pembaruanModal-{{ $pembaruan->id }}"></i>
-                                        @endif
-                                        @if ($field == 'jenis_kelamin' || $field == 'agama' || $field == 'status_nikah')
-                                            <select class="form-control">
-                                                @if ($field == 'jenis_kelamin')
-                                                    <option value="l"
-                                                        @if ($dataPribadi->jenis_kelamin == 'l') selected @endif>Laki-laki</option>
-                                                    <option value="p"
-                                                        @if ($dataPribadi->jenis_kelamin == 'p') selected @endif>Perempuan</option>
-                                                @elseif($field == 'agama')
-                                                    <option value="Islam"
-                                                        @if ($dataPribadi->agama == 'Islam') selected @endif>Islam</option>
-                                                    <option value="Kristen"
-                                                        @if ($dataPribadi->agama == 'Kristen') selected @endif>Kristen</option>
-                                                    <option value="Katolik"
-                                                        @if ($dataPribadi->agama == 'Katolik') selected @endif>Katolik</option>
-                                                    <option value="Buddha"
-                                                        @if ($dataPribadi->agama == 'Buddha') selected @endif>Buddha</option>
-                                                    <option value="Hindu"
-                                                        @if ($dataPribadi->agama == 'Hindu') selected @endif>Hindu</option>
-                                                    <option value="Konghucu"
-                                                        @if ($dataPribadi->agama == 'Konghucu') selected @endif>Konghucu</option>
-                                                @elseif($field == 'status_nikah')
-                                                    <option value="0"
-                                                        @if ($dataPribadi->status_nikah == '0') selected @endif>Belum kawin
-                                                    </option>
-                                                    <option value="1"
-                                                        @if ($dataPribadi->status_nikah == '1') selected @endif>Kawin</option>
-                                                @endif
-                                            </select>
-                                        @elseif ($field == 'alamat_ktp' || $field == 'alamat_domisili')
-                                            <textarea class="form-control" id="input">{{ $dataPribadi->$field }}</textarea>
-                                        @else
-                                            <input type="text" class="form-control" id="input"
-                                                value="{{ $dataPribadi->$field }}">
-                                        @endif
-                                    </div>
-                                @endforeach
-
+                                <div class="col-12 col-md-6">
+                                    <label for="" class="form-label">Nama</label>
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataPribadi->nama }}">
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label for="" class="form-label">Jenis Kelamin</label>
+                                    <select class="form-control">
+                                        <option value="l"
+                                            @php if ($dataPribadi->jenis_kelamin == 'l') echo 'selected' @endphp>Laki-laki
+                                        </option>
+                                        <option value="p"
+                                            @php if ($dataPribadi->jenis_kelamin == 'p') echo 'selected' @endphp>Perempuan
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <label for="" class="form-label">Alamat KTP</label>
+                                    {!! checkPembaruan($pembaruanData, 'data_pribadi', 'alamat_ktp') !!}
+                                    <textarea class="form-control" id="input">{{ $dataPribadi->alamat_ktp }}</textarea>
+                                </div>
+                                <div class="col-12">
+                                    <label for="" class="form-label">Alamat Domisili</label>
+                                    {!! checkPembaruan($pembaruanData, 'data_pribadi', 'alamat_domisili') !!}
+                                    <textarea class="form-control" id="input">{{ $dataPribadi->alamat_domisili }}</textarea>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label for="" class="form-label">No. HP</label>
+                                    {!! checkPembaruan($pembaruanData, 'data_pribadi', 'no_hp') !!}
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataPribadi->no_hp }}">
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label for="" class="form-label">Tempat Lahir</label>
+                                    {!! checkPembaruan($pembaruanData, 'data_pribadi', 'tempat_lahir') !!}
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataPribadi->tempat_lahir }}">
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label for="" class="form-label">Tanggal Lahir</label>
+                                    {!! checkPembaruan($pembaruanData, 'data_pribadi', 'tempat_lahir') !!}
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataPribadi->tempat_lahir }}">
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label for="" class="form-label">Agama</label>
+                                    {!! checkPembaruan($pembaruanData, 'data_pribadi', 'agama') !!}
+                                    <select class="form-control">
+                                        <option value="Islam"
+                                            @php if ($dataPribadi->agama == 'Islam') echo 'selected' @endphp>Islam</option>
+                                        <option value="Kristen"
+                                            @php if ($dataPribadi->agama == 'Kristen') echo 'selected' @endphp>Kristen
+                                        </option>
+                                        <option value="Katolik"
+                                            @php if ($dataPribadi->agama == 'Katolik') echo 'selected' @endphp>Katolik
+                                        </option>
+                                        <option value="Buddha"
+                                            @php if ($dataPribadi->agama == 'Buddha') echo 'selected' @endphp>Buddha
+                                        </option>
+                                        <option value="Hindu"
+                                            @php if ($dataPribadi->agama == 'Hindu') echo 'selected' @endphp>Hindu</option>
+                                        <option value="Konghucu"
+                                            @php if ($dataPribadi->agama == 'Konghucu') echo 'selected' @endphp>Konghucu
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label for="" class="form-label">Status Nikah</label>
+                                    {!! checkPembaruan($pembaruanData, 'data_pribadi', 'status_nikah') !!}
+                                    <select class="form-control">
+                                        <option value="0"
+                                            @php if ($dataPribadi->status_nikah == '0') echo 'selected' @endphp>Belum kawin
+                                        </option>
+                                        <option value="1"
+                                            @php if ($dataPribadi->status_nikah == '1') echo 'selected' @endphp>Kawin
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label for="" class="form-label">Jumlah Anak</label>
+                                    {!! checkPembaruan($pembaruanData, 'data_pribadi', 'jumlah_anak') !!}
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataPribadi->jumlah_anak }}">
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label for="" class="form-label">Status PPh21</label>
+                                    {!! checkPembaruan($pembaruanData, 'data_pribadi', 'status_pph21') !!}
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataPribadi->status_pph21 }}">
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <label for="" class="form-label">Pendidikan Terakhir</label>
+                                    {!! checkPembaruan($pembaruanData, 'data_pribadi', 'pendidikan_terakhir') !!}
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataPribadi->pendidikan_terakhir }}">
+                                </div>
                                 <div class="col-12">
                                     <button type="" class="btn btn-primary">Edit</button>
                                     <button type="submit" class="btn btn-primary">Simpan</button>
                                     <button type="" class="btn btn-primary">Tolak</button>
                                 </div>
                             </form>
-
-                            <!-- Modals -->
-                            @foreach ($pembaruanData as $pembaruan)
-                                <div class="modal fade" id="pembaruanModal-{{ $pembaruan->id }}" tabindex="-1"
-                                    aria-labelledby="pembaruanModalLabel-{{ $pembaruan->id }}" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="pembaruanModalLabel-{{ $pembaruan->id }}">
-                                                    Pembaruan Data - {{ $pembaruan->label }}</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <table class="table">
-                                                    <tr>
-                                                        <th>Tabel</th>
-                                                        <td>{{ $pembaruan->tabel }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Label</th>
-                                                        <td>{{ $pembaruan->label }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Data Lama</th>
-                                                        <td>{{ $pembaruan->data_lama }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Data Baru</th>
-                                                        <td>{{ $pembaruan->data_baru }}</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Tanggal Pengajuan</th>
-                                                        <td>{{ $pembaruan->tgl_pengajuan }}</td>
-                                                    </tr>
-                                                </table>
-                                                <form method="POST"
-                                                    action="{{ route('approvePembaruan', $pembaruan->id) }}">
-                                                    @csrf
-                                                    @method('PATCH')
-                                                    <div class="mb-3">
-                                                        <button type="submit" class="btn btn-success">Approve</button>
-                                                    </div>
-                                                </form>
-                                                <form method="POST"
-                                                    action="{{ route('rejectPembaruan', $pembaruan->id) }}">
-                                                    @csrf
-                                                    @method('PATCH')
-                                                    <div class="mb-3">
-                                                        <label for="alasan" class="form-label">Alasan Penolakan</label>
-                                                        <textarea class="form-control" id="alasan" name="alasan"></textarea>
-                                                    </div>
-                                                    <button type="submit" class="btn btn-danger">Reject</button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-
                         </div>
 
                         <div class="tab-pane fade" id="datapekerjaan-tab-pane" role="tabpanel"
@@ -235,71 +211,85 @@
                             <form action="#!" class="row gy-3 gy-xxl-4">
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">NIP</label>
-                                    <input type="text" class="form-control" id="input" value="">
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataPekerjaan->nip }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">Divisi</label>
-                                    <input type="text" class="form-control" id="input" value="">
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataPekerjaan->divisi }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">Bagian</label>
-                                    <input type="text" class="form-control" id="input" value="">
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataPekerjaan->bagian }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">Jabatan</label>
-                                    <input type="text" class="form-control" id="input" value="">
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataPekerjaan->jabatan }}">
                                 </div>
                                 <div class="col-12">
                                     <label for="" class="form-label">Detail Posisi</label>
-                                    <textarea class="form-control" id=""></textarea>
+                                    <textarea class="form-control" id="" value="{{ $dataPekerjaan->detail_posisi }}"></textarea>
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">Group</label>
-                                    <input type="text" class="form-control" id="input" value="">
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataPekerjaan->group }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">Kode Admin</label>
-                                    <input type="text" class="form-control" id="input" value="">
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataPekerjaan->kode_admin }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">Kode Kontrak</label>
-                                    <input type="text" class="form-control" id="input" value="">
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataPekerjaan->kode_kontrak }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">Kode Periode</label>
-                                    <input type="text" class="form-control" id="input" value="">
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataPekerjaan->kode_periode }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">Sales Office</label>
-                                    <input type="text" class="form-control" id="input" value="">
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataPekerjaan->sales_office }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">Tanggal Masuk</label>
-                                    <input type="text" class="form-control" id="input" value="">
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataPekerjaan->tgl_masuk }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">Tanggal Penetapan</label>
-                                    <input type="text" class="form-control" id="input" value="">
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataPekerjaan->tgl_penetapan }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">Status Karyawan</label>
-                                    <input type="text" class="form-control" id="input" value="">
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataPekerjaan->status_karyawan }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">Tanggal Keluar</label>
-                                    <input type="text" class="form-control" id="input" value="">
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataPekerjaan->tgl_keluar }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">Gaji Perbulan</label>
-                                    <input type="text" class="form-control" id="input" value="">
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataPekerjaan->gaji_perbulan }}">
                                 </div>
                                 <div class="col-12">
                                     <label for="" class="form-label">Alasan Keluar</label>
-                                    <textarea class="form-control" id=""></textarea>
+                                    <textarea class="form-control" id="" value="{{ $dataPekerjaan->alasan_keluar }}"></textarea>
                                 </div>
                                 <div class="col-12">
                                     <label for="" class="form-label">Pengalaman</label>
-                                    <textarea class="form-control" id=""></textarea>
+                                    <textarea class="form-control" id="" value="{{ $dataPekerjaan->pengalaman }}"></textarea>
                                 </div>
                                 <div class="col-12">
                                     <button type="" class="btn btn-primary">Edit</button>
@@ -314,63 +304,86 @@
                             <form action="#!" class="row gy-3 gy-xxl-4">
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">No. KPJ</label>
-                                    <input type="text" class="form-control" id="input" value="">
+                                    {!! checkPembaruan($pembaruanData, 'data_lainlain', 'no_kpj') !!}
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataLainlain->no_kpj }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">No. HLD</label>
-                                    <input type="text" class="form-control" id="input" value="">
+                                    {!! checkPembaruan($pembaruanData, 'data_lainlain', 'no_hld') !!}
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataLainlain->no_hld }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">No. KTP</label>
-                                    <input type="text" class="form-control" id="input" value="">
+                                    {!! checkPembaruan($pembaruanData, 'data_lainlain', 'no_ktp') !!}
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataLainlain->no_ktp }}">
                                 </div>
                                 <div class="col-12 col-md-6">No. NPWP
                                     <label for="" class="form-label">Nama</label>
-                                    <input type="text" class="form-control" id="input" value="">
+                                    {!! checkPembaruan($pembaruanData, 'data_lainlain', 'no_npwp') !!}
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataLainlain->no_npwp }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">Potong ASTEK</label>
-                                    <input type="text" class="form-control" id="input" value="">
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataLainlain->potong_astek }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">Asuransi</label>
-                                    <input type="text" class="form-control" id="input" value="">
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataLainlain->asuransi }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">No. Asuransi</label>
-                                    <input type="text" class="form-control" id="input" value="">
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataLainlain->no_asuransi }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">Kode Wings</label>
-                                    <input type="text" class="form-control" id="input" value="">
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataLainlain->kode_wings }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">Bank</label>
-                                    <input type="text" class="form-control" id="input" value="">
+                                    {!! checkPembaruan($pembaruanData, 'data_lainlain', 'bank') !!}
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataLainlain->bank }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">No. Rekening</label>
-                                    <input type="text" class="form-control" id="input" value="">
+                                    {!! checkPembaruan($pembaruanData, 'data_lainlain', 'no_rekening') !!}
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataLainlain->no_rekening }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">No. Kendaraan</label>
-                                    <input type="text" class="form-control" id="input" value="">
+                                    {!! checkPembaruan($pembaruanData, 'data_lainlain', 'no_kendaraan') !!}
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataLainlain->no_kendaraan }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">Jari Bermasalah</label>
-                                    <input type="text" class="form-control" id="input" value="">
+                                    {!! checkPembaruan($pembaruanData, 'data_lainlain', 'jari_bermasalah') !!}
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataLainlain->jari_bermasalah }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">Jumlah SP</label>
-                                    <input type="text" class="form-control" id="input" value="">
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataLainlain->jumlah_sp }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">Email</label>
-                                    <input type="text" class="form-control" id="input" value="">
+                                    {!! checkPembaruan($pembaruanData, 'data_lainlain', 'email') !!}
+                                    <input type="text" class="form-control" id="input"
+                                        value="{{ $dataLainlain->email }}">
                                 </div>
                                 <div class="col-12">
                                     <label for="" class="form-label">Catatan</label>
-                                    <textarea class="form-control" id=""></textarea>
+                                    <textarea class="form-control" id="">{{ $dataLainlain->catatan }}</textarea>
                                 </div>
                                 <div class="col-12">
                                     <button type="" class="btn btn-primary">Edit</button>
@@ -379,6 +392,53 @@
                                 </div>
                             </form>
                         </div>
+
+                        <!-- Modals -->
+                        @foreach ($pembaruanData->flatten() as $pembaruan)
+                            <div class="modal fade" id="pembaruanModal-{{ $pembaruan->id }}" tabindex="-1"
+                                aria-labelledby="pembaruanModalLabel-{{ $pembaruan->id }}" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="pembaruanModalLabel-{{ $pembaruan->id }}">
+                                                Pembaruan Data - {{ $pembaruan->label }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <table class="table">
+                                                <tr>
+                                                    <th>Data Lama</th>
+                                                    <td>{{ $pembaruan->data_lama }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Data Baru</th>
+                                                    <td>{{ $pembaruan->data_baru }}</td>
+                                                </tr>
+                                            </table>
+                                            <form method="POST" action="{{ route('approvePembaruan', $pembaruan->id) }}"
+                                                onsubmit="return confirm('Are you sure you want to approve this request?');">
+                                                @csrf
+                                                @method('PATCH')
+                                                <div class="mb-3">
+                                                    <button type="submit" class="btn btn-success">Approve</button>
+                                                </div>
+                                            </form>
+                                            <form method="POST" action="{{ route('rejectPembaruan', $pembaruan->id) }}"
+                                                onsubmit="return confirm('Are you sure you want to reject this request?');">
+                                                @csrf
+                                                @method('PATCH')
+                                                <div class="mb-3">
+                                                    <label for="alasan" class="form-label">Alasan Penolakan</label>
+                                                    <textarea class="form-control" id="alasan" name="alasan"></textarea>
+                                                </div>
+                                                <button type="submit" class="btn btn-danger">Reject</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
 
                         <div class="tab-pane fade" id="datakeluarga-tab-pane" role="tabpanel"
                             aria-labelledby="datakeluarga-tab" tabindex="0">
@@ -788,7 +848,6 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -803,46 +862,46 @@
     }
 </script>
 @push('custom-scripts')
-<script>
+    <script>
         if (document.getElementById('chart_absensi')) {
-        var ctx4 = document.getElementById('chart_absensi').getContext('2d');
-        var data = {
-            labels: ['Absen Full', 'Cuti', 'Tugas', 'Absen Error'],
-            datasets: [{
-                data: [10, 20, 30, 40],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)'
-                ],
-                borderWidth: 1
-            }]
-        };
+            var ctx4 = document.getElementById('chart_absensi').getContext('2d');
+            var data = {
+                labels: ['Absen Full', 'Cuti', 'Tugas', 'Absen Error'],
+                datasets: [{
+                    data: [10, 20, 30, 40],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            };
 
-        var options = {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'top',
-                },
-                tooltip: {
-                    enabled: true
+            var options = {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        enabled: true
+                    }
                 }
-            }
-        };
+            };
 
-        var myPieChart = new Chart(ctx4, {
-            type: 'pie',
-            data: data,
-            options: options
-        });
-    };
-</script>
+            var myPieChart = new Chart(ctx4, {
+                type: 'pie',
+                data: data,
+                options: options
+            });
+        };
+    </script>
 @endpush

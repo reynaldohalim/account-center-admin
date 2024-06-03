@@ -111,6 +111,7 @@ class DashboardController extends Controller
         return response()->json($result);
     }
 
+    //Karyawan Details
     public function viewDetails($nip)
     {
 
@@ -130,50 +131,50 @@ class DashboardController extends Controller
         $pengalamanKerja = $dataKaryawan->pengalamanKerja();
         $absensi = $dataKaryawan->absensi();
         $izin = $dataKaryawan->izin();
-        $pembaruanData = PembaruanData::where('nip', $nip)->whereNull('tgl_approval');
+        $pembaruanData = PembaruanData::where('nip', $nip)->whereNull('tgl_approval')->get()->groupBy('tabel');
 
         return view('data-karyawan-details', compact('dataPribadiAdmin', 'pageTitle', 'breadcrumb', 'dataPribadi', 'dataPekerjaan', 'dataLainlain', 'dataKeluarga', 'pendidikan', 'bahasa', 'organisasi', 'pengalamanKerja', 'absensi', 'izin', 'pembaruanData'));
     }
 
     public function approvePembaruan($id)
     {
-        $pembaruan = PembaruanData::find($id);
+        $pembaruan = PembaruanData::findOrFail($id);
+        $admin = auth()->user();
 
-        if ($pembaruan) {
-            $pembaruan->approved_by = auth()->user()->nip;
-            $pembaruan->tgl_approval = now();
+        // Ensure $pembaruan->tabel and $pembaruan->label are strings
+        if (is_string($pembaruan->tabel) && is_string($pembaruan->label)) {
+            // Update the respective table with the new data
+            DB::table($pembaruan->tabel)
+                ->where('nip', $pembaruan->nip)
+                ->update([$pembaruan->label => $pembaruan->data_baru]);
+
+            // Update the PembaruanData record
+            $pembaruan->tgl_approval = Carbon::now();
+            $pembaruan->approved_by = $admin->nip;
             $pembaruan->save();
 
-            // Ensure 'tabel' and 'label' are strings
-            $tabel = (string)$pembaruan->tabel;
-            $label = (string)$pembaruan->label;
-            $dataBaru = (string)$pembaruan->data_baru;
-
-            // Update the corresponding data in the specified table
-            DB::table($tabel)
-                ->where('nip', $pembaruan->nip)
-                ->update([$label => $dataBaru]);
-
-            return redirect()->back()->with('success', 'Pembaruan data approved successfully.');
+            return redirect()->back()->with('success', 'Pembaruan data has been approved.');
         } else {
-            return redirect()->back()->with('error', 'Pembaruan data not found.');
+            return redirect()->back()->with('error', 'Invalid data format.');
         }
     }
 
     public function rejectPembaruan(Request $request, $id)
     {
-        $pembaruan = PembaruanData::find($id);
+        $request->validate([
+            'alasan' => 'nullable|string|max:255',
+        ]);
 
-        if ($pembaruan) {
-            $pembaruan->rejected_by = auth()->user()->nip;
-            $pembaruan->tgl_approval = now();
-            $pembaruan->alasan = $request->alasan;
-            $pembaruan->save();
+        $pembaruan = PembaruanData::findOrFail($id);
+        $admin = auth()->user();
 
-            return redirect()->back()->with('success', 'Pembaruan data rejected successfully.');
-        } else {
-            return redirect()->back()->with('error', 'Pembaruan data not found.');
-        }
+        // Update the PembaruanData record
+        $pembaruan->tgl_approval = Carbon::now();
+        $pembaruan->rejected_by = $admin->nip;
+        $pembaruan->alasan = $request->input('alasan');
+        $pembaruan->save();
+
+        return redirect()->back()->with('success', 'Pembaruan data has been rejected.');
     }
 
     //Libur Karyawan
@@ -383,7 +384,7 @@ class DashboardController extends Controller
         return view('manajemen-hak-akses', compact('pageTitle', 'breadcrumb', 'dataPribadiAdmin', 'aksesAdmin'));
     }
 
-    public function search(Request $request)
+    public function searchAdmin(Request $request)
     {
         $nip = $request->input('nip');
         $dataPekerjaan = DataPekerjaan::where('nip', $nip)->first();
@@ -412,7 +413,7 @@ class DashboardController extends Controller
         }
     }
 
-    public function add(Request $request)
+    public function addAdmin(Request $request)
     {
         $validatedData = $request->validate([
             'nip' => 'required|string',
@@ -456,7 +457,7 @@ class DashboardController extends Controller
         }
     }
 
-    public function fetchOptions(Request $request)
+    public function fetchOptionsAdmin(Request $request)
     {
         $type = $request->input('type');
         $divisi = $request->input('divisi');
@@ -492,7 +493,7 @@ class DashboardController extends Controller
         return response()->json(['options' => $options]);
     }
 
-    public function delete(Request $request)
+    public function deleteAdmin(Request $request)
     {
         $nip = $request->input('nip');
 

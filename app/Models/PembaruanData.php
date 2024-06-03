@@ -9,11 +9,11 @@ class PembaruanData extends Model
 {
     protected $table = 'pembaruan_data';
 
-    protected $primaryKey = ['id'];
+    protected $primaryKey = 'id';
     public $incrementing = false;
 
     public $timestamps = false;
-    
+
 
     protected $fillable = [
         'id',
