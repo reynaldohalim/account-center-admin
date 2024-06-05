@@ -294,7 +294,6 @@
                                 <div class="col-12">
                                     <button type="" class="btn btn-primary">Edit</button>
                                     <button type="submit" class="btn btn-primary">Simpan</button>
-
                                 </div>
                             </form>
                         </div>
@@ -388,7 +387,6 @@
                                 <div class="col-12">
                                     <button type="" class="btn btn-primary">Edit</button>
                                     <button type="submit" class="btn btn-primary">Simpan</button>
-
                                 </div>
                             </form>
                         </div>
@@ -517,10 +515,10 @@
                                                         <button type="submit" class="btn btn-primary">Simpan</button>
                                                     @endif
                                                     @php
-                                                        $pembaruan = App\Models\PembaruanData::where('tabel', 'data_keluarga')->firstWhere('data_baru', $keluarga->id);
+                                                        $pembaruan = App\Models\PembaruanData::where('tabel', 'data_keluarga')->whereNull('tgl_approval')->firstWhere('data_baru', $keluarga->id);
                                                     @endphp
                                                     @if ($pembaruan)
-                                                        <button type='button' class='btn btn-outline-warning' data-bs-toggle='modal' data-bs-target='#approvalModal{{$keluarga->id}}'><i class='fas fa-exclamation-triangle warning-icon me-2'></i>Lihat Pembaruan</button>
+                                                        <button type='button' class='btn btn-outline-warning' data-bs-toggle='modal' data-bs-target='#keluargaModal{{$keluarga->id}}'><i class='fas fa-exclamation-triangle warning-icon me-2'></i>Lihat Pembaruan</button>
                                                     @endif
                                                 </div>
                                             </form>
@@ -530,12 +528,12 @@
 
                                 @if ($pembaruan)
                                     <!-- Keluarga Approval Modal -->
-                                    <div class="modal fade" id="approvalModal{{ $keluarga->id }}" tabindex="-1"
-                                        aria-labelledby="approvalModalLabel{{ $keluarga->id }}" aria-hidden="true">
+                                    <div class="modal fade" id="keluargaModal{{ $keluarga->id }}" tabindex="-1"
+                                        aria-labelledby="keluargaModalLabel{{ $keluarga->id }}" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="approvalModalLabel{{ $keluarga->id }}">
+                                                    <h5 class="modal-title" id="keluargaModalLabel{{ $keluarga->id }}">
                                                         Approve Data - {{ $keluarga->hubungan }} - {{ $keluarga->nama }}
                                                     </h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -550,7 +548,7 @@
                                                     @if ($oldData)
                                                         <div class="row">
                                                             <div class="col">
-                                                                <h6>Old Data</h6>
+                                                                <h6>Data Lama</h6>
                                                                 <p>Nama: {{ $oldData->nama }}</p>
                                                                 <p>Hubungan: {{ $oldData->hubungan }}</p>
                                                                 <p>Jenis Kelamin: {{ $oldData->jenis_kelamin }}</p>
@@ -562,7 +560,7 @@
                                                             </div>
                                                             @if ($newData)
                                                                 <div class="col">
-                                                                    <h6>New Data</h6>
+                                                                    <h6>Data Baru</h6>
                                                                     <p>Nama: {{ $newData->nama }}</p>
                                                                     <p>Hubungan: {{ $newData->hubungan }}</p>
                                                                     <p>Jenis Kelamin: {{ $newData->jenis_kelamin }}</p>
@@ -573,11 +571,11 @@
                                                                     <p>Keterangan: {{ $newData->keterangan }}</p>
                                                                 </div>
                                                             @else
-                                                                <p>No new data available.</p>
+                                                                <p>Tidak ada data baru.</p>
                                                             @endif
                                                         </div>
                                                     @else
-                                                        <p>New Data Request</p>
+                                                        <p>Data Baru Request</p>
                                                         @if ($newData)
                                                             <div class="col">
                                                                 <p>Nama: {{ $newData->nama }}</p>
@@ -599,7 +597,7 @@
                                                         @method('PATCH')
                                                         <div class="mb-3">
                                                             <button type="submit" class="btn btn-success"
-                                                                onclick="return confirm('Apakah anda yakin ingin MENERIMA pengajuan ini?');">Approve</button>
+                                                                onclick="return confirm('Apakah anda yakin ingin MENERIMA pengajuan ini?');">Terima</button>
                                                         </div>
                                                     </form>
                                                     <form method="POST"
@@ -612,7 +610,7 @@
                                                             <textarea class="form-control" id="alasan" name="alasan"></textarea>
                                                         </div>
                                                         <button type="submit" class="btn btn-danger"
-                                                            onclick="return confirm('Apakah anda yakin ingin MENOLAK pengajuan ini??');">Reject</button>
+                                                            onclick="return confirm('Apakah anda yakin ingin MENOLAK pengajuan ini??');">Tolak</button>
                                                     </form>
                                                 </div>
                                             </div>
@@ -622,64 +620,148 @@
                             @endforeach
                         </div>
 
-                        <div class="tab-pane fade" id="pendidikan-tab-pane" role="tabpanel"
-                            aria-labelledby="pendidikan-tab" tabindex="0">
-                            <div class="card accordion" id="accordionExample">
-                                <div class="card-header" id="headingOne">
-                                    <h2 class="mb-0">
-                                        <button class="btn-link accordion-button" type="button" data-toggle="collapse"
-                                            data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                                            SMA - 2018
-                                        </button>
-                                    </h2>
-                                </div>
+                        <div class="tab-pane fade" id="pendidikan-tab-pane" role="tabpanel" aria-labelledby="pendidikan-tab" tabindex="0">
+                            @foreach ($pendidikan as $dataPendidikan)
+                                <div class="card accordion" id="accordion{{ $dataPendidikan->id }}">
+                                    <div class="card-header" id="heading{{ $dataPendidikan->id }}">
+                                        <h2 class="mb-0">
+                                            <button class="btn-link accordion-button" type="button" data-toggle="collapse" data-target="#collapse{{ $dataPendidikan->id }}" aria-expanded="false" aria-controls="collapse{{ $dataPendidikan->id }}">
+                                                @if (!$dataPendidikan->approved_by)
+                                                    <i class='fas fa-exclamation-triangle warning-icon me-3' data-bs-toggle='modal'></i>
+                                                @endif
+                                                {{ $dataPendidikan->tingkat }} - {{ $dataPendidikan->tahun }}
+                                            </button>
+                                        </h2>
+                                    </div>
 
-                                <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
-                                    data-parent="#accordionExample">
-                                    <div class="card-body">
-                                        <form action="#!" class="row gy-3 gy-xxl-4">
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">Tingkat</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">Sekolah</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">Kota</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">Jurusan</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">Tahun</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">IPK</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12">
-                                                <button type="button" class="btn btn-primary">Edit</button>
-                                                <button type="submit" class="btn btn-primary">Simpan</button>
-
-                                            </div>
-                                        </form>
+                                    <div id="collapse{{ $dataPendidikan->id }}" class="collapse" aria-labelledby="heading{{ $dataPendidikan->id }}" data-parent="#accordion{{ $dataPendidikan->id }}">
+                                        <div class="card-body">
+                                            <form action="#!" class="row gy-3 gy-xxl-4">
+                                                <div class="col-12 col-md-6">
+                                                    <label for="tingkat{{ $dataPendidikan->id }}" class="form-label">Tingkat</label>
+                                                    <input type="text" class="form-control" id="tingkat{{ $dataPendidikan->id }}" value="{{ $dataPendidikan->tingkat }}">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="sekolah{{ $dataPendidikan->id }}" class="form-label">Sekolah</label>
+                                                    <input type="text" class="form-control" id="sekolah{{ $dataPendidikan->id }}" value="{{ $dataPendidikan->sekolah }}">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="kota{{ $dataPendidikan->id }}" class="form-label">Kota</label>
+                                                    <input type="text" class="form-control" id="kota{{ $dataPendidikan->id }}" value="{{ $dataPendidikan->kota }}">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="jurusan{{ $dataPendidikan->id }}" class="form-label">Jurusan</label>
+                                                    <input type="text" class="form-control" id="jurusan{{ $dataPendidikan->id }}" value="{{ $dataPendidikan->jurusan }}">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="tahun{{ $dataPendidikan->id }}" class="form-label">Tahun</label>
+                                                    <input type="text" class="form-control" id="tahun{{ $dataPendidikan->id }}" value="{{ $dataPendidikan->tahun }}">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="ipk{{ $dataPendidikan->id }}" class="form-label">IPK</label>
+                                                    <input type="text" class="form-control" id="ipk{{ $dataPendidikan->id }}" value="{{ $dataPendidikan->ipk }}">
+                                                </div>
+                                                <div class="col-12">
+                                                    @if ($dataPendidikan->approved_by)
+                                                        <button type="button" class="btn btn-primary">Edit</button>
+                                                        <button type="submit" class="btn btn-primary">Simpan</button>
+                                                    @endif
+                                                    @php
+                                                        $pembaruan = App\Models\PembaruanData::where('tabel', 'pendidikan')->whereNull('tgl_approval')->firstWhere('data_baru', $dataPendidikan->id);
+                                                    @endphp
+                                                    @if ($pembaruan)
+                                                        <button type='button' class='btn btn-outline-warning' data-bs-toggle='modal' data-bs-target='#pendidikanModal{{ $dataPendidikan->id }}'>
+                                                            <i class='fas fa-exclamation-triangle warning-icon me-2'></i>Lihat Pembaruan
+                                                        </button>
+                                                    @endif
+                                                </div>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+
+                                @if ($pembaruan)
+                                    <!-- Pendidikan Approval Modal -->
+                                    <div class="modal fade" id="pendidikanModal{{ $dataPendidikan->id }}" tabindex="-1" aria-labelledby="pendidikanModalLabel{{ $dataPendidikan->id }}" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="pendidikanModalLabel{{ $dataPendidikan->id }}">
+                                                        Approve Data - {{ $dataPendidikan->tingkat }} - {{ $dataPendidikan->tahun }}
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    @php
+                                                        $oldData = App\Models\Pendidikan::find($pembaruan->data_lama);
+                                                        $newData = App\Models\Pendidikan::find($pembaruan->data_baru);
+                                                    @endphp
+
+                                                    @if ($oldData)
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <h6>Data Lama</h6>
+                                                                <p>Tingkat: {{ $oldData->tingkat }}</p>
+                                                                <p>Sekolah: {{ $oldData->sekolah }}</p>
+                                                                <p>Kota: {{ $oldData->kota }}</p>
+                                                                <p>Jurusan: {{ $oldData->jurusan }}</p>
+                                                                <p>Tahun: {{ $oldData->tahun }}</p>
+                                                                <p>IPK: {{ $oldData->ipk }}</p>
+                                                            </div>
+                                                            @if ($newData)
+                                                                <div class="col">
+                                                                    <h6>Data Baru</h6>
+                                                                    <p>Tingkat: {{ $newData->tingkat }}</p>
+                                                                    <p>Sekolah: {{ $newData->sekolah }}</p>
+                                                                    <p>Kota: {{ $newData->kota }}</p>
+                                                                    <p>Jurusan: {{ $newData->jurusan }}</p>
+                                                                    <p>Tahun: {{ $newData->tahun }}</p>
+                                                                    <p>IPK: {{ $newData->ipk }}</p>
+                                                                </div>
+                                                            @else
+                                                                <p>Tidak ada data baru.</p>
+                                                            @endif
+                                                        </div>
+                                                    @else
+                                                        <p>Data Baru Request</p>
+                                                        @if ($newData)
+                                                            <div class="col">
+                                                                <p>Tingkat: {{ $newData->tingkat }}</p>
+                                                                <p>Sekolah: {{ $newData->sekolah }}</p>
+                                                                <p>Kota: {{ $newData->kota }}</p>
+                                                                <p>Jurusan: {{ $newData->jurusan }}</p>
+                                                                <p>Tahun: {{ $newData->tahun }}</p>
+                                                                <p>IPK: {{ $newData->ipk }}</p>
+                                                            </div>
+                                                        @else
+                                                            <p>No data available.</p>
+                                                        @endif
+                                                    @endif
+                                                    <form method="POST" action="{{ route('approvePembaruan', $pembaruan->id) }}">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <div class="mb-3">
+                                                            <button type="submit" class="btn btn-success" onclick="return confirm('Apakah anda yakin ingin MENERIMA pengajuan ini?');">Terima</button>
+                                                        </div>
+                                                    </form>
+                                                    <form method="POST" action="{{ route('rejectPembaruan', $pembaruan->id) }}">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <div class="mb-3">
+                                                            <label for="alasan" class="form-label">Alasan Penolakan</label>
+                                                            <textarea class="form-control" id="alasan" name="alasan"></textarea>
+                                                        </div>
+                                                        <button type="submit" class="btn btn-danger" onclick="return confirm('Apakah anda yakin ingin MENOLAK pengajuan ini??');">Tolak</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            @endforeach
                         </div>
 
-                        <div class="tab-pane fade" id="bahasa-tab-pane" role="tabpanel" aria-labelledby="bahasa-tab"
+                        {{-- <div class="tab-pane fade" id="bahasa-tab-pane" role="tabpanel" aria-labelledby="bahasa-tab"
                             tabindex="0">
                             <div class="card accordion" id="accordionExample">
                                 <div class="card-header" id="headingOne">
@@ -722,15 +804,161 @@
                                             <div class="col-12">
                                                 <button type="button" class="btn btn-primary">Edit</button>
                                                 <button type="submit" class="btn btn-primary">Simpan</button>
-
                                             </div>
                                         </form>
                                     </div>
                                 </div>
                             </div>
+                        </div> --}}
+
+                        <div class="tab-pane fade" id="bahasa-tab-pane" role="tabpanel" aria-labelledby="bahasa-tab" tabindex="0">
+                            @foreach ($bahasa as $dataBahasa)
+                                <div class="card accordion" id="accordion{{ $dataBahasa->id }}">
+                                    <div class="card-header" id="heading{{ $dataBahasa->id }}">
+                                        <h2 class="mb-0">
+                                            <button class="btn-link accordion-button" type="button" data-toggle="collapse"
+                                                data-target="#collapse{{ $dataBahasa->id }}" aria-expanded="false"
+                                                aria-controls="collapse{{ $dataBahasa->id }}">
+                                                @if (!$dataBahasa->approved_by)
+                                                    <i class='fas fa-exclamation-triangle warning-icon me-3' data-bs-toggle='modal'></i>
+                                                @endif
+                                                {{ $dataBahasa->bahasa }}
+                                            </button>
+                                        </h2>
+                                    </div>
+                                    <div id="collapse{{ $dataBahasa->id }}" class="collapse" aria-labelledby="heading{{ $dataBahasa->id }}"
+                                        data-parent="#accordion{{ $dataBahasa->id }}">
+                                        <div class="card-body">
+                                            <form action="#!" class="row gy-3 gy-xxl-4">
+                                                <div class="col-12 col-md-6">
+                                                    <label for="bahasa{{ $dataBahasa->id }}" class="form-label">Bahasa</label>
+                                                    <input type="text" class="form-control" id="bahasa{{ $dataBahasa->id }}"
+                                                        value="{{ $dataBahasa->bahasa }}">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="mendengar{{ $dataBahasa->id }}" class="form-label">Mendengar</label>
+                                                    <input type="text" class="form-control" id="mendengar{{ $dataBahasa->id }}"
+                                                        value="{{ $dataBahasa->mendengar }}">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="membaca{{ $dataBahasa->id }}" class="form-label">Membaca</label>
+                                                    <input type="text" class="form-control" id="membaca{{ $dataBahasa->id }}"
+                                                        value="{{ $dataBahasa->membaca }}">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="bicara{{ $dataBahasa->id }}" class="form-label">Bicara</label>
+                                                    <input type="text" class="form-control" id="bicara{{ $dataBahasa->id }}"
+                                                        value="{{ $dataBahasa->bicara }}">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="menulis{{ $dataBahasa->id }}" class="form-label">Menulis</label>
+                                                    <input type="text" class="form-control" id="menulis{{ $dataBahasa->id }}"
+                                                        value="{{ $dataBahasa->menulis }}">
+                                                </div>
+                                                <div class="col-12">
+                                                    @if ($dataBahasa->approved_by)
+                                                        <button type="button" class="btn btn-primary">Edit</button>
+                                                        <button type="submit" class="btn btn-primary">Simpan</button>
+                                                    @endif
+                                                    @php
+                                                        $pembaruan = App\Models\PembaruanData::where('tabel', 'bahasa')->whereNull('tgl_approval')->firstWhere('data_baru', $dataBahasa->id);
+                                                    @endphp
+                                                    @if ($pembaruan)
+                                                        <button type='button' class='btn btn-outline-warning' data-bs-toggle='modal' data-bs-target='#bahasaModal{{ $dataBahasa->id }}'>
+                                                            <i class='fas fa-exclamation-triangle warning-icon me-2'></i>Lihat Pembaruan
+                                                        </button>
+                                                    @endif
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @if ($pembaruan)
+                                    <!-- Bahasa Approval Modal -->
+                                    <div class="modal fade" id="bahasaModal{{ $dataBahasa->id }}" tabindex="-1" aria-labelledby="bahasaModalLabel{{ $dataBahasa->id }}" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="bahasaModalLabel{{ $dataBahasa->id }}">
+                                                        Approve Data - {{ $dataBahasa->bahasa }}
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    @php
+                                                        $oldData = App\Models\Bahasa::find($pembaruan->data_lama);
+                                                        $newData = App\Models\Bahasa::find($pembaruan->data_baru);
+                                                    @endphp
+
+                                                    @if ($oldData)
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <h6>Data Lama</h6>
+                                                                <p>Bahasa: {{ $oldData->bahasa }}</p>
+                                                                <p>Mendengar: {{ $oldData->mendengar }}</p>
+                                                                <p>Membaca: {{ $oldData->membaca }}</p>
+                                                                <p>Bicara: {{ $oldData->bicara }}</p>
+                                                                <p>Menulis: {{ $oldData->menulis }}</p>
+                                                            </div>
+                                                            @if ($newData)
+                                                                <div class="col">
+                                                                    <h6>Data Baru</h6>
+                                                                    <p>Bahasa: {{ $newData->bahasa }}</p>
+                                                                    <p>Mendengar: {{ $newData->mendengar }}</p>
+                                                                    <p>Membaca: {{ $newData->membaca }}</p>
+                                                                    <p>Bicara: {{ $newData->bicara }}</p>
+                                                                    <p>Menulis: {{ $newData->menulis }}</p>
+                                                                </div>
+                                                            @else
+                                                                <p>Tidak ada data baru.</p>
+                                                            @endif
+                                                        </div>
+                                                    @else
+                                                        <p>Data Baru Request</p>
+                                                        @if ($newData)
+                                                            <div class="col">
+                                                                <p>Bahasa: {{ $newData->bahasa }}</p>
+                                                                <p>Mendengar: {{ $newData->mendengar }}</p>
+                                                                <p>Membaca: {{ $newData->membaca }}</p>
+                                                                <p>Bicara: {{ $newData->bicara }}</p>
+                                                                <p>Menulis: {{ $newData->menulis }}</p>
+                                                            </div>
+                                                        @else
+                                                            <p>No data available.</p>
+                                                        @endif
+                                                    @endif
+                                                    <form method="POST" action="{{ route('approvePembaruan', $pembaruan->id) }}">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <div class="mb-3">
+                                                            <button type="submit" class="btn btn-success"
+                                                                onclick="return confirm('Apakah anda yakin ingin MENERIMA pengajuan ini?');">
+                                                                Terima
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                    <form method="POST" action="{{ route('rejectPembaruan', $pembaruan->id) }}">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <div class="mb-3">
+                                                            <label for="alasan" class="form-label">Alasan Penolakan</label>
+                                                            <textarea class="form-control" id="alasan" name="alasan"></textarea>
+                                                        </div>
+                                                        <button type="submit" class="btn btn-danger"
+                                                            onclick="return confirm('Apakah anda yakin ingin MENOLAK pengajuan ini??');">
+                                                            Tolak
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            @endforeach
                         </div>
 
-                        <div class="tab-pane fade" id="organisasi-tab-pane" role="tabpanel"
+                        {{-- <div class="tab-pane fade" id="organisasi-tab-pane" role="tabpanel"
                             aria-labelledby="organisasi-tab" tabindex="0">
                             <div class="card accordion" id="accordionExample">
                                 <div class="card-header" id="headingOne">
@@ -763,15 +991,154 @@
                                             <div class="col-12">
                                                 <button type="button" class="btn btn-primary">Edit</button>
                                                 <button type="submit" class="btn btn-primary">Simpan</button>
-
                                             </div>
                                         </form>
                                     </div>
                                 </div>
                             </div>
+                        </div> --}}
+
+                        <div class="tab-pane fade" id="organisasi-tab-pane" role="tabpanel" aria-labelledby="organisasi-tab" tabindex="0">
+                            @foreach ($organisasi as $dataOrganisasi)
+                                <div class="card accordion" id="accordion{{ $dataOrganisasi->id }}">
+                                    <div class="card-header" id="heading{{ $dataOrganisasi->id }}">
+                                        <h2 class="mb-0 ">
+                                            <button class="btn-link accordion-button" type="button"
+                                                data-toggle="collapse" data-target="#collapse{{ $dataOrganisasi->id }}"
+                                                aria-expanded="false" aria-controls="collapse{{ $dataOrganisasi->id }}">
+                                                @if (!$dataOrganisasi->approved_by)
+                                                    <i class='fas fa-exclamation-triangle warning-icon me-3'
+                                                        data-bs-toggle='modal'></i>
+                                                @endif
+                                                {{ $dataOrganisasi->macam_kegiatan }} - {{ $dataOrganisasi->tahun }}
+                                            </button>
+                                        </h2>
+                                    </div>
+
+                                    <div id="collapse{{ $dataOrganisasi->id }}" class="collapse"
+                                        aria-labelledby="heading{{ $dataOrganisasi->id }}"
+                                        data-parent="#accordion{{ $dataOrganisasi->id }}">
+                                        <div class="card-body">
+                                            <form action="#!" class="row gy-3 gy-xxl-4">
+                                                <div class="col-12 col-md-6">
+                                                    <label for="macamKegiatan{{ $dataOrganisasi->id }}" class="form-label">Macam Kegiatan</label>
+                                                    <input type="text" class="form-control"
+                                                        id="macamKegiatan{{ $dataOrganisasi->id }}" value="{{ $dataOrganisasi->macam_kegiatan }}">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="jabatan{{ $dataOrganisasi->id }}" class="form-label">Jabatan</label>
+                                                    <input type="text" class="form-control"
+                                                        id="jabatan{{ $dataOrganisasi->id }}" value="{{ $dataOrganisasi->jabatan }}">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="tahun{{ $dataOrganisasi->id }}" class="form-label">Tahun</label>
+                                                    <input type="text" class="form-control"
+                                                        id="tahun{{ $dataOrganisasi->id }}" value="{{ $dataOrganisasi->tahun }}">
+                                                </div>
+                                                <div class="col-12">
+                                                    <label for="notes{{ $dataOrganisasi->id }}" class="form-label">Keterangan</label>
+                                                    <textarea class="form-control" id="notes{{ $dataOrganisasi->id }}">{{ $dataOrganisasi->keterangan }}</textarea>
+                                                </div>
+                                                <div class="col-12">
+                                                    @if ($dataOrganisasi->approved_by)
+                                                        <button type="button" class="btn btn-primary">Edit</button>
+                                                        <button type="submit" class="btn btn-primary">Simpan</button>
+                                                    @endif
+                                                    @php
+                                                        $pembaruan = App\Models\PembaruanData::where('tabel', 'organisasi')->whereNull('tgl_approval')->firstWhere('data_baru', $dataOrganisasi->id);
+                                                    @endphp
+                                                    @if ($pembaruan)
+                                                        <button type='button' class='btn btn-outline-warning' data-bs-toggle='modal' data-bs-target='#organisasiModal{{$dataOrganisasi->id}}'><i class='fas fa-exclamation-triangle warning-icon me-2'></i>Lihat Pembaruan</button>
+                                                    @endif
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @if ($pembaruan)
+                                    <!-- Organisasi Approval Modal -->
+                                    <div class="modal fade" id="organisasiModal{{ $dataOrganisasi->id }}" tabindex="-1"
+                                        aria-labelledby="organisasiModalLabel{{ $dataOrganisasi->id }}" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="organisasiModalLabel{{ $dataOrganisasi->id }}">
+                                                        Approve Data - {{ $dataOrganisasi->macam_kegiatan }} - {{ $dataOrganisasi->tahun }}
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    @php
+                                                        $oldData = App\Models\Organisasi::find($pembaruan->data_lama);
+                                                        $newData = App\Models\Organisasi::find($pembaruan->data_baru);
+                                                    @endphp
+
+                                                    @if ($oldData)
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <h6>Data Lama</h6>
+                                                                <p>Macam Kegiatan: {{ $oldData->macam_kegiatan }}</p>
+                                                                <p>Jabatan: {{ $oldData->jabatan }}</p>
+                                                                <p>Tahun: {{ $oldData->tahun }}</p>
+                                                                <p>Keterangan: {{ $oldData->keterangan }}</p>
+                                                            </div>
+                                                            @if ($newData)
+                                                                <div class="col">
+                                                                    <h6>Data Baru</h6>
+                                                                    <p>Macam Kegiatan: {{ $newData->macam_kegiatan }}</p>
+                                                                    <p>Jabatan: {{ $newData->jabatan }}</p>
+                                                                    <p>Tahun: {{ $newData->tahun }}</p>
+                                                                    <p>Keterangan: {{ $newData->keterangan }}</p>
+                                                                </div>
+                                                            @else
+                                                                <p>Tidak ada data baru.</p>
+                                                            @endif
+                                                        </div>
+                                                    @else
+                                                        <p>Data Baru Request</p>
+                                                        @if ($newData)
+                                                            <div class="col">
+                                                                <p>Macam Kegiatan: {{ $newData->macam_kegiatan }}</p>
+                                                                <p>Jabatan: {{ $newData->jabatan }}</p>
+                                                                <p>Tahun: {{ $newData->tahun }}</p>
+                                                                <p>Keterangan: {{ $newData->keterangan }}</p>
+                                                            </div>
+                                                        @else
+                                                            <p>No data available.</p>
+                                                        @endif
+                                                    @endif
+                                                    <form method="POST"
+                                                        action="{{ route('approvePembaruan', $pembaruan->id) }}">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <div class="mb-3">
+                                                            <button type="submit" class="btn btn-success"
+                                                                onclick="return confirm('Apakah anda yakin ingin MENERIMA pengajuan ini?');">Terima</button>
+                                                        </div>
+                                                    </form>
+                                                    <form method="POST"
+                                                        action="{{ route('rejectPembaruan', $pembaruan->id) }}">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <div class="mb-3">
+                                                            <label for="alasan" class="form-label">Alasan
+                                                                Penolakan</label>
+                                                            <textarea class="form-control" id="alasan" name="alasan"></textarea>
+                                                        </div>
+                                                        <button type="submit" class="btn btn-danger"
+                                                            onclick="return confirm('Apakah anda yakin ingin MENOLAK pengajuan ini??');">Tolak</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            @endforeach
                         </div>
 
-                        <div class="tab-pane fade" id="pengalamankerja-tab-pane" role="tabpanel"
+                        {{-- <div class="tab-pane fade" id="pengalamankerja-tab-pane" role="tabpanel"
                             aria-labelledby="pengalamankerja-tab" tabindex="0">
                             <div class="card accordion" id="accordionExample">
                                 <div class="card-header" id="headingOne">
@@ -852,12 +1219,199 @@
                                             <div class="col-12">
                                                 <button type="button" class="btn btn-primary">Edit</button>
                                                 <button type="submit" class="btn btn-primary">Simpan</button>
-
                                             </div>
                                         </form>
                                     </div>
                                 </div>
                             </div>
+                        </div> --}}
+
+                        <div class="tab-pane fade" id="pengalamankerja-tab-pane" role="tabpanel" aria-labelledby="pengalamankerja-tab" tabindex="0">
+                            @foreach ($pengalamanKerja as $pengalaman)
+                                <div class="card accordion" id="accordion{{ $pengalaman->id }}">
+                                    <div class="card-header" id="heading{{ $pengalaman->id }}">
+                                        <h2 class="mb-0">
+                                            <button class="btn-link accordion-button" type="button" data-toggle="collapse" data-target="#collapse{{ $pengalaman->id }}" aria-expanded="false" aria-controls="collapse{{ $pengalaman->id }}">
+                                                @if (!$pengalaman->approved_by)
+                                                    <i class='fas fa-exclamation-triangle warning-icon me-3' data-bs-toggle='modal'></i>
+                                                @endif
+                                                {{ $pengalaman->nama_perusahaan }} - {{ $pengalaman->tahun_awal }}
+                                            </button>
+                                        </h2>
+                                    </div>
+
+                                    <div id="collapse{{ $pengalaman->id }}" class="collapse" aria-labelledby="heading{{ $pengalaman->id }}" data-parent="#accordion{{ $pengalaman->id }}">
+                                        <div class="card-body">
+                                            <form action="#!" class="row gy-3 gy-xxl-4">
+                                                <div class="col-12 col-md-6">
+                                                    <label for="name{{ $pengalaman->id }}" class="form-label">Nama Perusahaan</label>
+                                                    <input type="text" class="form-control" id="name{{ $pengalaman->id }}" value="{{ $pengalaman->nama_perusahaan }}">
+                                                </div>
+                                                <div class="col-12">
+                                                    <label for="alamat{{ $pengalaman->id }}" class="form-label">Alamat</label>
+                                                    <textarea class="form-control" id="alamat{{ $pengalaman->id }}">{{ $pengalaman->alamat }}</textarea>
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="tahun_awal{{ $pengalaman->id }}" class="form-label">Tahun Awal</label>
+                                                    <input type="text" class="form-control" id="tahun_awal{{ $pengalaman->id }}" value="{{ $pengalaman->tahun_awal }}">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="tahun_akhir{{ $pengalaman->id }}" class="form-label">Tahun Akhir</label>
+                                                    <input type="text" class="form-control" id="tahun_akhir{{ $pengalaman->id }}" value="{{ $pengalaman->tahun_akhir }}">
+                                                </div>
+                                                <div class="col-12">
+                                                    <label for="alasan_pindah{{ $pengalaman->id }}" class="form-label">Alasan Pindah</label>
+                                                    <textarea class="form-control" id="alasan_pindah{{ $pengalaman->id }}">{{ $pengalaman->alasan_pindah }}</textarea>
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="total_karyawan{{ $pengalaman->id }}" class="form-label">Total Karyawan</label>
+                                                    <input type="text" class="form-control" id="total_karyawan{{ $pengalaman->id }}" value="{{ $pengalaman->total_karyawan }}">
+                                                </div>
+                                                <div class="col-12">
+                                                    <label for="uraian_pekerjaan{{ $pengalaman->id }}" class="form-label">Uraian Pekerjaan</label>
+                                                    <textarea class="form-control" id="uraian_pekerjaan{{ $pengalaman->id }}">{{ $pengalaman->uraian_pekerjaan }}</textarea>
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="nama_atasan{{ $pengalaman->id }}" class="form-label">Nama Atasan</label>
+                                                    <input type="text" class="form-control" id="nama_atasan{{ $pengalaman->id }}" value="{{ $pengalaman->nama_atasan }}">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="no_telepon{{ $pengalaman->id }}" class="form-label">No. Telepon</label>
+                                                    <input type="text" class="form-control" id="no_telepon{{ $pengalaman->id }}" value="{{ $pengalaman->no_telepon }}">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="gaji{{ $pengalaman->id }}" class="form-label">Gaji</label>
+                                                    <input type="text" class="form-control" id="gaji{{ $pengalaman->id }}" value="{{ $pengalaman->gaji }}">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="jabatan_awal{{ $pengalaman->id }}" class="form-label">Jabatan Awal</label>
+                                                    <input type="text" class="form-control" id="jabatan_awal{{ $pengalaman->id }}" value="{{ $pengalaman->jabatan_awal }}">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="jabatan_akhir{{ $pengalaman->id }}" class="form-label">Jabatan Akhir</label>
+                                                    <input type="text" class="form-control" id="jabatan_akhir{{ $pengalaman->id }}" value="{{ $pengalaman->jabatan_akhir }}">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="total_bawahan{{ $pengalaman->id }}" class="form-label">Total Bawahan</label>
+                                                    <input type="text" class="form-control" id="total_bawahan{{ $pengalaman->id }}" value="{{ $pengalaman->total_bawahan }}">
+                                                </div>
+                                                <div class="col-12">
+                                                    @if ($pengalaman->approved_by)
+                                                        <button type="button" class="btn btn-primary">Edit</button>
+                                                        <button type="submit" class="btn btn-primary">Simpan</button>
+                                                    @endif
+                                                    @php
+                                                        $pembaruan = App\Models\PembaruanData::where('tabel', 'pengalaman_kerja')->whereNull('tgl_approval')->firstWhere('data_baru', $pengalaman->id);
+                                                    @endphp
+                                                    @if ($pembaruan)
+                                                        <button type='button' class='btn btn-outline-warning' data-bs-toggle='modal' data-bs-target='#pengalamanKerjaModal{{ $pengalaman->id }}'><i class='fas fa-exclamation-triangle warning-icon me-2'></i>Lihat Pembaruan</button>
+                                                    @endif
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @if ($pembaruan)
+                                    <!-- Pengalaman Kerja Approval Modal -->
+                                    <div class="modal fade" id="pengalamanKerjaModal{{ $pengalaman->id }}" tabindex="-1" aria-labelledby="pengalamanKerjaModalLabel{{ $pengalaman->id }}" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="pengalamanKerjaModalLabel{{ $pengalaman->id }}">
+                                                        Approve Data - {{ $pengalaman->nama_perusahaan }} - {{ $pengalaman->tahun_awal }}
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    @php
+                                                        $oldData = App\Models\PengalamanKerja::find($pembaruan->data_lama);
+                                                        $newData = App\Models\PengalamanKerja::find($pembaruan->data_baru);
+                                                    @endphp
+
+                                                    @if ($oldData)
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <h6>Data Lama</h6>
+                                                                <p>Nama Perusahaan: {{ $oldData->nama_perusahaan }}</p>
+                                                                <p>Alamat: {{ $oldData->alamat }}</p>
+                                                                <p>Tahun Awal: {{ $oldData->tahun_awal }}</p>
+                                                                <p>Tahun Akhir: {{ $oldData->tahun_akhir }}</p>
+                                                                <p>Alasan Pindah: {{ $oldData->alasan_pindah }}</p>
+                                                                <p>Total Karyawan: {{ $oldData->total_karyawan }}</p>
+                                                                <p>Uraian Pekerjaan: {{ $oldData->uraian_pekerjaan }}</p>
+                                                                <p>Nama Atasan: {{ $oldData->nama_atasan }}</p>
+                                                                <p>No. Telepon: {{ $oldData->no_telepon }}</p>
+                                                                <p>Gaji: {{ $oldData->gaji }}</p>
+                                                                <p>Jabatan Awal: {{ $oldData->jabatan_awal }}</p>
+                                                                <p>Jabatan Akhir: {{ $oldData->jabatan_akhir }}</p>
+                                                                <p>Total Bawahan: {{ $oldData->total_bawahan }}</p>
+                                                            </div>
+                                                            @if ($newData)
+                                                                <div class="col">
+                                                                    <h6>Data Baru</h6>
+                                                                    <p>Nama Perusahaan: {{ $newData->nama_perusahaan }}</p>
+                                                                    <p>Alamat: {{ $newData->alamat }}</p>
+                                                                    <p>Tahun Awal: {{ $newData->tahun_awal }}</p>
+                                                                    <p>Tahun Akhir: {{ $newData->tahun_akhir }}</p>
+                                                                    <p>Alasan Pindah: {{ $newData->alasan_pindah }}</p>
+                                                                    <p>Total Karyawan: {{ $newData->total_karyawan }}</p>
+                                                                    <p>Uraian Pekerjaan: {{ $newData->uraian_pekerjaan }}</p>
+                                                                    <p>Nama Atasan: {{ $newData->nama_atasan }}</p>
+                                                                    <p>No. Telepon: {{ $newData->no_telepon }}</p>
+                                                                    <p>Gaji: {{ $newData->gaji }}</p>
+                                                                    <p>Jabatan Awal: {{ $newData->jabatan_awal }}</p>
+                                                                    <p>Jabatan Akhir: {{ $newData->jabatan_akhir }}</p>
+                                                                    <p>Total Bawahan: {{ $newData->total_bawahan }}</p>
+                                                                </div>
+                                                            @else
+                                                                <p>Tidak ada data baru.</p>
+                                                            @endif
+                                                        </div>
+                                                    @else
+                                                        <p>Data Baru Request</p>
+                                                        @if ($newData)
+                                                            <div class="col">
+                                                                <p>Nama Perusahaan: {{ $newData->nama_perusahaan }}</p>
+                                                                <p>Alamat: {{ $newData->alamat }}</p>
+                                                                <p>Tahun Awal: {{ $newData->tahun_awal }}</p>
+                                                                <p>Tahun Akhir: {{ $newData->tahun_akhir }}</p>
+                                                                <p>Alasan Pindah: {{ $newData->alasan_pindah }}</p>
+                                                                <p>Total Karyawan: {{ $newData->total_karyawan }}</p>
+                                                                <p>Uraian Pekerjaan: {{ $newData->uraian_pekerjaan }}</p>
+                                                                <p>Nama Atasan: {{ $newData->nama_atasan }}</p>
+                                                                <p>No. Telepon: {{ $newData->no_telepon }}</p>
+                                                                <p>Gaji: {{ $newData->gaji }}</p>
+                                                                <p>Jabatan Awal: {{ $newData->jabatan_awal }}</p>
+                                                                <p>Jabatan Akhir: {{ $newData->jabatan_akhir }}</p>
+                                                                <p>Total Bawahan: {{ $newData->total_bawahan }}</p>
+                                                            </div>
+                                                        @else
+                                                            <p>No data available.</p>
+                                                        @endif
+                                                    @endif
+                                                    <form method="POST" action="{{ route('approvePembaruan', $pembaruan->id) }}">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <div class="mb-3">
+                                                            <button type="submit" class="btn btn-success" onclick="return confirm('Apakah anda yakin ingin MENERIMA pengajuan ini?');">Terima</button>
+                                                        </div>
+                                                    </form>
+                                                    <form method="POST" action="{{ route('rejectPembaruan', $pembaruan->id) }}">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <div class="mb-3">
+                                                            <label for="alasan" class="form-label">Alasan Penolakan</label>
+                                                            <textarea class="form-control" id="alasan" name="alasan"></textarea>
+                                                        </div>
+                                                        <button type="submit" class="btn btn-danger" onclick="return confirm('Apakah anda yakin ingin MENOLAK pengajuan ini?');">Tolak</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            @endforeach
                         </div>
 
                         <div class="tab-pane fade" id="absensi-tab-pane" role="tabpanel" aria-labelledby="absensi-tab"
@@ -972,7 +1526,6 @@
                                             <div class="col-12">
                                                 <button type="button" class="btn btn-primary">Edit</button>
                                                 <button type="submit" class="btn btn-primary">Simpan</button>
-
                                             </div>
                                         </form>
                                     </div>

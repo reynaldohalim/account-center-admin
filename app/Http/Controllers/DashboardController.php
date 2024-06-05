@@ -9,6 +9,10 @@ use App\Models\DataPribadi;
 use App\Models\JenisIzin;
 use App\Models\PembaruanData;
 use App\Models\DataKeluarga;
+use App\Models\Pendidikan;
+use App\Models\Bahasa;
+use App\Models\Organisasi;
+use App\Models\PengalamanKerja;
 use App\Models\LiburKaryawan;
 use App\Models\AksesAdmin;
 use App\Models\Admin;
@@ -142,37 +146,50 @@ class DashboardController extends Controller
         $pembaruan = PembaruanData::findOrFail($id);
         $admin = auth()->user();
 
-        // Handle data update
-        if ($pembaruan->tabel == 'data_keluarga') {
-            $oldData = DataKeluarga::find($pembaruan->data_lama);
-            $newData = DataKeluarga::find($pembaruan->data_baru);
+        if ($pembaruan->tabel == 'data_pribadi' || $pembaruan->tabel == 'data_lainlain') {
+            DB::table($pembaruan->tabel)
+                ->where('nip', $pembaruan->nip)
+                ->update([$pembaruan->label => $pembaruan->data_baru]);
+        }
+        else {
+            $oldData='';
+            $newData='';
 
-            if ($oldData) {
+            if($pembaruan->tabel == 'data_keluarga'){
+                $oldData = DataKeluarga::find($pembaruan->data_lama);
+                $newData = DataKeluarga::find($pembaruan->data_baru);
+            }
+            else if($pembaruan->tabel == 'pendidikan'){
+                $oldData = Pendidikan::find($pembaruan->data_lama);
+                $newData = Pendidikan::find($pembaruan->data_baru);
+            }
+            else if($pembaruan->tabel == 'bahasa'){
+                $oldData = Bahasa::find($pembaruan->data_lama);
+                $newData = Bahasa::find($pembaruan->data_baru);
+            }
+            else if($pembaruan->tabel == 'organisasi'){
+                $oldData = Organisasi::find($pembaruan->data_lama);
+                $newData = Organisasi::find($pembaruan->data_baru);
+            }
+            else if($pembaruan->tabel == 'pengalaman_kerja'){
+                $oldData = PengalamanKerja::find($pembaruan->data_lama);
+                $newData = PengalamanKerja::find($pembaruan->data_baru);
+            }
+
+            if ($oldData != '') {
                 $oldData->delete(); // Remove old data
             }
 
-            if ($newData) {
+            if ($newData != '') {
                 $newData->approved_by = $admin->nip;
                 $newData->save(); // Approve new data
             }
         }
 
-        // Ensure $pembaruan->tabel and $pembaruan->label are strings
-        if (is_string($pembaruan->tabel) && is_string($pembaruan->label)) {
-            // Update the respective table with the new data
-            DB::table($pembaruan->tabel)
-                ->where('nip', $pembaruan->nip)
-                ->update([$pembaruan->label => $pembaruan->data_baru]);
-
-            // Update the PembaruanData record
-            $pembaruan->tgl_approval = Carbon::now();
-            $pembaruan->approved_by = $admin->nip;
-            $pembaruan->save();
-
-            return redirect()->back()->with('success', 'Pembaruan data has been approved.');
-        } else {
-            return redirect()->back()->with('error', 'Invalid data format.');
-        }
+        $pembaruan->tgl_approval = Carbon::now();
+        $pembaruan->approved_by = $admin->nip;
+        $pembaruan->save();
+        return redirect()->back()->with('success', 'Pembaruan data has been approved.');
     }
 
     public function rejectPembaruan(Request $request, $id)
@@ -183,6 +200,27 @@ class DashboardController extends Controller
 
         $pembaruan = PembaruanData::findOrFail($id);
         $admin = auth()->user();
+
+        $newData='';
+        if($pembaruan->tabel == 'data_keluarga'){
+            $newData = DataKeluarga::find($pembaruan->data_baru);
+        }
+        else if($pembaruan->tabel == 'pendidikan'){
+            $newData = Pendidikan::find($pembaruan->data_baru);
+        }
+        else if($pembaruan->tabel == 'bahasa'){
+            $newData = Bahasa::find($pembaruan->data_baru);
+        }
+        else if($pembaruan->tabel == 'organisasi'){
+            $newData = Organisasi::find($pembaruan->data_baru);
+        }
+        else if($pembaruan->tabel == 'pengalaman_kerja'){
+            $newData = PengalamanKerja::find($pembaruan->data_baru);
+        }
+
+        if ($newData != '') {
+            $newData->delete(); // Approve new data
+        }
 
         // Update the PembaruanData record
         $pembaruan->tgl_approval = Carbon::now();
@@ -245,7 +283,6 @@ class DashboardController extends Controller
         $liburKaryawan = LiburKaryawan::all();
         return response()->json($liburKaryawan);
     }
-
 
     public function pengajuan_pembaruan()
     {
