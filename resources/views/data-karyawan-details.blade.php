@@ -29,23 +29,6 @@
         <div class="col-12 col-lg-8 col-xl-9">
             <div class="card widget-card border-light shadow-sm">
                 <div class="card-body p-4">
-
-                    @php
-                        if (!function_exists('checkPembaruan')) {
-                            function checkPembaruan($pembaruanData, $tabel, $label)
-                            {
-                                if (isset($pembaruanData[$tabel])) {
-                                    foreach ($pembaruanData[$tabel] as $pembaruan) {
-                                        if ($pembaruan->label == $label) {
-                                            return "<i class='fas fa-exclamation-triangle warning-icon' data-bs-toggle='modal' data-bs-target='#pembaruanModal-{$pembaruan->id}'></i>";
-                                        }
-                                    }
-                                }
-                                return '';
-                            }
-                        }
-                    @endphp
-
                     <ul class="nav nav-tabs" id="tablist" role="tablist">
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active" id="datapribadi-tab" data-bs-toggle="tab"
@@ -99,6 +82,24 @@
                         </li>
                     </ul>
                     <div class="tab-content pt-4" id="tabcontent">
+
+                        @php
+                            if (!function_exists('cekPembaruanPribadi')) {
+                                function cekPembaruanPribadi($pembaruanData, $tabel, $label)
+                                {
+                                    if (isset($pembaruanData[$tabel])) {
+                                        foreach ($pembaruanData[$tabel] as $pembaruan) {
+                                            if ($pembaruan->label == $label) {
+                                                if ($tabel == 'data_pribadi' || $tabel == 'data_lainlain') {
+                                                    return "<i class='fas fa-exclamation-triangle warning-icon' data-bs-toggle='modal' data-bs-target='#pembaruanModal-{$pembaruan->id}'></i>";
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        @endphp
+
                         <div class="tab-pane show active" id="datapribadi-tab-pane" role="tabpanel"
                             aria-labelledby="datapribadi-tab" tabindex="0">
                             <form action="#!" class="row gy-3 gy-xxl-4">
@@ -120,35 +121,35 @@
                                 </div>
                                 <div class="col-12">
                                     <label for="" class="form-label">Alamat KTP</label>
-                                    {!! checkPembaruan($pembaruanData, 'data_pribadi', 'alamat_ktp') !!}
+                                    {!! cekPembaruanPribadi($pembaruanData, 'data_pribadi', 'alamat_ktp') !!}
                                     <textarea class="form-control" id="input">{{ $dataPribadi->alamat_ktp }}</textarea>
                                 </div>
                                 <div class="col-12">
                                     <label for="" class="form-label">Alamat Domisili</label>
-                                    {!! checkPembaruan($pembaruanData, 'data_pribadi', 'alamat_domisili') !!}
+                                    {!! cekPembaruanPribadi($pembaruanData, 'data_pribadi', 'alamat_domisili') !!}
                                     <textarea class="form-control" id="input">{{ $dataPribadi->alamat_domisili }}</textarea>
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">No. HP</label>
-                                    {!! checkPembaruan($pembaruanData, 'data_pribadi', 'no_hp') !!}
+                                    {!! cekPembaruanPribadi($pembaruanData, 'data_pribadi', 'no_hp') !!}
                                     <input type="text" class="form-control" id="input"
                                         value="{{ $dataPribadi->no_hp }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">Tempat Lahir</label>
-                                    {!! checkPembaruan($pembaruanData, 'data_pribadi', 'tempat_lahir') !!}
+                                    {!! cekPembaruanPribadi($pembaruanData, 'data_pribadi', 'tempat_lahir') !!}
                                     <input type="text" class="form-control" id="input"
                                         value="{{ $dataPribadi->tempat_lahir }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">Tanggal Lahir</label>
-                                    {!! checkPembaruan($pembaruanData, 'data_pribadi', 'tempat_lahir') !!}
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataPribadi->tempat_lahir }}">
+                                    {!! cekPembaruanPribadi($pembaruanData, 'data_pribadi', 'tgl_lahir') !!}
+                                    <input type="date" class="form-control" id="input"
+                                        value="{{ $dataPribadi->tgl_lahir }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">Agama</label>
-                                    {!! checkPembaruan($pembaruanData, 'data_pribadi', 'agama') !!}
+                                    {!! cekPembaruanPribadi($pembaruanData, 'data_pribadi', 'agama') !!}
                                     <select class="form-control">
                                         <option value="Islam"
                                             @php if ($dataPribadi->agama == 'Islam') echo 'selected' @endphp>Islam</option>
@@ -170,7 +171,7 @@
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">Status Nikah</label>
-                                    {!! checkPembaruan($pembaruanData, 'data_pribadi', 'status_nikah') !!}
+                                    {!! cekPembaruanPribadi($pembaruanData, 'data_pribadi', 'status_nikah') !!}
                                     <select class="form-control">
                                         <option value="0"
                                             @php if ($dataPribadi->status_nikah == '0') echo 'selected' @endphp>Belum kawin
@@ -182,26 +183,25 @@
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">Jumlah Anak</label>
-                                    {!! checkPembaruan($pembaruanData, 'data_pribadi', 'jumlah_anak') !!}
+                                    {!! cekPembaruanPribadi($pembaruanData, 'data_pribadi', 'jumlah_anak') !!}
                                     <input type="text" class="form-control" id="input"
                                         value="{{ $dataPribadi->jumlah_anak }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">Status PPh21</label>
-                                    {!! checkPembaruan($pembaruanData, 'data_pribadi', 'status_pph21') !!}
+                                    {!! cekPembaruanPribadi($pembaruanData, 'data_pribadi', 'status_pph21') !!}
                                     <input type="text" class="form-control" id="input"
                                         value="{{ $dataPribadi->status_pph21 }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">Pendidikan Terakhir</label>
-                                    {!! checkPembaruan($pembaruanData, 'data_pribadi', 'pendidikan_terakhir') !!}
+                                    {!! cekPembaruanPribadi($pembaruanData, 'data_pribadi', 'pendidikan_terakhir') !!}
                                     <input type="text" class="form-control" id="input"
                                         value="{{ $dataPribadi->pendidikan_terakhir }}">
                                 </div>
                                 <div class="col-12">
                                     <button type="" class="btn btn-primary">Edit</button>
                                     <button type="submit" class="btn btn-primary">Simpan</button>
-                                    <button type="" class="btn btn-primary">Tolak</button>
                                 </div>
                             </form>
                         </div>
@@ -294,7 +294,7 @@
                                 <div class="col-12">
                                     <button type="" class="btn btn-primary">Edit</button>
                                     <button type="submit" class="btn btn-primary">Simpan</button>
-                                    <button type="" class="btn btn-primary">Tolak</button>
+
                                 </div>
                             </form>
                         </div>
@@ -304,25 +304,25 @@
                             <form action="#!" class="row gy-3 gy-xxl-4">
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">No. KPJ</label>
-                                    {!! checkPembaruan($pembaruanData, 'data_lainlain', 'no_kpj') !!}
+                                    {!! cekPembaruanPribadi($pembaruanData, 'data_lainlain', 'no_kpj') !!}
                                     <input type="text" class="form-control" id="input"
                                         value="{{ $dataLainlain->no_kpj }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">No. HLD</label>
-                                    {!! checkPembaruan($pembaruanData, 'data_lainlain', 'no_hld') !!}
+                                    {!! cekPembaruanPribadi($pembaruanData, 'data_lainlain', 'no_hld') !!}
                                     <input type="text" class="form-control" id="input"
                                         value="{{ $dataLainlain->no_hld }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">No. KTP</label>
-                                    {!! checkPembaruan($pembaruanData, 'data_lainlain', 'no_ktp') !!}
+                                    {!! cekPembaruanPribadi($pembaruanData, 'data_lainlain', 'no_ktp') !!}
                                     <input type="text" class="form-control" id="input"
                                         value="{{ $dataLainlain->no_ktp }}">
                                 </div>
                                 <div class="col-12 col-md-6">No. NPWP
                                     <label for="" class="form-label">Nama</label>
-                                    {!! checkPembaruan($pembaruanData, 'data_lainlain', 'no_npwp') !!}
+                                    {!! cekPembaruanPribadi($pembaruanData, 'data_lainlain', 'no_npwp') !!}
                                     <input type="text" class="form-control" id="input"
                                         value="{{ $dataLainlain->no_npwp }}">
                                 </div>
@@ -348,25 +348,25 @@
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">Bank</label>
-                                    {!! checkPembaruan($pembaruanData, 'data_lainlain', 'bank') !!}
+                                    {!! cekPembaruanPribadi($pembaruanData, 'data_lainlain', 'bank') !!}
                                     <input type="text" class="form-control" id="input"
                                         value="{{ $dataLainlain->bank }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">No. Rekening</label>
-                                    {!! checkPembaruan($pembaruanData, 'data_lainlain', 'no_rekening') !!}
+                                    {!! cekPembaruanPribadi($pembaruanData, 'data_lainlain', 'no_rekening') !!}
                                     <input type="text" class="form-control" id="input"
                                         value="{{ $dataLainlain->no_rekening }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">No. Kendaraan</label>
-                                    {!! checkPembaruan($pembaruanData, 'data_lainlain', 'no_kendaraan') !!}
+                                    {!! cekPembaruanPribadi($pembaruanData, 'data_lainlain', 'no_kendaraan') !!}
                                     <input type="text" class="form-control" id="input"
                                         value="{{ $dataLainlain->no_kendaraan }}">
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">Jari Bermasalah</label>
-                                    {!! checkPembaruan($pembaruanData, 'data_lainlain', 'jari_bermasalah') !!}
+                                    {!! cekPembaruanPribadi($pembaruanData, 'data_lainlain', 'jari_bermasalah') !!}
                                     <input type="text" class="form-control" id="input"
                                         value="{{ $dataLainlain->jari_bermasalah }}">
                                 </div>
@@ -377,7 +377,7 @@
                                 </div>
                                 <div class="col-12 col-md-6">
                                     <label for="" class="form-label">Email</label>
-                                    {!! checkPembaruan($pembaruanData, 'data_lainlain', 'email') !!}
+                                    {!! cekPembaruanPribadi($pembaruanData, 'data_lainlain', 'email') !!}
                                     <input type="text" class="form-control" id="input"
                                         value="{{ $dataLainlain->email }}">
                                 </div>
@@ -388,12 +388,12 @@
                                 <div class="col-12">
                                     <button type="" class="btn btn-primary">Edit</button>
                                     <button type="submit" class="btn btn-primary">Simpan</button>
-                                    <button type="" class="btn btn-primary">Tolak</button>
+
                                 </div>
                             </form>
                         </div>
 
-                        <!-- Modals -->
+                        <!-- Pribadi and Lainlain Modals -->
                         @foreach ($pembaruanData->flatten() as $pembaruan)
                             <div class="modal fade" id="pembaruanModal-{{ $pembaruan->id }}" tabindex="-1"
                                 aria-labelledby="pembaruanModalLabel-{{ $pembaruan->id }}" aria-hidden="true">
@@ -417,22 +417,22 @@
                                                 </tr>
                                             </table>
                                             <form method="POST" action="{{ route('approvePembaruan', $pembaruan->id) }}"
-                                                onsubmit="return confirm('Are you sure you want to approve this request?');">
+                                                onsubmit="return confirm('Apakah anda yakin ingin MENERIMA pengajuan ini?');">
                                                 @csrf
                                                 @method('PATCH')
                                                 <div class="mb-3">
-                                                    <button type="submit" class="btn btn-success">Approve</button>
+                                                    <button type="submit" class="btn btn-outline-success">Terima</button>
                                                 </div>
                                             </form>
                                             <form method="POST" action="{{ route('rejectPembaruan', $pembaruan->id) }}"
-                                                onsubmit="return confirm('Are you sure you want to reject this request?');">
+                                                onsubmit="return confirm('Apakah anda yakin ingin MENOLAK pengajuan ini??');">
                                                 @csrf
                                                 @method('PATCH')
                                                 <div class="mb-3">
                                                     <label for="alasan" class="form-label">Alasan Penolakan</label>
                                                     <textarea class="form-control" id="alasan" name="alasan"></textarea>
                                                 </div>
-                                                <button type="submit" class="btn btn-danger">Reject</button>
+                                                <button type="submit" class="btn btn-outline-primary">Tolak</button>
                                             </form>
                                         </div>
                                     </div>
@@ -442,14 +442,17 @@
 
                         <div class="tab-pane fade" id="datakeluarga-tab-pane" role="tabpanel"
                             aria-labelledby="datakeluarga-tab" tabindex="0">
-
                             @foreach ($dataKeluarga as $keluarga)
                                 <div class="card accordion" id="accordion{{ $keluarga->id }}">
                                     <div class="card-header" id="heading{{ $keluarga->id }}">
-                                        <h2 class="mb-0">
+                                        <h2 class="mb-0 ">
                                             <button class="btn-link accordion-button" type="button"
                                                 data-toggle="collapse" data-target="#collapse{{ $keluarga->id }}"
                                                 aria-expanded="false" aria-controls="collapse{{ $keluarga->id }}">
+                                                @if (!$keluarga->approved_by)
+                                                    <i class='fas fa-exclamation-triangle warning-icon me-3'
+                                                        data-bs-toggle='modal'></i>
+                                                @endif
                                                 {{ $keluarga->hubungan }} - {{ $keluarga->nama }}
                                             </button>
                                         </h2>
@@ -472,24 +475,151 @@
                                                         id="relationship{{ $keluarga->id }}"
                                                         value="{{ $keluarga->hubungan }}">
                                                 </div>
-                                                <!-- Add other input fields here -->
+                                                <div class="col-12 col-md-6">
+                                                    <label for="" class="form-label">Jenis Kelamin</label>
+                                                    <select class="form-control">
+                                                        <option value="l"
+                                                            @if ($keluarga->jenis_kelamin == 'l') selected @endif>Laki-laki
+                                                        </option>
+                                                        <option value="p"
+                                                            @if ($keluarga->jenis_kelamin == 'p') selected @endif>Perempuan
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="" class="form-label">Tempat Lahir</label>
+                                                    <input type="text" class="form-control" id="input"
+                                                        value="{{ $keluarga->tempat_lahir }}">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="" class="form-label">Tanggal Lahir</label>
+                                                    <input type="date" class="form-control" id="input"
+                                                        value="{{ $keluarga->tgl_lahir }}">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="" class="form-label">Pendidikan Terakhir</label>
+                                                    <input type="text" class="form-control" id="input"
+                                                        value="{{ $keluarga->pendidikan }}">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="" class="form-label">Pekerjaan</label>
+                                                    <input type="text" class="form-control" id="input"
+                                                        value="{{ $keluarga->pekerjaan }}">
+                                                </div>
                                                 <div class="col-12">
                                                     <label for="notes{{ $keluarga->id }}"
                                                         class="form-label">Keterangan</label>
                                                     <textarea class="form-control" id="notes{{ $keluarga->id }}">{{ $keluarga->keterangan }}</textarea>
                                                 </div>
                                                 <div class="col-12">
-                                                    <button type="button" class="btn btn-primary">Edit</button>
-                                                    <button type="submit" class="btn btn-primary">Simpan</button>
-                                                    <button type="button" class="btn btn-primary">Tolak</button>
+                                                    @if ($keluarga->approved_by)
+                                                        <button type="button" class="btn btn-primary">Edit</button>
+                                                        <button type="submit" class="btn btn-primary">Simpan</button>
+                                                    @endif
+                                                    @php
+                                                        $pembaruan = App\Models\PembaruanData::where('tabel', 'data_keluarga')->firstWhere('data_baru', $keluarga->id);
+                                                    @endphp
+                                                    @if ($pembaruan)
+                                                        <button type='button' class='btn btn-outline-warning' data-bs-toggle='modal' data-bs-target='#approvalModal{{$keluarga->id}}'><i class='fas fa-exclamation-triangle warning-icon me-2'></i>Lihat Pembaruan</button>
+                                                    @endif
                                                 </div>
                                             </form>
                                         </div>
                                     </div>
                                 </div>
+
+                                @if ($pembaruan)
+                                    <!-- Keluarga Approval Modal -->
+                                    <div class="modal fade" id="approvalModal{{ $keluarga->id }}" tabindex="-1"
+                                        aria-labelledby="approvalModalLabel{{ $keluarga->id }}" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="approvalModalLabel{{ $keluarga->id }}">
+                                                        Approve Data - {{ $keluarga->hubungan }} - {{ $keluarga->nama }}
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    @php
+                                                        $oldData = App\Models\DataKeluarga::find($pembaruan->data_lama);
+                                                        $newData = App\Models\DataKeluarga::find($pembaruan->data_baru);
+                                                    @endphp
+
+                                                    @if ($oldData)
+                                                        <div class="row">
+                                                            <div class="col">
+                                                                <h6>Old Data</h6>
+                                                                <p>Nama: {{ $oldData->nama }}</p>
+                                                                <p>Hubungan: {{ $oldData->hubungan }}</p>
+                                                                <p>Jenis Kelamin: {{ $oldData->jenis_kelamin }}</p>
+                                                                <p>Tempat Lahir: {{ $oldData->tempat_lahir }}</p>
+                                                                <p>Tanggal Lahir: {{ $oldData->tgl_lahir }}</p>
+                                                                <p>Pendidikan: {{ $oldData->pendidikan }}</p>
+                                                                <p>Pekerjaan: {{ $oldData->pekerjaan }}</p>
+                                                                <p>Keterangan: {{ $oldData->keterangan }}</p>
+                                                            </div>
+                                                            @if ($newData)
+                                                                <div class="col">
+                                                                    <h6>New Data</h6>
+                                                                    <p>Nama: {{ $newData->nama }}</p>
+                                                                    <p>Hubungan: {{ $newData->hubungan }}</p>
+                                                                    <p>Jenis Kelamin: {{ $newData->jenis_kelamin }}</p>
+                                                                    <p>Tempat Lahir: {{ $newData->tempat_lahir }}</p>
+                                                                    <p>Tanggal Lahir: {{ $newData->tgl_lahir }}</p>
+                                                                    <p>Pendidikan: {{ $newData->pendidikan }}</p>
+                                                                    <p>Pekerjaan: {{ $newData->pekerjaan }}</p>
+                                                                    <p>Keterangan: {{ $newData->keterangan }}</p>
+                                                                </div>
+                                                            @else
+                                                                <p>No new data available.</p>
+                                                            @endif
+                                                        </div>
+                                                    @else
+                                                        <p>New Data Request</p>
+                                                        @if ($newData)
+                                                            <div class="col">
+                                                                <p>Nama: {{ $newData->nama }}</p>
+                                                                <p>Hubungan: {{ $newData->hubungan }}</p>
+                                                                <p>Jenis Kelamin: {{ $newData->jenis_kelamin }}</p>
+                                                                <p>Tempat Lahir: {{ $newData->tempat_lahir }}</p>
+                                                                <p>Tanggal Lahir: {{ $newData->tgl_lahir }}</p>
+                                                                <p>Pendidikan: {{ $newData->pendidikan }}</p>
+                                                                <p>Pekerjaan: {{ $newData->pekerjaan }}</p>
+                                                                <p>Keterangan: {{ $newData->keterangan }}</p>
+                                                            </div>
+                                                        @else
+                                                            <p>No data available.</p>
+                                                        @endif
+                                                    @endif
+                                                    <form method="POST"
+                                                        action="{{ route('approvePembaruan', $pembaruan->id) }}">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <div class="mb-3">
+                                                            <button type="submit" class="btn btn-success"
+                                                                onclick="return confirm('Apakah anda yakin ingin MENERIMA pengajuan ini?');">Approve</button>
+                                                        </div>
+                                                    </form>
+                                                    <form method="POST"
+                                                        action="{{ route('rejectPembaruan', $pembaruan->id) }}">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <div class="mb-3">
+                                                            <label for="alasan" class="form-label">Alasan
+                                                                Penolakan</label>
+                                                            <textarea class="form-control" id="alasan" name="alasan"></textarea>
+                                                        </div>
+                                                        <button type="submit" class="btn btn-danger"
+                                                            onclick="return confirm('Apakah anda yakin ingin MENOLAK pengajuan ini??');">Reject</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
                             @endforeach
-
-
                         </div>
 
                         <div class="tab-pane fade" id="pendidikan-tab-pane" role="tabpanel"
@@ -541,7 +671,7 @@
                                             <div class="col-12">
                                                 <button type="button" class="btn btn-primary">Edit</button>
                                                 <button type="submit" class="btn btn-primary">Simpan</button>
-                                                <button type="button" class="btn btn-primary">Tolak</button>
+
                                             </div>
                                         </form>
                                     </div>
@@ -592,7 +722,7 @@
                                             <div class="col-12">
                                                 <button type="button" class="btn btn-primary">Edit</button>
                                                 <button type="submit" class="btn btn-primary">Simpan</button>
-                                                <button type="button" class="btn btn-primary">Tolak</button>
+
                                             </div>
                                         </form>
                                     </div>
@@ -633,7 +763,7 @@
                                             <div class="col-12">
                                                 <button type="button" class="btn btn-primary">Edit</button>
                                                 <button type="submit" class="btn btn-primary">Simpan</button>
-                                                <button type="button" class="btn btn-primary">Tolak</button>
+
                                             </div>
                                         </form>
                                     </div>
@@ -722,7 +852,7 @@
                                             <div class="col-12">
                                                 <button type="button" class="btn btn-primary">Edit</button>
                                                 <button type="submit" class="btn btn-primary">Simpan</button>
-                                                <button type="button" class="btn btn-primary">Tolak</button>
+
                                             </div>
                                         </form>
                                     </div>
@@ -842,7 +972,7 @@
                                             <div class="col-12">
                                                 <button type="button" class="btn btn-primary">Edit</button>
                                                 <button type="submit" class="btn btn-primary">Simpan</button>
-                                                <button type="button" class="btn btn-primary">Tolak</button>
+
                                             </div>
                                         </form>
                                     </div>
@@ -856,11 +986,7 @@
     </div>
 @endsection
 
-<script>
-    function showWarning(oldData, newData) {
-        alert(oldData + ' ' + newData);
-    }
-</script>
+
 @push('custom-scripts')
     <script>
         if (document.getElementById('chart_absensi')) {

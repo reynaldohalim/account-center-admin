@@ -8,6 +8,7 @@ use App\Models\DataPekerjaan;
 use App\Models\DataPribadi;
 use App\Models\JenisIzin;
 use App\Models\PembaruanData;
+use App\Models\DataKeluarga;
 use App\Models\LiburKaryawan;
 use App\Models\AksesAdmin;
 use App\Models\Admin;
@@ -140,6 +141,21 @@ class DashboardController extends Controller
     {
         $pembaruan = PembaruanData::findOrFail($id);
         $admin = auth()->user();
+
+        // Handle data update
+        if ($pembaruan->tabel == 'data_keluarga') {
+            $oldData = DataKeluarga::find($pembaruan->data_lama);
+            $newData = DataKeluarga::find($pembaruan->data_baru);
+
+            if ($oldData) {
+                $oldData->delete(); // Remove old data
+            }
+
+            if ($newData) {
+                $newData->approved_by = $admin->nip;
+                $newData->save(); // Approve new data
+            }
+        }
 
         // Ensure $pembaruan->tabel and $pembaruan->label are strings
         if (is_string($pembaruan->tabel) && is_string($pembaruan->label)) {
