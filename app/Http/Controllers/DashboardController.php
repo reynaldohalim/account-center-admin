@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\DataKaryawan;
 use App\Models\Izin;
+use App\Models\Absensi;
 use App\Models\DataPekerjaan;
 use App\Models\DataPribadi;
 use App\Models\JenisIzin;
@@ -16,6 +17,10 @@ use App\Models\PengalamanKerja;
 use App\Models\LiburKaryawan;
 use App\Models\AksesAdmin;
 use App\Models\Admin;
+
+use DatePeriod;
+use DateInterval;
+use DateTime;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -134,24 +139,157 @@ class DashboardController extends Controller
         $bahasa = $dataKaryawan->bahasa();
         $organisasi = $dataKaryawan->organisasi();
         $pengalamanKerja = $dataKaryawan->pengalamanKerja();
-        $absensi = $dataKaryawan->absensi();
+
         $pembaruanData = PembaruanData::where('nip', $nip)->whereNull('tgl_approval')->get()->groupBy('tabel');
 
-        $izin = Izin::where('nip', $nip)->orderBy('tgl_ijin', 'asc')->get();
+        //absensi
+        $full_count = 0;
+        $cuti = [];
+        $tugas = [];
+        $error = [];
 
+        $jam_datang = '08:07:00';
+        $jam_pulang = '17:00:00';
+        $tgl_awal = '2023-06-01';
+        $tgl_akhir = '2023-06-20';
+        $sql_tgl_akhir = Carbon::parse($tgl_akhir)->addDay()->format('Y-m-d');
+
+        // Query izin
+        $izin = Izin::where('nip', $nip)
+            ->whereNotNull('approve2')
+            ->whereBetween('tgl_ijin', [$tgl_awal, $sql_tgl_akhir])
+            ->get();
+
+        // Query absensi
+        $absensi = Absensi::where('nip', $nip)
+            ->whereBetween('tgl', [$tgl_awal, $sql_tgl_akhir])
+            ->get();
+
+        // Query libur_karyawan
+        $libur = LiburKaryawan::whereBetween('tgl', [$tgl_awal, $sql_tgl_akhir])
+            ->get();
+
+        // Check workdays/weekend
+        $dt_tgl_awal = new DateTime($tgl_awal);
+        $dt_tgl_akhir = new DateTime($tgl_akhir);
+        $workdays_count = 0;
+
+        foreach (new DatePeriod($dt_tgl_awal, new DateInterval('P1D'), $dt_tgl_akhir->modify('+1 day')) as $date) {
+            $date_str = $date->format('Y-m-d');
+
+            // Check weekends
+            $weekends = [6, 7]; // 1=mon, 2=tues, 3=wed... 7=sun
+            if (!in_array($date->format('N'), $weekends)) {
+                $workdays_count++;
+
+                // Check approved izin/cuti bersama
+                $filtered_izin = $izin->filter(function ($item) use ($date_str) {
+                    return $item->tgl_ijin === $date_str;
+                });
+
+                if ($filtered_izin->isNotEmpty()) {
+                    $filtered_izin = $filtered_izin->sortBy('no_ijin');
+                    $no_ijin = $filtered_izin->first()->no_ijin;
+                    $jenis_ijin = $filtered_izin->first()->jenis_ijin;
+                    $firstchar_jenis_ijin = substr($jenis_ijin, 0, 1);
+
+                    if ($firstchar_jenis_ijin == 'A') {
+                        $cuti[] = $no_ijin; // izin cuti
+                    } elseif ($firstchar_jenis_ijin == 'C') {
+                        $tugas[] = $no_ijin; // izin tugas
+                    } elseif ($firstchar_jenis_ijin == 'D') {
+                        $full_count++; // izin dispensasi
+                    } elseif ($firstchar_jenis_ijin == 'B') {
+                        if ($jenis_ijin == 'B.360') {
+                            $full_count++; // izin error absen
+                        } else {
+                            // Check data absen
+                            $filtered_absen = $absensi->filter(function ($item) use ($date_str) {
+                                return substr($item->tgl, 0, 10) === $date_str;
+                            });
+
+                            if ($filtered_absen->isNotEmpty()) {
+                                // Get time absen
+                                $times = $filtered_absen->map(function ($item) {
+                                    return substr($item->tgl, 11);
+                                })->sort()->values();
+
+                                if (in_array($jenis_ijin, ['B.310', 'B.340', 'B.370'])) {
+                                    // tidak absen datang, izin terlambat, terlambat dispensasi
+                                    if ($times->first() < $jam_pulang) {
+                                        $error[] = $date_str;
+                                    } else {
+                                        $full_count++;
+                                    }
+                                } elseif (in_array($jenis_ijin, ['B.320', 'B.350'])) {
+                                    // tidak absen pulang, izin pulang awal
+                                    if ($times->first() >= $jam_datang) {
+                                        $error[] = $date_str;
+                                    } else {
+                                        $full_count++;
+                                    }
+                                }
+                            } else {
+                                // tidak ada data absen => error
+                                $error[] = $date_str;
+                            }
+                        }
+                    }
+                } else {
+                    // Check data absen
+                    $filtered_absen = $absensi->filter(function ($item) use ($date_str) {
+                        return substr($item->tgl, 0, 10) === $date_str;
+                    });
+
+                    if ($filtered_absen->isNotEmpty()) {
+                        // Get time absen
+                        $times = $filtered_absen->map(function ($item) {
+                            return substr($item->tgl, 11);
+                        })->sort()->values();
+
+                        if ($times->count() < 2) {
+                            $error[] = $date_str; // absen tidak lengkap
+                        } else {
+                            // Check absen datang-pulang
+                            if ($times->first() >= $jam_datang && $times->last() < $jam_pulang) {
+                                $error[] = $date_str;
+                            } else {
+                                $full_count++;
+                            }
+                        }
+                    } else {
+                        // tidak ada data absen
+                        $error[] = $date_str;
+                    }
+                }
+            }
+        }
+
+        $absensi->full_count = $full_count;
+        $absensi->cuti = $cuti;
+        $absensi->tugas = $tugas;
+        $absensi->error = $error;
+        $absensi->total = $absensi->full_count + count($absensi->cuti) + count($absensi->tugas) + count($absensi->error);
+        $absensi->full_percent = round(($absensi->full_count / $absensi->total) * 100, 1);
+        $absensi->cuti_percent = round((count($absensi->cuti) / $absensi->total) * 100, 1);
+        $absensi->tugas_percent = round((count($absensi->tugas) / $absensi->total) * 100, 1);
+        $absensi->error_percent = round((count($absensi->error) / $absensi->total) * 100, 1);
+
+        //izin
+        $izin = Izin::where('nip', $nip)->orderBy('tgl_ijin', 'asc')->get();
         //check another izin
-        foreach($izin as $izin_item){
+        foreach ($izin as $izin_item) {
             $izin_item->nama_jenis_izin = JenisIzin::where('kode_jenis_izin', $izin_item->jenis_ijin)->first()->jenis_izin;
 
-            if($izin_item->approve2 == null){
+            if ($izin_item->approve2 == null) {
                 $izin_itemDivisi = $dataPekerjaan->divisi;
                 $checkAnotherIzin = Izin::where('tgl_ijin', $izin_item->tgl_ijin)->whereNotNull('approve2')->get();
 
-                foreach($checkAnotherIzin as $check){
+                foreach ($checkAnotherIzin as $check) {
                     $check->dataPekerjaan = DataPekerjaan::where('nip', $check->nip)->first();
                     $izin_item->anotherIzin = [];
 
-                    if($check->dataPekerjaan->divisi == $izin_itemDivisi){
+                    if ($check->dataPekerjaan->divisi == $izin_itemDivisi) {
                         $check->dataPribadi = DataPribadi::where('nip', $check->nip)->first();
                         $izin_item->anotherIzin[] = $check;
                     }
@@ -183,28 +321,23 @@ class DashboardController extends Controller
             DB::table($pembaruan->tabel)
                 ->where('nip', $pembaruan->nip)
                 ->update([$pembaruan->label => $pembaruan->data_baru]);
-        }
-        else {
-            $oldData='';
-            $newData='';
+        } else {
+            $oldData = '';
+            $newData = '';
 
-            if($pembaruan->tabel == 'data_keluarga'){
+            if ($pembaruan->tabel == 'data_keluarga') {
                 $oldData = DataKeluarga::find($pembaruan->data_lama);
                 $newData = DataKeluarga::find($pembaruan->data_baru);
-            }
-            else if($pembaruan->tabel == 'pendidikan'){
+            } else if ($pembaruan->tabel == 'pendidikan') {
                 $oldData = Pendidikan::find($pembaruan->data_lama);
                 $newData = Pendidikan::find($pembaruan->data_baru);
-            }
-            else if($pembaruan->tabel == 'bahasa'){
+            } else if ($pembaruan->tabel == 'bahasa') {
                 $oldData = Bahasa::find($pembaruan->data_lama);
                 $newData = Bahasa::find($pembaruan->data_baru);
-            }
-            else if($pembaruan->tabel == 'organisasi'){
+            } else if ($pembaruan->tabel == 'organisasi') {
                 $oldData = Organisasi::find($pembaruan->data_lama);
                 $newData = Organisasi::find($pembaruan->data_baru);
-            }
-            else if($pembaruan->tabel == 'pengalaman_kerja'){
+            } else if ($pembaruan->tabel == 'pengalaman_kerja') {
                 $oldData = PengalamanKerja::find($pembaruan->data_lama);
                 $newData = PengalamanKerja::find($pembaruan->data_baru);
             }
@@ -234,20 +367,16 @@ class DashboardController extends Controller
         $pembaruan = PembaruanData::findOrFail($id);
         $admin = auth()->user();
 
-        $newData='';
-        if($pembaruan->tabel == 'data_keluarga'){
+        $newData = '';
+        if ($pembaruan->tabel == 'data_keluarga') {
             $newData = DataKeluarga::find($pembaruan->data_baru);
-        }
-        else if($pembaruan->tabel == 'pendidikan'){
+        } else if ($pembaruan->tabel == 'pendidikan') {
             $newData = Pendidikan::find($pembaruan->data_baru);
-        }
-        else if($pembaruan->tabel == 'bahasa'){
+        } else if ($pembaruan->tabel == 'bahasa') {
             $newData = Bahasa::find($pembaruan->data_baru);
-        }
-        else if($pembaruan->tabel == 'organisasi'){
+        } else if ($pembaruan->tabel == 'organisasi') {
             $newData = Organisasi::find($pembaruan->data_baru);
-        }
-        else if($pembaruan->tabel == 'pengalaman_kerja'){
+        } else if ($pembaruan->tabel == 'pengalaman_kerja') {
             $newData = PengalamanKerja::find($pembaruan->data_baru);
         }
 
@@ -263,6 +392,109 @@ class DashboardController extends Controller
 
         return redirect()->back()->with('success', 'Pembaruan data has been rejected.');
     }
+
+    public function getDetail($type, $id, $nip)
+    {
+        $detail = [];
+        $success = false;
+
+        switch ($type) {
+            case 'cuti':
+            case 'tugas':
+                $izin = Izin::where('no_ijin', $id)->first();
+                if ($izin) {
+                    $detail = [
+                        'no_ijin' => $izin->no_ijin,
+                        'tgl_ijin' => $izin->tgl_ijin,
+                        // 'jenis_ijin' => $izin->jenisIjin->nama_jenis_ijin, // assuming a relationship
+                        'jenis_ijin' => $izin->jenis_ijin,
+                        'keterangan' => $izin->keterangan,
+                        'jam_in' => $izin->jam_in,
+                        'jam_out' => $izin->jam_out,
+                        'gaji_dibayar' => $izin->gaji_dibayar,
+                        'potong_cuti' => $izin->potong_cuti,
+                        'no_referensi' => $izin->no_referensi,
+                        'entry_by' => $izin->entry_by,
+                        'tgl_entry' => $izin->tgl_entry,
+                        'approve1' => $izin->approve1,
+                        'tgl_approve1' => $izin->tgl_approve1,
+                        'approve2' => $izin->approve2,
+                        'tgl_approve2' => $izin->tgl_approve2,
+                    ];
+                    $success = true;
+                }
+                break;
+
+            case 'error':
+                $errorDetail = $this->fetchErrorDetail($id, $nip); // Assuming this function returns the error details
+                if ($errorDetail) {
+                    $detail = [
+                        'tgl' => $errorDetail['tgl'],
+                        'keterangan' => $errorDetail['keterangan'],
+                    ];
+                    $success = true;
+                }
+                break;
+        }
+
+        return response()->json(['success' => $success, 'detail' => $detail]);
+    }
+
+    private function fetchErrorDetail($id, $nip)
+    {
+        // Assuming $id is in the format 'YYYY-MM-DD'
+        // $nip = 'your_nip_value'; // Replace with actual NIP value
+        $detail_absen = $id; // Assuming $id represents the date
+
+        $jenis_detail = 'error';
+        $keterangan  = '';
+        $jam_datang = '08:07:00';
+        $jam_pulang = '17:00:00';
+
+        // Fetch absensi data
+        $absensi = DB::table('absensi')
+            ->where('nip', $nip)
+            ->where('tgl', 'like', "$detail_absen%")
+            ->get();
+
+        if ($absensi->isEmpty()) {
+            $keterangan = $nip;
+            // $keterangan = 'Tidak absen';
+        } else {
+            $times = $absensi->pluck('tgl')->map(function ($item) {
+                return substr($item, 11);
+            })->sort()->values()->all();
+
+            if (count($times) < 2) {
+                $izin = DB::table('ijin')
+                    ->where('nip', $nip)
+                    ->whereNotNull('approve2')
+                    ->where('tgl_ijin', $detail_absen)
+                    ->get();
+
+                if ($izin->isEmpty()) {
+                    $keterangan = 'Absen tidak lengkap';
+                } else {
+                    $jenis_ijin = $izin[0]->jenis_ijin;
+                    if (in_array($jenis_ijin, ['B.310', 'B.340', 'B.370'])) { // tidak absen datang, ijin terlambat, terlambat dispensasi
+                        if ($times[0] < $jam_pulang) $keterangan = 'Pulang awal (' . $times[0] . ').';
+                    } else if (in_array($jenis_ijin, ['B.320', 'B.350'])) { // tidak absen pulang, ijin pulang awal
+                        if ($times[0] >= $jam_datang) $keterangan = 'Terlambat (' . $times[0] . ').';
+                    }
+                }
+            } else {
+                if ($times[0] >= $jam_datang) $keterangan = 'Terlambat (' . $times[0] . '). ';
+                if ($times[1] < $jam_pulang) $keterangan .= 'Pulang awal (' . $times[1] . ').';
+            }
+        }
+
+        return [
+            'tgl' => $detail_absen,
+            'keterangan' => $keterangan,
+        ];
+    }
+
+
 
     //Libur Karyawan
     public function pengaturan_libur()
@@ -433,7 +665,7 @@ class DashboardController extends Controller
         return redirect()->back()->with('success', 'Izin rejected.');
     }
 
-
+    //Klasifikasi karyawan
     public function klasifikasi_karyawan()
     {
         $pageTitle = 'Klasifikasi Karyawan';
@@ -445,6 +677,7 @@ class DashboardController extends Controller
         return view('klasifikasi-karyawan', compact('pageTitle', 'breadcrumb', 'dataPribadiAdmin'));
     }
 
+    //notifikasi
     public function notifikasi()
     {
         $pageTitle = 'Notifikasi';

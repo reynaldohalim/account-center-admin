@@ -121,11 +121,7 @@
                 <div class="card-header pb-0">
                     <div class="row">
                         <div class="col-lg-6 col-7">
-                            <h6>Pengajuan izin ({{ $countIzin }})</h6>
-                            <p class="text-sm mb-0">
-                                <i class="fa fa-check text-info" aria-hidden="true"></i>
-                                <span class="font-weight-bold ms-1">30 pengajuan izin</span> disetujui bulan ini.
-                            </p>
+                            <h6>Pengajuan izin pending: ({{ $countIzin }})</h6>
                         </div>
                         <div class="col-lg-6 col-5 my-auto text-end">
                             <div class="dropdown float-lg-end pe-4">

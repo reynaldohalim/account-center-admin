@@ -28,6 +28,7 @@ Route::middleware(['auth'])->group(function () {
     //Data Karyawan
     Route::get('data-karyawan', [DashboardController::class, 'data_karyawan']);
     Route::get('/data-karyawan/{nip}', [DashboardController::class, 'viewDetails'])->name('data_karyawan.details');
+    Route::get('/absensi/detail/{type}/{id}/{nip}', [DashboardController::class, 'getDetail'])->name('absensi.detail');
     Route::get('/fetch-all-karyawans/{divisi}', [DashboardController::class, 'fetchAllKaryawans']);
 
     //Libur Karyawan

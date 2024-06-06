@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Absensi extends Model
 {
-    protected $table = 'pengalaman_kerja';
+    protected $table = 'absensi';
 
     public $incrementing = true;
 
     protected $keyType = 'int';
-    
+
 
     protected $fillable = [
         'tgl',
