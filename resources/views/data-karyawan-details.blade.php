@@ -627,7 +627,7 @@
                                         <h2 class="mb-0">
                                             <button class="btn-link accordion-button" type="button" data-toggle="collapse" data-target="#collapse{{ $dataPendidikan->id }}" aria-expanded="false" aria-controls="collapse{{ $dataPendidikan->id }}">
                                                 @if (!$dataPendidikan->approved_by)
-                                                    <i class='fas fa-exclamation-triangle warning-icon me-3' data-bs-toggle='modal'></i>
+                                                    <i class='fas fa-exclamation-triangle warning-icon me-3'></i>
                                                 @endif
                                                 {{ $dataPendidikan->tingkat }} - {{ $dataPendidikan->tahun }}
                                             </button>
@@ -761,56 +761,6 @@
                             @endforeach
                         </div>
 
-                        {{-- <div class="tab-pane fade" id="bahasa-tab-pane" role="tabpanel" aria-labelledby="bahasa-tab"
-                            tabindex="0">
-                            <div class="card accordion" id="accordionExample">
-                                <div class="card-header" id="headingOne">
-                                    <h2 class="mb-0">
-                                        <button class="btn-link accordion-button" type="button" data-toggle="collapse"
-                                            data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                                            Jepang
-                                        </button>
-                                    </h2>
-                                </div>
-                                <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
-                                    data-parent="#accordionExample">
-                                    <div class="card-body">
-                                        <form action="#!" class="row gy-3 gy-xxl-4">
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">Bahasa</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">Mendengar</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">Membaca</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">Bicara</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">Menulis</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12">
-                                                <button type="button" class="btn btn-primary">Edit</button>
-                                                <button type="submit" class="btn btn-primary">Simpan</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> --}}
-
                         <div class="tab-pane fade" id="bahasa-tab-pane" role="tabpanel" aria-labelledby="bahasa-tab" tabindex="0">
                             @foreach ($bahasa as $dataBahasa)
                                 <div class="card accordion" id="accordion{{ $dataBahasa->id }}">
@@ -820,7 +770,7 @@
                                                 data-target="#collapse{{ $dataBahasa->id }}" aria-expanded="false"
                                                 aria-controls="collapse{{ $dataBahasa->id }}">
                                                 @if (!$dataBahasa->approved_by)
-                                                    <i class='fas fa-exclamation-triangle warning-icon me-3' data-bs-toggle='modal'></i>
+                                                    <i class='fas fa-exclamation-triangle warning-icon me-3'></i>
                                                 @endif
                                                 {{ $dataBahasa->bahasa }}
                                             </button>
@@ -957,46 +907,6 @@
                                 @endif
                             @endforeach
                         </div>
-
-                        {{-- <div class="tab-pane fade" id="organisasi-tab-pane" role="tabpanel"
-                            aria-labelledby="organisasi-tab" tabindex="0">
-                            <div class="card accordion" id="accordionExample">
-                                <div class="card-header" id="headingOne">
-                                    <h2 class="mb-0">
-                                        <button class="btn-link accordion-button" type="button" data-toggle="collapse"
-                                            data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                                            HIMA - 2020
-                                        </button>
-                                    </h2>
-                                </div>
-                                <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
-                                    data-parent="#accordionExample">
-                                    <div class="card-body">
-                                        <form action="#!" class="row gy-3 gy-xxl-4">
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">Macam Kegiatan</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">Jabatan</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">Tahun</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12">
-                                                <button type="button" class="btn btn-primary">Edit</button>
-                                                <button type="submit" class="btn btn-primary">Simpan</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> --}}
 
                         <div class="tab-pane fade" id="organisasi-tab-pane" role="tabpanel" aria-labelledby="organisasi-tab" tabindex="0">
                             @foreach ($organisasi as $dataOrganisasi)
@@ -1138,94 +1048,6 @@
                             @endforeach
                         </div>
 
-                        {{-- <div class="tab-pane fade" id="pengalamankerja-tab-pane" role="tabpanel"
-                            aria-labelledby="pengalamankerja-tab" tabindex="0">
-                            <div class="card accordion" id="accordionExample">
-                                <div class="card-header" id="headingOne">
-                                    <h2 class="mb-0">
-                                        <button class="btn-link accordion-button" type="button" data-toggle="collapse"
-                                            data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                                            PT. XXX - 2011
-                                        </button>
-                                    </h2>
-                                </div>
-
-                                <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
-                                    data-parent="#accordionExample">
-                                    <div class="card-body">
-                                        <form action="#!" class="row gy-3 gy-xxl-4">
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">Nama Perusahaan</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12">
-                                                <label for="notes" class="form-label">Alamat</label>
-                                                <textarea class="form-control" id="notes"></textarea>
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">Tahun Awal</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">Tahun Akhir</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12">
-                                                <label for="notes" class="form-label">Alasan Pindah</label>
-                                                <textarea class="form-control" id="notes"></textarea>
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">Total Karyawan</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12">
-                                                <label for="notes" class="form-label">Uraian Pekerjaan</label>
-                                                <textarea class="form-control" id="notes"></textarea>
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">Nama Atasan</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">No. Telepon</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">Gaji</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">Jabatan Awal</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">Jabatan Akhir</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">Total Bawahan</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12">
-                                                <button type="button" class="btn btn-primary">Edit</button>
-                                                <button type="submit" class="btn btn-primary">Simpan</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> --}}
-
                         <div class="tab-pane fade" id="pengalamankerja-tab-pane" role="tabpanel" aria-labelledby="pengalamankerja-tab" tabindex="0">
                             @foreach ($pengalamanKerja as $pengalaman)
                                 <div class="card accordion" id="accordion{{ $pengalaman->id }}">
@@ -1233,7 +1055,7 @@
                                         <h2 class="mb-0">
                                             <button class="btn-link accordion-button" type="button" data-toggle="collapse" data-target="#collapse{{ $pengalaman->id }}" aria-expanded="false" aria-controls="collapse{{ $pengalaman->id }}">
                                                 @if (!$pengalaman->approved_by)
-                                                    <i class='fas fa-exclamation-triangle warning-icon me-3' data-bs-toggle='modal'></i>
+                                                    <i class='fas fa-exclamation-triangle warning-icon me-3'></i>
                                                 @endif
                                                 {{ $pengalaman->nama_perusahaan }} - {{ $pengalaman->tahun_awal }}
                                             </button>
@@ -1433,104 +1255,254 @@
                             </div>
                         </div>
 
-                        <div class="tab-pane fade" id="izin-tab-pane" role="tabpanel" aria-labelledby="izin-tab"
-                            tabindex="0">
-                            <div class="card accordion" id="accordionExample">
-                                <div class="card-header" id="headingOne">
-                                    <h2 class="mb-0">
-                                        <button class="btn-link accordion-button" type="button" data-toggle="collapse"
-                                            data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                                            12-06-2023
-                                        </button>
-                                    </h2>
-                                </div>
-                                <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
-                                    data-parent="#accordionExample">
-                                    <div class="card-body">
-                                        <form action="#!" class="row gy-3 gy-xxl-4">
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">No. Ijin</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">Tanggal Ijin</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">Jenis Ijin</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12">
-                                                <label for="notes" class="form-label">Keterangan</label>
-                                                <textarea class="form-control" id="notes"></textarea>
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">Jam In</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">Jam Out</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">Gaji Dibayar</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">Potong Cuti</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">No. Referensi</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">Entry By</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">Tanggal Entry</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">Approve 1</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">Tanggal Approve 1</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">Approve 2</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
-                                            <div class="col-12 col-md-6">
-                                                <label for="name1" class="form-label">Tanggal Approve 2</label>
-                                                <input type="text" class="form-control" id="name1"
-                                                    value="">
-                                            </div>
+                        <div class="tab-pane fade" id="izin-tab-pane" role="tabpanel" aria-labelledby="izin-tab" tabindex="0">
+                            @foreach ($izin as $dataIzin)
+                                <div class="card accordion" id="accordion{{ $dataIzin->no_ijin }}">
+                                    <div class="card-header" id="heading{{ $dataIzin->no_ijin }}">
+                                        <h2 class="mb-0">
+                                            <button class="btn-link accordion-button" type="button" data-toggle="collapse" data-target="#collapse{{ $dataIzin->no_ijin }}" aria-expanded="false" aria-controls="collapse{{ $dataIzin->no_ijin }}">
+                                                @if ($dataIzin->rejected_by)
+                                                    <i class='fas fa-xmark primary-icon me-3'></i>
+                                                @elseif ($dataIzin->approve2)
+                                                    <i class='fas fa-check-double success-icon me-3'></i>
+                                                @else
+                                                    @if ($dataIzin->approve1)
+                                                        <i class='fas fa-check success-icon me-1'></i>
+                                                    @endif
+                                                    <i class='fas fa-exclamation-triangle warning-icon me-3'></i>
+                                                @endif
+                                                {{ $dataIzin->tgl_ijin }}
+                                            </button>
+                                        </h2>
+                                    </div>
 
-                                            <div class="col-12">
-                                                <button type="button" class="btn btn-primary">Edit</button>
-                                                <button type="submit" class="btn btn-primary">Simpan</button>
-                                            </div>
-                                        </form>
+                                    <div id="collapse{{ $dataIzin->no_ijin }}" class="collapse" aria-labelledby="heading{{ $dataIzin->no_ijin }}" data-parent="#accordion{{ $dataIzin->no_ijin }}">
+                                        <div class="card-body">
+                                            <form action="#!" class="row gy-3 gy-xxl-4">
+                                                <div class="col-12 col-md-6">
+                                                    <label for="no_ijin{{ $dataIzin->no_ijin }}" class="form-label">No. Ijin</label>
+                                                    <input type="text" class="form-control" id="no_ijin{{ $dataIzin->no_ijin }}" value="{{ $dataIzin->no_ijin }}">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="tgl_ijin{{ $dataIzin->no_ijin }}" class="form-label">Tanggal Ijin</label>
+                                                    <input type="text" class="form-control" id="tgl_ijin{{ $dataIzin->no_ijin }}" value="{{ $dataIzin->tgl_ijin }}">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="jenis_ijin{{ $dataIzin->no_ijin }}" class="form-label">Jenis Ijin</label>
+                                                    <input type="text" class="form-control" id="jenis_ijin{{ $dataIzin->no_ijin }}" value="{{ $dataIzin->jenis_ijin }}. {{$dataIzin->nama_jenis_izin}}">
+                                                </div>
+                                                <div class="col-12">
+                                                    <label for="keterangan{{ $dataIzin->no_ijin }}" class="form-label">Keterangan</label>
+                                                    <textarea class="form-control" id="keterangan{{ $dataIzin->no_ijin }}">{{ $dataIzin->keterangan }}</textarea>
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="jam_in{{ $dataIzin->no_ijin }}" class="form-label">Jam In</label>
+                                                    <input type="text" class="form-control" id="jam_in{{ $dataIzin->no_ijin }}" value="{{ $dataIzin->jam_in }}">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="jam_out{{ $dataIzin->no_ijin }}" class="form-label">Jam Out</label>
+                                                    <input type="text" class="form-control" id="jam_out{{ $dataIzin->no_ijin }}" value="{{ $dataIzin->jam_out }}">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="gaji_dibayar{{ $dataIzin->no_ijin }}" class="form-label">Gaji Dibayar</label>
+                                                    <input type="text" class="form-control" id="gaji_dibayar{{ $dataIzin->no_ijin }}" value="{{ $dataIzin->gaji_dibayar }}">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="potong_cuti{{ $dataIzin->no_ijin }}" class="form-label">Potong Cuti</label>
+                                                    <input type="text" class="form-control" id="potong_cuti{{ $dataIzin->no_ijin }}" value="{{ $dataIzin->potong_cuti }}">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="no_referensi{{ $dataIzin->no_ijin }}" class="form-label">No. Referensi</label>
+                                                    <input type="text" class="form-control" id="no_referensi{{ $dataIzin->no_ijin }}" value="{{ $dataIzin->no_referensi }}">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="entry_by{{ $dataIzin->no_ijin }}" class="form-label">Entry By</label>
+                                                    <input type="text" class="form-control" id="entry_by{{ $dataIzin->no_ijin }}" value="{{ $dataIzin->entry_by }}">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="tgl_entry{{ $dataIzin->no_ijin }}" class="form-label">Tanggal Entry</label>
+                                                    <input type="text" class="form-control" id="tgl_entry{{ $dataIzin->no_ijin }}" value="{{ $dataIzin->tgl_entry }}">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="approve1{{ $dataIzin->no_ijin }}" class="form-label">Approve 1</label>
+                                                    <input type="text" class="form-control" id="approve1{{ $dataIzin->no_ijin }}" value="{{ $dataIzin->approve1 }}">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="tgl_approve1{{ $dataIzin->no_ijin }}" class="form-label">Tanggal Approve 1</label>
+                                                    <input type="text" class="form-control" id="tgl_approve1{{ $dataIzin->no_ijin }}" value="{{ $dataIzin->tgl_approve1 }}">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="approve2{{ $dataIzin->no_ijin }}" class="form-label">Approve 2</label>
+                                                    <input type="text" class="form-control" id="approve2{{ $dataIzin->no_ijin }}" value="{{ $dataIzin->approve2 }}">
+                                                </div>
+                                                <div class="col-12 col-md-6">
+                                                    <label for="tgl_approve2{{ $dataIzin->no_ijin }}" class="form-label">Tanggal Approve 2</label>
+                                                    <input type="text" class="form-control" id="tgl_approve2{{ $dataIzin->no_ijin }}" value="{{ $dataIzin->tgl_approve2 }}">
+                                                </div>
+
+                                                <div class="col-12">
+                                                    @if (!$dataIzin->rejected_by && !$dataIzin->approve2)
+                                                        <button type='button' class='btn btn-outline-warning' data-bs-toggle='modal' data-bs-target='#izinModal{{ $dataIzin->no_ijin }}'>
+                                                            <i class='fas fa-exclamation-triangle warning-icon me-2'></i>Berikan persetujuan
+                                                        </button>
+                                                    @endif
+                                                </div>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+
+                                {{-- izin modal --}}
+                                <div class="modal modal-xl fade" id="izinModal{{ $dataIzin->no_ijin }}" tabindex="-1" aria-labelledby="izinModal{{ $dataIzin->no_ijin }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-xl modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Persetujuan izin {{$dataIzin->no_ijin}}</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <table class="table align-items-center mb-0">
+                                                    <thead>
+                                                        <tr>
+                                                            <td class="align-middle text-center text-sm">
+                                                                <div class="d-flex px-2 py-1">
+                                                                    <img src="../assets/img/pp.png" class="avatar avatar-sm me-3" alt="xd">
+                                                                    <div class="d-flex flex-column">
+                                                                        <h6 class="mb-0">{{$dataPribadi->nama}}</h6>
+                                                                        <p class="text-s font-weight-bold">{{$dataPribadi->nip}}</p>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td class="align-middle text-center text-sm">
+                                                                <div class="d-flex px-2 py-1">
+                                                                    <div class="d-flex flex-column justify-content-center">
+                                                                        <h6 class="mb-0 text-sm">{{$dataPekerjaan->divisi}}</h6>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td class="align-middle text-center text-sm">
+                                                                <div class="d-flex px-2 py-1">
+                                                                    <div class="d-flex flex-column justify-content-center">
+                                                                        <h6 class="mb-0 text-sm">{{$dataPekerjaan->jabatan}}</h6>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td class="align-middle text-center text-sm">
+                                                                <div class="d-flex px-2 py-1">
+                                                                    <div class="d-flex flex-column justify-content-center">
+                                                                        <h6 class="mb-0 text-sm">{{$dataPekerjaan->bagian}}</h6>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td class="align-middle text-center text-sm">
+                                                                <div class="d-flex px-2 py-1">
+                                                                    <div class="d-flex flex-column justify-content-center">
+                                                                        <h6 class="mb-0 text-sm" id="group">{{$dataPekerjaan->group}}</h6>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                                <br>
+                                                <h6 class="ms-2">Informasi:</h6>
+                                                <div class="ms-4">
+                                                    <span class="text-bold">Total izin: </span><span>{{$izin->whereNotNull('approve2')->count()}}</span>
+                                                    <br>
+                                                    @if(isset($dataIzin->anotherIzin))
+                                                        <span class="text-bold text-s">Izin 1 divisi:</span><br>
+                                                        <table class="table align-items-center mb-0" id="">
+                                                            <tbody>
+                                                                @foreach ($dataIzin->anotherIzin as $anotherIzin)
+                                                                    <tr>
+                                                                        <td>
+                                                                            <div class="d-flex px-2 py-1">
+                                                                                <div class="d-flex flex-column justify-content-center">
+                                                                                    <h6 class="mb-0 text-sm">{{$anotherIzin->dataPribadi->nama}}</h6>
+                                                                                    <p class="text-xs text-secondary mb-0">nip</p>
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>
+                                                                            <div class="d-flex px-2 py-1">
+                                                                                <div class="d-flex flex-column justify-content-center">
+                                                                                    <h6 class="mb-0 text-sm">{{$anotherIzin->dataPekerjaan->divisi}} - {{$anotherIzin->dataPekerjaan->jabatan}}</h6>
+                                                                                    <p class="text-xs text-secondary mb-0">{{$anotherIzin->dataPekerjaan->bagian}} - {{$anotherIzin->dataPekerjaan->group}}</p>
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td class="align-middle text-center text-sm">
+                                                                            <div class="d-flex flex-column justify-content-center">
+                                                                                <h6 class="mb-0 text-sm">{{$anotherIzin->tgl_ijin}}</h6>
+                                                                                <p class="text-xs text-secondary mb-0">{{$anotherIzin->jenis_ijin}}. {{$anotherIzin->nama_jenis_izin}}</p>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td class="align-middle text-center text-sm">
+                                                                            <p class="text-xs font-weight-bold">{{$anotherIzin->keterangan}}</p>
+                                                                        </td>
+                                                                    </tr>
+                                                                @endforeach
+                                                            </tbody>
+                                                        </table>
+                                                    @else
+                                                        <span class="text-bold text-s">Tidak ada karyawan 1 divisi lain yang izin hari ini.</span><br>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            {{-- <div class="modal-footer">
+                                                <textarea id="rejectReason" class="form-control" placeholder="Alasan penolakan"></textarea>
+                                                <form method="POST" action="{{ route('izin.approve1', $dataIzin->no_ijin) }}"
+                                                    onsubmit="return confirm('Apakah anda yakin ingin melakukan APPROVE 1 pengajuan ini?');">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <div class="mb-3">
+                                                        <button type="submit" class="btn btn-outline-success">Approve 1</button>
+                                                    </div>
+                                                </form>
+                                                <form method="POST" action="{{ route('izin.approve2', $dataIzin->no_ijin) }}"
+                                                    onsubmit="return confirm('Apakah anda yakin ingin melakukan APPROVE 2 pengajuan ini?');">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <div class="mb-3">
+                                                        <button type="submit" class="btn btn-success">Approve 2</button>
+                                                    </div>
+                                                </form>
+                                                <form method="POST" action="{{ route('izin.reject', $dataIzin->no_ijin) }}"
+                                                    onsubmit="return confirm('Apakah anda yakin ingin MENOLAK pengajuan ini??');">
+                                                    @csrf
+                                                    @method('PATCH')
+                                                    <div class="mb-3">
+                                                        <label for="alasan" class="form-label">Alasan Penolakan</label>
+                                                        <textarea class="form-control" id="alasan" name="alasan"></textarea>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-outline-primary">Tolak</button>
+                                                </form>
+                                            </div> --}}
+                                            <div class="modal-footer">
+                                                <form method="POST" action="{{ route('izin.approve1') }}" onsubmit="return confirm('Apakah anda yakin ingin melakukan APPROVE 1 pengajuan ini?');">
+                                                    @csrf
+                                                    <input type="hidden" name="id" value="{{ $dataIzin->no_ijin }}">
+                                                    <button type="submit" class="btn btn-outline-success">Approve 1</button>
+                                                </form>
+                                                <form method="POST" action="{{ route('izin.approve2') }}" onsubmit="return confirm('Apakah anda yakin ingin melakukan APPROVE 2 pengajuan ini?');">
+                                                    @csrf
+                                                    <input type="hidden" name="id" value="{{ $dataIzin->no_ijin }}">
+                                                    <button type="submit" class="btn btn-success">Approve 2</button>
+                                                </form>
+                                                <form method="POST" action="{{ route('izin.reject') }}" onsubmit="return confirm('Apakah anda yakin ingin MENOLAK pengajuan ini?');">
+                                                    @csrf
+                                                    <input type="hidden" name="id" value="{{ $dataIzin->no_ijin }}">
+                                                    <div class="mb-3">
+                                                        <label for="alasan" class="form-label">Alasan Penolakan</label>
+                                                        <textarea class="form-control" id="alasan" name="alasan"></textarea>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-outline-primary">Tolak</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -1542,6 +1514,30 @@
 
 @push('custom-scripts')
     <script>
+        function approve(id, action) {
+            const url = action === 'approve1' ? '{{ route("izin.approve1") }}' : '{{ route("izin.approve2") }}';
+            const token = '{{ csrf_token() }}';
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': token
+                },
+                body: JSON.stringify({ id })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    location.reload(); // Reload the page to see the changes
+                } else {
+                    alert('Approval failed.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
         if (document.getElementById('chart_absensi')) {
             var ctx4 = document.getElementById('chart_absensi').getContext('2d');
             var data = {

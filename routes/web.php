@@ -44,6 +44,7 @@ Route::middleware(['auth'])->group(function () {
 
     //Pengajuan izin
     Route::get('pengajuan-izin', [DashboardController::class, 'pengajuan_izin']);
+    Route::get('/izin/data/{no_ijin}', [DashboardController::class, 'getIzin']);
     Route::post('/izin/approve1', [DashboardController::class, 'izin_approve1'])->name('izin.approve1');
     Route::post('/izin/approve2', [DashboardController::class, 'izin_approve2'])->name('izin.approve2');
     Route::post('/izin/reject', [DashboardController::class, 'izin_reject'])->name('izin.reject');

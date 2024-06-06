@@ -23329,6 +23329,21 @@ hr.horizontal.gray-light {
     color: var(--bs-warning); /* Warning color */
 }
 
+.success-icon {
+    cursor: pointer;
+    color: var(--bs-success); /* Warning color */
+}
+
+.danger-icon {
+    cursor: pointer;
+    color: var(--bs-danger); /* Warning color */
+}
+
+.primary-icon {
+    cursor: pointer;
+    color: var(--bs-primary); /* Warning color */
+}
+
 .overflow-visible {
   overflow: visible !important;
 }

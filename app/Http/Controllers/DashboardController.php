@@ -135,8 +135,41 @@ class DashboardController extends Controller
         $organisasi = $dataKaryawan->organisasi();
         $pengalamanKerja = $dataKaryawan->pengalamanKerja();
         $absensi = $dataKaryawan->absensi();
-        $izin = $dataKaryawan->izin();
         $pembaruanData = PembaruanData::where('nip', $nip)->whereNull('tgl_approval')->get()->groupBy('tabel');
+
+        $izin = Izin::where('nip', $nip)->orderBy('tgl_ijin', 'asc')->get();
+
+        //check another izin
+        foreach($izin as $izin_item){
+            $izin_item->nama_jenis_izin = JenisIzin::where('kode_jenis_izin', $izin_item->jenis_ijin)->first()->jenis_izin;
+
+            if($izin_item->approve2 == null){
+                $izin_itemDivisi = $dataPekerjaan->divisi;
+                $checkAnotherIzin = Izin::where('tgl_ijin', $izin_item->tgl_ijin)->whereNotNull('approve2')->get();
+
+                foreach($checkAnotherIzin as $check){
+                    $check->dataPekerjaan = DataPekerjaan::where('nip', $check->nip)->first();
+                    $izin_item->anotherIzin = [];
+
+                    if($check->dataPekerjaan->divisi == $izin_itemDivisi){
+                        $check->dataPribadi = DataPribadi::where('nip', $check->nip)->first();
+                        $izin_item->anotherIzin[] = $check;
+                    }
+                }
+            }
+        }
+
+        // Merge izin records by no_ijin
+        $mergedIzin = $izin->groupBy('no_ijin')->map(function ($rows) {
+            $firstRow = $rows->first();
+            if ($rows->min('tgl_ijin') != $rows->max('tgl_ijin')) {
+                $firstRow->tgl_ijin = $rows->min('tgl_ijin') . ' - ' . $rows->max('tgl_ijin');
+                $firstRow->tgl_start = $rows->min('tgl_ijin');
+                $firstRow->tgl_end = $rows->max('tgl_ijin');
+            }
+            return $firstRow;
+        })->values();
+        $izin = $mergedIzin;
 
         return view('data-karyawan-details', compact('dataPribadiAdmin', 'pageTitle', 'breadcrumb', 'dataPribadi', 'dataPekerjaan', 'dataLainlain', 'dataKeluarga', 'pendidikan', 'bahasa', 'organisasi', 'pengalamanKerja', 'absensi', 'izin', 'pembaruanData'));
     }
@@ -331,7 +364,7 @@ class DashboardController extends Controller
         foreach ($mergedIzin as $izin) {
             $pekerjaan = DataPekerjaan::where('nip', $izin->nip)->first();
             $izin->divisi = $pekerjaan ? $pekerjaan->divisi : null;
-            $izin->posisi = $pekerjaan ? $pekerjaan->jabatan : null;
+            $izin->jabatan = $pekerjaan ? $pekerjaan->jabatan : null;
 
 
             $pribadi = DataPribadi::where('nip', $izin->nip)->first();
@@ -360,9 +393,11 @@ class DashboardController extends Controller
             $izin->tgl_approve1 = Carbon::now();
             $izin->save();
 
-            return response()->json(['success' => true, 'message' => 'Izin approved by approve1.']);
+            // return response()->json(['success' => true, 'message' => 'Izin approved by approve1.']);
+            return redirect()->back()->with('success', 'Izin approved1.');
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()], 500);
+            // return response()->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()], 500);
+            return redirect()->back()->with('!success', $e->getMessage());
         }
     }
 
@@ -379,9 +414,11 @@ class DashboardController extends Controller
             $izin->tgl_approve2 = Carbon::now();
             $izin->save();
 
-            return response()->json(['success' => true, 'message' => 'Izin approved by approve2.']);
+            // return response()->json(['success' => true, 'message' => 'Izin approved by approve2.']);
+            return redirect()->back()->with('success', 'Izin approved2.');
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()], 500);
+            // return response()->json(['success' => false, 'message' => 'Error: ' . $e->getMessage()], 500);
+            return redirect()->back()->with('!success', $e->getMessage());
         }
     }
 
@@ -392,7 +429,8 @@ class DashboardController extends Controller
         $izin->alasan = $request->reason;
         $izin->save();
 
-        return response()->json(['success' => true, 'message' => 'Izin has been rejected.']);
+        // return response()->json(['success' => true, 'message' => 'Izin has been rejected.']);
+        return redirect()->back()->with('success', 'Izin rejected.');
     }
 
 

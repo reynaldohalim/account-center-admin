@@ -48,7 +48,7 @@
                                             </div>
                                         </td>
                                         <td class="align-middle text-center text-sm">
-                                            <span class="text-xs font-weight-bold">{{ $record->posisi }}</span>
+                                            <span class="text-xs font-weight-bold">{{ $record->jabatan }}</span>
                                         </td>
                                         <td class="align-middle text-center text-sm">
                                             <span class="text-xs font-weight-bold">{{ $record->tgl_ijin }}</span>
