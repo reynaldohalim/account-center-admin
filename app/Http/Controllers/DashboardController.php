@@ -39,7 +39,8 @@ class DashboardController extends Controller
         $dataPekerjaan = $admin->dataPekerjaan;
         $dataPribadiAdmin = $admin->dataPribadi;
 
-        $izinRecords = Izin::orderBy('tgl_ijin', 'asc')->whereNull('approve2')->whereNull('rejected_by')->get();
+        //izin process
+        $izinRecords = Izin::orderBy('tgl_ijin', 'asc')->where('approve2', '')->where('rejected_by', '')->get();
 
         // Merge izin records by no_ijin
         $mergedIzin = $izinRecords->groupBy('no_ijin')->map(function ($rows) {
@@ -63,10 +64,32 @@ class DashboardController extends Controller
         }
         $izin = $mergedIzin;
 
+
+        //Chart 5 hari terakhir process:
+        // $tgl_end = date("Y-m-d");
+        $tgl_end = '2023-06-09';
+        $tgl_start = date('Y-m-d', strtotime($tgl_end . ' -4 days'));
+        $kehadiran = [];
+        $izinCount = [];
+        $errorCount = [];
+
+        //All karyawan:
+        $karyawanCount = DataPekerjaan::count('nip');
+
+        $current_date = $tgl_start;
+        while (strtotime($current_date) <= strtotime($tgl_end)) {
+            $kehadiran[$current_date] = Absensi::where('tgl', 'like', $current_date.'%')->distinct()->count('nip');
+            $izinCount[$current_date] = Izin::where('tgl_ijin', $current_date)->whereNotNull('approve2')->distinct()->count('no_ijin');
+            $errorCount[$current_date] = $karyawanCount - $kehadiran[$current_date] - $izinCount[$current_date];
+            $current_date = date("Y-m-d", strtotime("+1 day", strtotime($current_date)));
+        }
+
+
+
         $pageTitle = 'Halaman Utama';
         $breadcrumb = ['Admin', $pageTitle];
 
-        return view('dashboard', compact('admin', 'dataPekerjaan', 'dataPribadiAdmin', 'izin', 'countIzin', 'pageTitle', 'breadcrumb'));
+        return view('dashboard', compact('admin', 'dataPekerjaan', 'dataPribadiAdmin', 'izin', 'countIzin', 'pageTitle', 'breadcrumb', 'kehadiran', 'izinCount', 'errorCount'));
     }
 
     //Data Karyawan
@@ -121,6 +144,22 @@ class DashboardController extends Controller
         return response()->json($result);
     }
 
+    public function searchKaryawan(Request $request)
+    {
+        $query = $request->get('query');
+        if (!$query) {
+            return response()->json([]);
+        }
+
+        $results = DataKaryawan::whereHas('dataPribadi', function($q) use ($query) {
+            $q->where('nama', 'LIKE', '%' . $query . '%');
+        })->get();
+
+        return response()->json($results);
+    }
+
+
+
     //Karyawan Details
     public function viewDetails($nip)
     {
@@ -151,12 +190,12 @@ class DashboardController extends Controller
         $jam_datang = '08:07:00';
         $jam_pulang = '17:00:00';
         $tgl_awal = '2023-06-01';
-        $tgl_akhir = '2023-06-20';
+        $tgl_akhir = '2023-12-18';
         $sql_tgl_akhir = Carbon::parse($tgl_akhir)->addDay()->format('Y-m-d');
 
         // Query izin
         $izin = Izin::where('nip', $nip)
-            ->whereNotNull('approve2')
+            ->whereNotNull('approve2')->whereNot('approve2', '')
             ->whereBetween('tgl_ijin', [$tgl_awal, $sql_tgl_akhir])
             ->get();
 
@@ -279,23 +318,41 @@ class DashboardController extends Controller
         $izin = Izin::where('nip', $nip)->orderBy('tgl_ijin', 'asc')->get();
         //check another izin
         foreach ($izin as $izin_item) {
+            // Get the 'nama_jenis_izin' value
             $izin_item->nama_jenis_izin = JenisIzin::where('kode_jenis_izin', $izin_item->jenis_ijin)->first()->jenis_izin;
 
+            // Check if 'approve2' is null
             if ($izin_item->approve2 == null) {
+                // Get the division of the current izin item
                 $izin_itemDivisi = $dataPekerjaan->divisi;
+
+                // Find other izin items on the same date that have 'approve2' not null
                 $checkAnotherIzin = Izin::where('tgl_ijin', $izin_item->tgl_ijin)->whereNotNull('approve2')->get();
 
-                foreach ($checkAnotherIzin as $check) {
-                    $check->dataPekerjaan = DataPekerjaan::where('nip', $check->nip)->first();
-                    $izin_item->anotherIzin = [];
+                // Initialize a temporary array for related izin items
+                $relatedIzinItems = [];
 
-                    if ($check->dataPekerjaan->divisi == $izin_itemDivisi) {
+                // Loop through the found izin items
+                foreach ($checkAnotherIzin as $check) {
+                    // Get the related dataPekerjaan for the current check item
+                    $check->dataPekerjaan = DataPekerjaan::where('nip', $check->nip)->first();
+
+                    // If the dataPekerjaan exists and the division matches
+                    if ($check->dataPekerjaan && $check->dataPekerjaan->divisi == $izin_itemDivisi) {
+                        // Get the related dataPribadi for the current check item
                         $check->dataPribadi = DataPribadi::where('nip', $check->nip)->first();
-                        $izin_item->anotherIzin[] = $check;
+
+                        // Add the current check item to the temporary array
+                        $relatedIzinItems[] = $check;
                     }
                 }
+
+                // Assign the temporary array to the anotherIzin property
+                $izin_item->anotherIzin = $relatedIzinItems;
             }
         }
+
+
 
         // Merge izin records by no_ijin
         $mergedIzin = $izin->groupBy('no_ijin')->map(function ($rows) {
@@ -458,8 +515,7 @@ class DashboardController extends Controller
             ->get();
 
         if ($absensi->isEmpty()) {
-            $keterangan = $nip;
-            // $keterangan = 'Tidak absen';
+            $keterangan = 'Tidak absen';
         } else {
             $times = $absensi->pluck('tgl')->map(function ($item) {
                 return substr($item, 11);
@@ -579,7 +635,7 @@ class DashboardController extends Controller
         $admin = auth()->user();
         $dataPribadiAdmin = $admin->dataPribadi;
 
-        $izinRecords = Izin::orderBy('tgl_ijin', 'asc')->whereNull('approve2')->whereNull('rejected_by')->get();
+        $izinRecords = Izin::orderBy('tgl_ijin', 'asc')->where('approve2', '')->where('rejected_by', '')->get();
 
         // Merge izin records by no_ijin
         $mergedIzin = $izinRecords->groupBy('no_ijin')->map(function ($rows) {
@@ -602,7 +658,12 @@ class DashboardController extends Controller
             $pribadi = DataPribadi::where('nip', $izin->nip)->first();
             $izin->nama = $pribadi ? $pribadi->nama : null;
 
-            $izin->nama_jenis_izin = JenisIzin::where('kode_jenis_izin', $izin->jenis_ijin)->first()->jenis_izin;
+
+            $izin->nama_jenis_izin = '';
+            if(JenisIzin::where('kode_jenis_izin', $izin->jenis_ijin)->first()){
+                $izin->nama_jenis_izin = JenisIzin::where('kode_jenis_izin', $izin->jenis_ijin)->first()->jenis_izin;
+            }
+
             $izin->status = 'Menunggu approve2';
             if ($izin->approve1 == null) $izin->status = 'Menunggu approve1';
         }
@@ -668,13 +729,165 @@ class DashboardController extends Controller
     //Klasifikasi karyawan
     public function klasifikasi_karyawan()
     {
+
+        $nips = DataPekerjaan::distinct()->pluck('nip');
+
+        // Create DataKaryawan instances
+        $dataKaryawanInstances = $nips->map(function ($nip) {
+            return new DataKaryawan($nip);
+        });
+
+        foreach($dataKaryawanInstances as $dataKaryawan){
+            $nip = $dataKaryawan->dataPribadi()->nip;
+
+            //absensi
+            $full_count = 0;
+            $cuti = [];
+            $tugas = [];
+            $error = [];
+
+            $jam_datang = '08:07:00';
+            $jam_pulang = '17:00:00';
+            $tgl_awal = '2023-06-01';
+            $tgl_akhir = '2023-12-18';
+            $sql_tgl_akhir = Carbon::parse($tgl_akhir)->addDay()->format('Y-m-d');
+
+            // Query izin
+            $izin = Izin::where('nip', $nip)
+                ->whereNotNull('approve2')->whereNot('approve2', '')
+                ->whereBetween('tgl_ijin', [$tgl_awal, $sql_tgl_akhir])
+                ->get();
+
+            // Query absensi
+            $absensi = Absensi::where('nip', $nip)
+                ->whereBetween('tgl', [$tgl_awal, $sql_tgl_akhir])
+                ->get();
+
+            // Query libur_karyawan
+            $libur = LiburKaryawan::whereBetween('tgl', [$tgl_awal, $sql_tgl_akhir])
+                ->get();
+
+            // Check workdays/weekend
+            $dt_tgl_awal = new DateTime($tgl_awal);
+            $dt_tgl_akhir = new DateTime($tgl_akhir);
+            $workdays_count = 0;
+
+            foreach (new DatePeriod($dt_tgl_awal, new DateInterval('P1D'), $dt_tgl_akhir->modify('+1 day')) as $date) {
+                $date_str = $date->format('Y-m-d');
+
+                // Check weekends
+                $weekends = [6, 7]; // 1=mon, 2=tues, 3=wed... 7=sun
+                if (!in_array($date->format('N'), $weekends)) {
+                    $workdays_count++;
+
+                    // Check approved izin/cuti bersama
+                    $filtered_izin = $izin->filter(function ($item) use ($date_str) {
+                        return $item->tgl_ijin === $date_str;
+                    });
+
+                    if ($filtered_izin->isNotEmpty()) {
+                        $filtered_izin = $filtered_izin->sortBy('no_ijin');
+                        $no_ijin = $filtered_izin->first()->no_ijin;
+                        $jenis_ijin = $filtered_izin->first()->jenis_ijin;
+                        $firstchar_jenis_ijin = substr($jenis_ijin, 0, 1);
+
+                        if ($firstchar_jenis_ijin == 'A') {
+                            $cuti[] = $no_ijin; // izin cuti
+                        } elseif ($firstchar_jenis_ijin == 'C') {
+                            $tugas[] = $no_ijin; // izin tugas
+                        } elseif ($firstchar_jenis_ijin == 'D') {
+                            $full_count++; // izin dispensasi
+                        } elseif ($firstchar_jenis_ijin == 'B') {
+                            if ($jenis_ijin == 'B.360') {
+                                $full_count++; // izin error absen
+                            } else {
+                                // Check data absen
+                                $filtered_absen = $absensi->filter(function ($item) use ($date_str) {
+                                    return substr($item->tgl, 0, 10) === $date_str;
+                                });
+
+                                if ($filtered_absen->isNotEmpty()) {
+                                    // Get time absen
+                                    $times = $filtered_absen->map(function ($item) {
+                                        return substr($item->tgl, 11);
+                                    })->sort()->values();
+
+                                    if (in_array($jenis_ijin, ['B.310', 'B.340', 'B.370'])) {
+                                        // tidak absen datang, izin terlambat, terlambat dispensasi
+                                        if ($times->first() < $jam_pulang) {
+                                            $error[] = $date_str;
+                                        } else {
+                                            $full_count++;
+                                        }
+                                    } elseif (in_array($jenis_ijin, ['B.320', 'B.350'])) {
+                                        // tidak absen pulang, izin pulang awal
+                                        if ($times->first() >= $jam_datang) {
+                                            $error[] = $date_str;
+                                        } else {
+                                            $full_count++;
+                                        }
+                                    }
+                                } else {
+                                    // tidak ada data absen => error
+                                    $error[] = $date_str;
+                                }
+                            }
+                        }
+                    } else {
+                        // Check data absen
+                        $filtered_absen = $absensi->filter(function ($item) use ($date_str) {
+                            return substr($item->tgl, 0, 10) === $date_str;
+                        });
+
+                        if ($filtered_absen->isNotEmpty()) {
+                            // Get time absen
+                            $times = $filtered_absen->map(function ($item) {
+                                return substr($item->tgl, 11);
+                            })->sort()->values();
+
+                            if ($times->count() < 2) {
+                                $error[] = $date_str; // absen tidak lengkap
+                            } else {
+                                // Check absen datang-pulang
+                                if ($times->first() >= $jam_datang && $times->last() < $jam_pulang) {
+                                    $error[] = $date_str;
+                                } else {
+                                    $full_count++;
+                                }
+                            }
+                        } else {
+                            // tidak ada data absen
+                            $error[] = $date_str;
+                        }
+                    }
+                }
+            }
+
+            $dataKaryawan->full_count = $full_count;
+            $dataKaryawan->cuti_count = count($cuti);
+            $dataKaryawan->tugas_count = count($tugas);
+            $dataKaryawan->error_count = count($error);
+            // $dataKaryawan->cuti = $cuti;
+            // $dataKaryawan->tugas = $tugas;
+            // $dataKaryawan->error = $error;
+            $dataKaryawan->total_absen_count = $dataKaryawan->full_count + $dataKaryawan->cuti_count + $dataKaryawan->tugas_count + $dataKaryawan->error_count;
+            $dataKaryawan->full_count = $full_count + count($tugas);
+
+            $dataKaryawan->full_percent = round(($dataKaryawan->full_count / $dataKaryawan->total_absen_count) * 100, 1);
+            $dataKaryawan->cuti_percent = round(($dataKaryawan->cuti_count / $dataKaryawan->total_absen_count) * 100, 1);
+            $dataKaryawan->tugas_percent = round(($dataKaryawan->tugas_count / $dataKaryawan->total_absen_count) * 100, 1);
+            $dataKaryawan->error_percent = round(($dataKaryawan->error_count / $dataKaryawan->total_absen_count) * 100, 1);
+        }
+
+        $dataKaryawanInstances = $dataKaryawanInstances->sortByDesc('full_count');
+
+
         $pageTitle = 'Klasifikasi Karyawan';
         $breadcrumb = ['Admin', $pageTitle];
 
         $admin = auth()->user();
         $dataPribadiAdmin = $admin->dataPribadi;
-
-        return view('klasifikasi-karyawan', compact('pageTitle', 'breadcrumb', 'dataPribadiAdmin'));
+        return view('klasifikasi-karyawan', compact('pageTitle', 'breadcrumb', 'dataPribadiAdmin', 'dataKaryawanInstances'));
     }
 
     //notifikasi

@@ -1394,25 +1394,6 @@
                             @endforeach
                         </div>
 
-                        {{-- <div class="tab-pane fade" id="absensi-tab-pane" role="tabpanel" aria-labelledby="absensi-tab"
-                            tabindex="0">
-                            <div class="card accordion" id="accordionExample">
-                                <div class="card-header" id="headingOne">
-                                    <h2 class="mb-0">
-                                        <button class="btn-link accordion-button" type="button" data-toggle="collapse"
-                                            data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                                            Absen Full 90%
-                                        </button>
-                                    </h2>
-                                </div>
-                                <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
-                                    data-parent="#accordionExample">
-                                    <div class="card-body">
-                                    </div>
-                                </div>
-                            </div>
-                        </div> --}}
-
                         <div class="tab-pane fade" id="absensi-tab-pane" role="tabpanel"
                             aria-labelledby="absensi-tab" tabindex="0">
                             <div class="card">
@@ -1825,7 +1806,7 @@
                                                                                     </h6>
                                                                                     <p
                                                                                         class="text-xs text-secondary mb-0">
-                                                                                        nip</p>
+                                                                                        {{ $anotherIzin->dataPribadi->nip }}</p>
                                                                                 </div>
                                                                             </div>
                                                                         </td>
@@ -1917,6 +1898,19 @@
 
 @push('custom-scripts')
     <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const modals = document.querySelectorAll('.modal');
+
+            modals.forEach((modal) => {
+                modal.addEventListener('wheel', (e) => {
+                    const modalBody = modal.querySelector('.modal-body');
+                    if (modalBody) {
+                        modalBody.scrollTop += e.deltaY;
+                    }
+                });
+            });
+        });
+
         document.addEventListener("DOMContentLoaded", function() {
             document.querySelectorAll('.detail-link').forEach(function(element) {
                 element.addEventListener('click', function() {

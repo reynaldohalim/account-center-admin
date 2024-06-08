@@ -1,5 +1,5 @@
 <!-- Navbar -->
-<nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" data-scroll="true"> 
+<nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" data-scroll="true">
     <div class="container-fluid py-1 px-3">
         <li class="nav-item px-3 d-flex align-items-center">
             <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
@@ -33,7 +33,7 @@
             <div class="ms-md-auto pe-md-3 d-flex align-items-center">
                 <div class="input-group input-group-outline">
                     <label class="form-label">Cari karyawan...</label>
-                    <input type="text" class="form-control">
+                    <input type="text" id="searchKaryawan" class="form-control" onkeyup="searchKaryawan()">
                 </div>
             </div>
             <ul class="navbar-nav justify-content-end">
@@ -123,3 +123,36 @@
         </div>
     </div>
 </nav>
+<script>
+    function searchKaryawan() {
+        const searchInput = document.getElementById('searchKaryawan').value.toLowerCase();
+
+        if (searchInput.length > 0) {
+            fetch(`/search-karyawan?query=${searchInput}`)
+                .then(response => response.json())
+                .then(data => {
+                    const rows = document.querySelectorAll('.data-tr');
+                    rows.forEach(row => row.style.display = 'none'); // Hide all rows initially
+
+                    data.forEach(karyawan => {
+                        rows.forEach(row => {
+                            const nama = row.querySelector('td div div h6').innerText.toLowerCase();
+                            if (nama.includes(karyawan.dataPribadi.nama.toLowerCase())) {
+                                row.style.display = '';
+                            }
+                        });
+                    });
+                })
+                .catch(error => console.error('Error searching karyawans:', error));
+        } else {
+            const rows = document.querySelectorAll('.data-tr');
+            rows.forEach(row => row.style.display = ''); // Show all rows if search input is empty
+        }
+    }
+
+    document.getElementById('searchKaryawan').addEventListener('keyup', function(event) {
+        searchKaryawan();
+    });
+</script>
+
+

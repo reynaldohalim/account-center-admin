@@ -20,7 +20,6 @@
                                     <th class="text text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Jabatan - Bagian - Divisi</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No. HP</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Tgl Lahir</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Presensi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -51,9 +50,6 @@
                                     <td class="align-middle text-center">
                                         <p class="text-xs font-weight-bold mb-0">{{ $pribadi->tgl_lahir }}</p>
                                     </td>
-                                    <td class="align-middle text-center">
-                                        <p class="text-xs font-weight-bold mb-0">96%</p>
-                                    </td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -69,20 +65,17 @@
 @endsection
 <script>
     function showAll(divisiSlug) {
-        window.scrollTo(0, 0);//doesnt work
+        window.scrollTo(0, 0);
 
-        // Hide all divisi sections
         document.querySelectorAll('.divisi-section').forEach(section => {
             section.style.display = 'none';
         });
 
-        // Show the selected divisi section
         document.getElementById('divisi-' + divisiSlug).style.display = 'block';
 
         const divisiSection = document.getElementById('divisi-' + divisiSlug);
         const divisiName = divisiSlug;
 
-        // Fetch all karyawans for this divisi
         fetch(`/fetch-all-karyawans/${divisiName}`)
             .then(response => response.json())
             .then(karyawans => {
@@ -115,9 +108,6 @@
                     </td>
                     <td class="align-middle text-center">
                         <p class="text-xs font-weight-bold mb-0">${karyawan.tgl_lahir}</p>
-                    </td>
-                    <td class="align-middle text-center">
-                        <p class="text-xs font-weight-bold mb-0">96%</p>
                     </td>
                     `;
 

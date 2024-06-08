@@ -95,7 +95,7 @@
                 </div>
                 <div class="card-body">
                     <h6 class="mb-0 ">Izin tugas / cuti (29)</h6>
-                    <p class="text-sm ">15 tugas, 14 izin dan cuti</p>
+                    <p class="text-sm ">15 tugas, 14 izin</p>
                 </div>
             </div>
         </div>
@@ -253,9 +253,6 @@
                                 <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">08:11:01</p>
                             </div>
                         </div>
-
-
-
                     </div>
                 </div>
             </div>
@@ -269,11 +266,14 @@
 <script>
     if (document.getElementById("chart_kehadiran")) {
     var ctx = document.getElementById("chart_error").getContext("2d");
-
     new Chart(ctx, {
         type: "bar",
         data: {
-            labels: ["Senin", "Selasa", "Rabu", "Kamis", "Jumat"],
+            labels: [
+                @foreach ($errorCount as $date=>$count)
+                    "{{$date}}",
+                @endforeach
+            ],
             datasets: [{
                 label: "Tanpa izin",
                 tension: 0.4,
@@ -281,7 +281,11 @@
                 borderRadius: 4,
                 borderSkipped: false,
                 backgroundColor: "rgba(255, 255, 255, .8)",
-                data: [10, 5, 2, 3, 6],
+                data: [
+                    @foreach ($errorCount as $date=>$count)
+                    "{{$count}}",
+                @endforeach
+                ],
                 maxBarThickness: 6
             }],
         },
@@ -353,7 +357,11 @@
     new Chart(ctx2, {
         type: "line",
         data: {
-            labels: ["Senin", "Selasa", "Rabu", "Kamis", "Jumat"],
+            labels: [
+                @foreach ($kehadiran as $date=>$count)
+                    "{{$date}}",
+                @endforeach
+            ],
             datasets: [{
                 label: "Kehadiran",
                 tension: 0,
@@ -365,7 +373,11 @@
                 borderWidth: 4,
                 backgroundColor: "transparent",
                 fill: true,
-                data: [1021, 1196, 1143, 1207, 1189],
+                data: [
+                    @foreach ($kehadiran as $date=>$count)
+                        "{{$count}}",
+                    @endforeach
+                ],
                 maxBarThickness: 6
             }],
         },
@@ -434,7 +446,11 @@
     new Chart(ctx3, {
         type: "line",
         data: {
-            labels: ["Senin", "Selasa", "Rabu", "Kamis", "Jumat"],
+            labels: [
+                @foreach ($izinCount as $date=>$count)
+                    "{{$date}}",
+                @endforeach
+            ],
             datasets: [{
                 label: "Izin",
                 tension: 0,
@@ -446,7 +462,11 @@
                 borderWidth: 4,
                 backgroundColor: "transparent",
                 fill: true,
-                data: [10, 2, 9, 0, 29],
+                data: [
+                    @foreach ($izinCount as $date=>$count)
+                        "{{$count}}",
+                    @endforeach
+                ],
                 maxBarThickness: 6
             }],
         },

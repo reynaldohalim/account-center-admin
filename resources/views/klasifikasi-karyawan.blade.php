@@ -7,7 +7,7 @@
             <div class="card my-4">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
                     <div class="bg-gradient-primary shadow-primary border-radius-lg pt-4 pb-3">
-                        <h6 class="text-white text-capitalize ps-3">HRD</h6>
+                        <h6 class="text-white text-capitalize ps-3">Klasifikasi</h6>
                     </div>
                 </div>
                 <div class="card-body px-0 pb-2">
@@ -16,14 +16,15 @@
                             <thead>
                                 <tr>
                                     <th class="text text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Nama - NIP</th>
-                                    <th class="text text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Jabatan - Divisi - Bagian</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No. HP</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Tgl Lahir</th>
+                                    <th class="text text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Divisi - Jabatan - Bagian</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Cuti</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Tugas</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Error</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Presensi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class="data-tr" onclick="viewDataKaryawan()">
+                                {{-- <tr class="data-tr" onclick="viewDataKaryawan()">
                                     <td>
                                         <div class="d-flex px-2 py-1">
                                             <div>
@@ -36,31 +37,63 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <p class="text-xs font-weight-bold mb-0">Manager</p>
-                                        <p class="text-xs text-secondary mb-0">Organization</p>
+                                        <p class="text-xs font-weight-bold mb-0">Divisi</p>
+                                        <p class="text-xs text-secondary mb-0">Jabatan - Bagian</p>
                                     </td>
-                                    <td class="align-middle text-center text-sm">
-                                        <p class="text-xs font-weight-bold mb-0">08113874121</p>
+                                    <td class="text-center">
+                                        <p class="text-xs font-weight-bold mb-0">1%</p>
+                                        <p class="text-xs text-secondary mb-0">2x</p>
                                     </td>
-                                    <td class="align-middle text-center">
-                                        <p class="text-xs font-weight-bold mb-0">01-12-1996</p>
+                                    <td class="text-center">
+                                        <p class="text-xs font-weight-bold mb-0">15%</p>
+                                        <p class="text-xs text-secondary mb-0">30x</p>
                                     </td>
-                                    <td class="align-middle text-center">
-                                        <p class="text-xs font-weight-bold mb-0">96%</p>
+                                    <td class="text-center">
+                                        <p class="text-xs font-weight-bold mb-0">5%</p>
+                                        <p class="text-xs text-secondary mb-0">10x</p>
                                     </td>
-                                </tr>
+                                    <td class="text-center">
+                                        <p class="text-xs font-weight-bold mb-0">89%</p>
+                                        <p class="text-xs text-secondary mb-0">178x</p>
+                                    </td>
+                                </tr> --}}
 
-                                <tr>
-                                    <td>
-                                        <div class="d-flex px-2 py-1">
-                                            <div class="avatar avatar-sm me-3 border-radius-lg">
+                                @foreach ($dataKaryawanInstances as $dataKaryawan)
+                                    <tr class="data-tr" onclick="viewDataKaryawan()">
+                                        <td>
+                                            <div class="d-flex px-2 py-1">
+                                                <div>
+                                                    <img src="../assets/img/pp.png" class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
+                                                </div>
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <h6 class="mb-0 text-sm">{{$dataKaryawan->dataPribadi()->nama}}</h6>
+                                                    <p class="text-xs text-secondary mb-0">{{$dataKaryawan->dataPribadi()->nip}}</p>
+                                                </div>
                                             </div>
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="text-xs text-secondary mb-0 btn">Coming soon</h6>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
+                                        </td>
+                                        <td>
+                                            <p class="text-xs font-weight-bold mb-0">{{$dataKaryawan->dataPekerjaan()->divisi}}</p>
+                                            <p class="text-xs text-secondary mb-0">{{$dataKaryawan->dataPekerjaan()->jabatan}} - {{$dataKaryawan->dataPekerjaan()->bagian}}</p>
+                                        </td>
+                                        <td class="text-center">
+                                            <p class="text-xs font-weight-bold mb-0">{{$dataKaryawan->cuti_percent}}%</p>
+                                            <p class="text-xs text-secondary mb-0">{{$dataKaryawan->cuti_count}}x</p>
+                                        </td>
+                                        <td class="text-center">
+                                            <p class="text-xs font-weight-bold mb-0">{{$dataKaryawan->tugas_percent}}%</p>
+                                            <p class="text-xs text-secondary mb-0">{{$dataKaryawan->tugas_count}}x</p>
+                                        </td>
+                                        <td class="text-center">
+                                            <p class="text-xs font-weight-bold mb-0">{{$dataKaryawan->error_percent}}%</p>
+                                            <p class="text-xs text-secondary mb-0">{{$dataKaryawan->error_count}}x</p>
+                                        </td>
+                                        <td class="text-center">
+                                            <p class="text-xs font-weight-bold mb-0">{{$dataKaryawan->full_percent}}%</p>
+                                            <p class="text-xs text-secondary mb-0">{{$dataKaryawan->full_count}}x</p>
+                                        </td>
+                                    </tr>
+                                @endforeach
+
                             </tbody>
                         </table>
 

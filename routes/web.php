@@ -30,6 +30,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/data-karyawan/{nip}', [DashboardController::class, 'viewDetails'])->name('data_karyawan.details');
     Route::get('/absensi/detail/{type}/{id}/{nip}', [DashboardController::class, 'getDetail'])->name('absensi.detail');
     Route::get('/fetch-all-karyawans/{divisi}', [DashboardController::class, 'fetchAllKaryawans']);
+    Route::get('/search-karyawan', [DashboardController::class, 'searchKaryawan'])->name('search.karyawan');
+
 
     //Libur Karyawan
     Route::get('pengaturan-libur', [DashboardController::class, 'pengaturan_libur']);
