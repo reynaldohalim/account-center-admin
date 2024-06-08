@@ -30,7 +30,7 @@
                 </div>
                 <div class="card-footer pt-0 pb-2 text-end">
                     <h5 class="mb-0">98%</h5>
-                    <h6>Modern Market</h6>
+                    <h6>MRK</h6>
                 </div>
             </div>
         </div>
@@ -42,12 +42,12 @@
                         <i class="material-icons opacity-10">person</i>
                     </div>
                     <div class="text-end pt-1">
-                        <p class="text-sm mb-0 text-capitalize">Kehadiran tertinggi</p>
+                        <p class="text-sm mb-0 text-capitalize">Kehadiran terendah</p>
                     </div>
                 </div>
                 <div class="card-footer pt-0 pb-2 text-end">
-                    <h5 class="mb-0">98%</h5>
-                    <h6>Modern Market</h6>
+                    <h5 class="mb-0">87%</h5>
+                    <h6>UMM</h6>
                 </div>
             </div>
         </div>
@@ -116,10 +116,10 @@
     <div class="row mb-4">
         <div class="col-lg-8 col-md-6 mb-md-0 mb-4">
             <div class="card">
-                <div class="card-header pb-0">
+                <div class="card-header pb-0 mb-0">
                     <div class="row">
-                        <div class="col-lg-6 col-7">
-                            <h6>Pengajuan izin Pending ({{ $countIzin }}):</h6>
+                        <div class="col-lg-6 col-7 pt-2 align-middle">
+                            <h6 class="p-3"><i class='fas fa-exclamation-triangle lg warning-icon me-2'></i>Pengajuan Izin Pending ({{ $countIzin }}):</h6>
                         </div>
                         <div class="col-lg-6 col-5 my-auto text-end">
                             <div class="dropdown float-lg-end pe-4">
@@ -135,7 +135,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-body px-0 pb-2">
+                <div class="card-body px-0 pb-2 pt-0">
                     <div class="table-responsive">
                         <table class="table align-items-center mb-0">
                             <thead>
@@ -187,9 +187,9 @@
             </div>
         </div>
         <div class="col-lg-4 col-md-6">
-            <div class="card h-100">
+            <div class="card p-3">
                 <div class="card-header pb-0">
-                    <div class="dropdown float-lg-end pe-4">
+                    {{-- <div class="dropdown float-lg-end pe-4">
                         <a class="cursor-pointer" id="dropdownTable" data-bs-toggle="dropdown"
                             aria-expanded="false">
                             <i class="fa fa-ellipsis-v text-secondary"></i>
@@ -200,12 +200,12 @@
                             <li><a class="dropdown-item border-radius-md" href="javascript:;">Something else here</a>
                             </li>
                         </ul>
-                    </div>
-                    <h6>Terlambat / Pulang awal (4)</h6>
-                    <p class="text-sm">
+                    </div> --}}
+                    <h6><i class='fas fa-exclamation-triangle primary-icon me-3'></i>Terlambat / Tidak absen (4)</h6>
+                    {{-- <p class="text-sm">
                         <i class="fa fa-arrow-up text-success" aria-hidden="true"></i>
                         <span class="font-weight-bold">24%</span> this month
-                    </p>
+                    </p> --}}
                 </div>
                 <div class="card-body p-3">
                     <div class="timeline timeline-one-side">
@@ -217,7 +217,7 @@
                             <div class="timeline-content">
                                 <h6 class="text-dark text-sm font-weight-bold mb-0">Non-Staff - Rudy Sanjaya</h6>
                                 </h6>
-                                <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">08:11:01</p>
+                                <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">08:07:09</p>
                             </div>
                         </div>
 
@@ -228,7 +228,7 @@
                             <div class="timeline-content">
                                 <h6 class="text-dark text-sm font-weight-bold mb-0">IT - Anton Andika</h6>
                                 </h6>
-                                <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">08:11:01</p>
+                                <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">08:07:29</p>
                             </div>
                         </div>
                         <div class="timeline-block mb-3">
@@ -248,7 +248,7 @@
                             <div class="timeline-content">
                                 <h6 class="text-dark text-sm font-weight-bold mb-0">IT - Natalia Salim</h6>
                                 </h6>
-                                <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">08:11:01</p>
+                                <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">08:21:55</p>
                             </div>
                         </div>
                     </div>
