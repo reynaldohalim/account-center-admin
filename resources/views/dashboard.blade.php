@@ -19,37 +19,35 @@
         </div>
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
             <div class="card">
-                <div class="card-header p-3 pt-2">
+                <div class="card-header pt-3">
                     <div
                         class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
                         <i class="material-icons opacity-10">person</i>
                     </div>
                     <div class="text-end pt-1">
                         <p class="text-sm mb-0 text-capitalize">Kehadiran tertinggi</p>
-                        <h4 class="mb-0">98%</h4>
                     </div>
                 </div>
-                <hr class="dark horizontal my-0">
-                <div class="card-footer p-3">
+                <div class="card-footer pt-0 pb-2 text-end">
+                    <h5 class="mb-0">98%</h5>
                     <h6>Modern Market</h6>
                 </div>
             </div>
         </div>
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
             <div class="card">
-                <div class="card-header p-3 pt-2">
+                <div class="card-header pt-3">
                     <div
                         class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
                         <i class="material-icons opacity-10">person</i>
                     </div>
                     <div class="text-end pt-1">
-                        <p class="text-sm mb-0 text-capitalize">Kehadiran Terendah</p>
-                        <h4 class="mb-0">87%</h4>
+                        <p class="text-sm mb-0 text-capitalize">Kehadiran tertinggi</p>
                     </div>
                 </div>
-                <hr class="dark horizontal my-0">
-                <div class="card-footer p-3">
-                    <h6>Export</h6>
+                <div class="card-footer pt-0 pb-2 text-end">
+                    <h5 class="mb-0">98%</h5>
+                    <h6>Modern Market</h6>
                 </div>
             </div>
         </div>
@@ -79,8 +77,8 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <h6 class="mb-0 ">Kehadiran (1.189)</h6>
-                    <p class="text-sm "> (<span class="font-weight-bolder">+15%</span>) dari hari kemarin. </p>
+                    <h6 class="mb-0 text-center">Kehadiran ({{end($chartData->kehadiranCount)}})</h6>
+                    {{-- <p class="text-sm "> (<span class="font-weight-bolder">+15%</span>) dari hari kemarin. </p> --}}
                 </div>
             </div>
         </div>
@@ -94,8 +92,8 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <h6 class="mb-0 ">Izin tugas / cuti (29)</h6>
-                    <p class="text-sm ">15 tugas, 14 izin</p>
+                    <h6 class="mb-0 text-center">Izin tugas / cuti ({{end($chartData->izinCount)}})</h6>
+                    {{-- <p class="text-sm ">15 tugas, 14 izin</p> --}}
                 </div>
             </div>
         </div>
@@ -109,8 +107,8 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <h6 class="mb-0 ">Tidak hadir tanpa izin (6)</h6>
-                    <p class="text-sm "></p>
+                    <h6 class="mb-0 text-center">Tidak hadir tanpa izin ({{end($chartData->errorCount)}})</h6>
+                    {{-- <p class="text-sm "></p> --}}
                 </div>
             </div>
         </div>
@@ -121,7 +119,7 @@
                 <div class="card-header pb-0">
                     <div class="row">
                         <div class="col-lg-6 col-7">
-                            <h6>Pengajuan izin pending: ({{ $countIzin }})</h6>
+                            <h6>Pengajuan izin Pending ({{ $countIzin }}):</h6>
                         </div>
                         <div class="col-lg-6 col-5 my-auto text-end">
                             <div class="dropdown float-lg-end pe-4">
@@ -156,7 +154,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($izin as $item)
+                                @foreach($izin->slice(0,5) as $item)
                                     <tr>
                                         <td>
                                             <div class="d-flex px-2 py-1">
@@ -270,7 +268,7 @@
         type: "bar",
         data: {
             labels: [
-                @foreach ($errorCount as $date=>$count)
+                @foreach ($chartData->errorCount as $date=>$count)
                     "{{$date}}",
                 @endforeach
             ],
@@ -282,7 +280,7 @@
                 borderSkipped: false,
                 backgroundColor: "rgba(255, 255, 255, .8)",
                 data: [
-                    @foreach ($errorCount as $date=>$count)
+                    @foreach ($chartData->errorCount as $date=>$count)
                     "{{$count}}",
                 @endforeach
                 ],
@@ -358,7 +356,7 @@
         type: "line",
         data: {
             labels: [
-                @foreach ($kehadiran as $date=>$count)
+                @foreach ($chartData->kehadiranCount as $date=>$count)
                     "{{$date}}",
                 @endforeach
             ],
@@ -374,7 +372,7 @@
                 backgroundColor: "transparent",
                 fill: true,
                 data: [
-                    @foreach ($kehadiran as $date=>$count)
+                    @foreach ($chartData->kehadiranCount as $date=>$count)
                         "{{$count}}",
                     @endforeach
                 ],
@@ -447,7 +445,7 @@
         type: "line",
         data: {
             labels: [
-                @foreach ($izinCount as $date=>$count)
+                @foreach ($chartData->izinCount as $date=>$count)
                     "{{$date}}",
                 @endforeach
             ],
@@ -463,7 +461,7 @@
                 backgroundColor: "transparent",
                 fill: true,
                 data: [
-                    @foreach ($izinCount as $date=>$count)
+                    @foreach ($chartData->izinCount as $date=>$count)
                         "{{$count}}",
                     @endforeach
                 ],

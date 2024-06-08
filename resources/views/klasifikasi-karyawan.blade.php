@@ -24,40 +24,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {{-- <tr class="data-tr" onclick="viewDataKaryawan()">
-                                    <td>
-                                        <div class="d-flex px-2 py-1">
-                                            <div>
-                                                <img src="../assets/img/team-2.jpg" class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
-                                            </div>
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">John Michael</h6>
-                                                <p class="text-xs text-secondary mb-0">102391830</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <p class="text-xs font-weight-bold mb-0">Divisi</p>
-                                        <p class="text-xs text-secondary mb-0">Jabatan - Bagian</p>
-                                    </td>
-                                    <td class="text-center">
-                                        <p class="text-xs font-weight-bold mb-0">1%</p>
-                                        <p class="text-xs text-secondary mb-0">2x</p>
-                                    </td>
-                                    <td class="text-center">
-                                        <p class="text-xs font-weight-bold mb-0">15%</p>
-                                        <p class="text-xs text-secondary mb-0">30x</p>
-                                    </td>
-                                    <td class="text-center">
-                                        <p class="text-xs font-weight-bold mb-0">5%</p>
-                                        <p class="text-xs text-secondary mb-0">10x</p>
-                                    </td>
-                                    <td class="text-center">
-                                        <p class="text-xs font-weight-bold mb-0">89%</p>
-                                        <p class="text-xs text-secondary mb-0">178x</p>
-                                    </td>
-                                </tr> --}}
-
                                 @foreach ($dataKaryawanInstances as $dataKaryawan)
                                     <tr class="data-tr" onclick="viewDataKaryawan()">
                                         <td>
@@ -76,24 +42,23 @@
                                             <p class="text-xs text-secondary mb-0">{{$dataKaryawan->dataPekerjaan()->jabatan}} - {{$dataKaryawan->dataPekerjaan()->bagian}}</p>
                                         </td>
                                         <td class="text-center">
-                                            <p class="text-xs font-weight-bold mb-0">{{$dataKaryawan->cuti_percent}}%</p>
-                                            <p class="text-xs text-secondary mb-0">{{$dataKaryawan->cuti_count}}x</p>
+                                            <p class="text-xs font-weight-bold mb-0">{{$dataKaryawan->absensi->cuti_percent}}%</p>
+                                            <p class="text-xs text-secondary mb-0">{{$dataKaryawan->absensi->cuti_count}}x</p>
                                         </td>
                                         <td class="text-center">
-                                            <p class="text-xs font-weight-bold mb-0">{{$dataKaryawan->tugas_percent}}%</p>
-                                            <p class="text-xs text-secondary mb-0">{{$dataKaryawan->tugas_count}}x</p>
+                                            <p class="text-xs font-weight-bold mb-0">{{$dataKaryawan->absensi->tugas_percent}}%</p>
+                                            <p class="text-xs text-secondary mb-0">{{$dataKaryawan->absensi->tugas_count}}x</p>
                                         </td>
                                         <td class="text-center">
-                                            <p class="text-xs font-weight-bold mb-0">{{$dataKaryawan->error_percent}}%</p>
-                                            <p class="text-xs text-secondary mb-0">{{$dataKaryawan->error_count}}x</p>
+                                            <p class="text-xs font-weight-bold mb-0">{{$dataKaryawan->absensi->error_percent}}%</p>
+                                            <p class="text-xs text-secondary mb-0">{{$dataKaryawan->absensi->error_count}}x</p>
                                         </td>
                                         <td class="text-center">
-                                            <p class="text-xs font-weight-bold mb-0">{{$dataKaryawan->full_percent}}%</p>
-                                            <p class="text-xs text-secondary mb-0">{{$dataKaryawan->full_count}}x</p>
+                                            <p class="text-xs font-weight-bold mb-0">{{$dataKaryawan->absensi->presensi_percent}}%</p>
+                                            <p class="text-xs text-secondary mb-0">{{$dataKaryawan->absensi->presensi_count}}x</p>
                                         </td>
                                     </tr>
                                 @endforeach
-
                             </tbody>
                         </table>
 
