@@ -168,9 +168,9 @@
                         <textarea id="rejectReason" class="form-control" placeholder="Enter rejection reason" style="display: none;"></textarea>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" id="approve1Button">Approve 1</button>
-                        <button type="button" class="btn btn-secondary" id="approve2Button">Approve 2</button>
-                        <button type="button" class="btn btn-danger" id="rejectButton">Reject</button>
+                        <button type="button" class="btn btn-outline-success" id="approve1Button">Approve 1</button>
+                        <button type="button" class="btn btn-success" id="approve2Button">Approve 2</button>
+                        <button type="button" class="btn btn-outline-primary" id="rejectButton">Tolak</button>
                     </div>
                 </div>
             </div>
