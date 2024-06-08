@@ -886,6 +886,11 @@ class DashboardController extends Controller
 
             $pribadi = DataPribadi::where('nip', $izin->nip)->first();
             $izin->nama = $pribadi ? $pribadi->nama : null;
+
+            $izin->status = 'Menunggu approve 1';
+
+            if($izin->approve2 != null || $izin->approve1 != '') $izin->status = 'Menunggu approve 2';
+
         }
 
         return $mergedIzin;
@@ -901,12 +906,12 @@ class DashboardController extends Controller
             $izin_item->nama_jenis_izin = JenisIzin::where('kode_jenis_izin', $izin_item->jenis_ijin)->first()->jenis_izin;
 
             // Check if 'approve2' is null
-            if ($izin_item->approve2 == null) {
+            if ($izin_item->approve2 == null || $izin_item->approve2 == '') {
                 // Get the division of the current izin item
                 $izin_itemDivisi = $dataPekerjaan->divisi;
 
                 // Find other izin items on the same date that have 'approve2' not null
-                $checkAnotherIzin = Izin::where('tgl_ijin', $izin_item->tgl_ijin)->whereNotNull('approve2')->get();
+                $checkAnotherIzin = Izin::where('tgl_ijin', $izin_item->tgl_ijin)->whereNotNull('approve2')->orWhereNot('approve2', '')->get();
 
                 // Initialize a temporary array for related izin items
                 $relatedIzinItems = [];
