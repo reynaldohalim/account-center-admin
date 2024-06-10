@@ -27965,3 +27965,11 @@ pre[class*="language-"] {
         overflow: auto !important;
     }
 }
+
+.tr-bg-success{
+    background-color: rgba(40, 167, 69, 0.2); /* Adjust the opacity (0.5) as needed */
+}
+
+.tr-bg-primary{
+    background-color: rgba(154, 42, 47, 0.2);
+}

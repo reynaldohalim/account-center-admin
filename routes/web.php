@@ -52,7 +52,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/izin/approve2', [DashboardController::class, 'izin_approve2'])->name('izin.approve2');
     Route::post('/izin/reject', [DashboardController::class, 'izin_reject'])->name('izin.reject');
 
-    Route::get('klasifikasi-karyawan', [DashboardController::class, 'klasifikasi_karyawan']);
+    Route::get('klasifikasi-karyawan', [DashboardController::class, 'klasifikasi_karyawan'])->name('klasifikasi-karyawan');
+
     Route::get('notifikasi', [DashboardController::class, 'notifikasi']);
 
     //IAM Manajemen Hak Akses

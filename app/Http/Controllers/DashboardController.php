@@ -366,8 +366,13 @@ class DashboardController extends Controller
     }
 
     //Klasifikasi karyawan
-    public function klasifikasi_karyawan()
+public function klasifikasi_karyawan(Request $request)
     {
+        $sortBy = $request->get('sortBy', 'presensi'); // Default sorting by 'Presensi'
+        $sortOrder = $request->get('sortOrder', 'desc'); // Default sorting order descending
+
+        $goodLimit = $request->input('good_limit', 90);
+        $notGoodLimit = $request->input('not_good_limit', 80);
 
         $nips = DataPekerjaan::distinct()->pluck('nip');
 
@@ -383,18 +388,21 @@ class DashboardController extends Controller
             $dataKaryawan->absensi->presensi_percent = $dataKaryawan->absensi->full_percent + $dataKaryawan->absensi->tugas_percent;
         }
 
-        //sort by presensi count.
-        $dataKaryawanInstances = $dataKaryawanInstances->sortByDesc(function ($dataKaryawan) {
-            return $dataKaryawan->absensi->presensi_count;
+        // Sort based on selected column and order
+        $dataKaryawanInstances = $dataKaryawanInstances->sortByDesc(function ($dataKaryawan) use ($sortBy) {
+            return $dataKaryawan->absensi->{$sortBy . '_count'};
         });
 
+        if ($sortOrder == 'asc') {
+            $dataKaryawanInstances = $dataKaryawanInstances->reverse();
+        }
 
         $pageTitle = 'Klasifikasi Karyawan';
         $breadcrumb = ['Admin', $pageTitle];
 
         $admin = auth()->user();
         $dataPribadiAdmin = $admin->dataPribadi;
-        return view('klasifikasi-karyawan', compact('pageTitle', 'breadcrumb', 'dataPribadiAdmin', 'dataKaryawanInstances'));
+        return view('klasifikasi-karyawan', compact('pageTitle', 'breadcrumb', 'dataPribadiAdmin', 'dataKaryawanInstances', 'sortBy', 'sortOrder', 'goodLimit', 'notGoodLimit'));
     }
 
     //notifikasi
@@ -780,7 +788,8 @@ class DashboardController extends Controller
         return response()->json(['success' => $success, 'detail' => $detail]);
     }
 
-    private function generateDashboardCharts($today, $daysBefore){
+    private function generateDashboardCharts($today, $daysBefore)
+    {
         $kehadiranCount = [];
         $izinCount = [];
         $errorCount = [];
@@ -802,22 +811,22 @@ class DashboardController extends Controller
         $karyawans = DataPekerjaan::get();
 
         $karyawanCount = $karyawans->count();
-        foreach($workdays as $current_date){
+        foreach ($workdays as $current_date) {
             $kehadiranCount[$current_date] = Absensi::where('tgl', 'like', $current_date . '%')->distinct()->count('nip');
             $izinCount[$current_date] = Izin::where('tgl_ijin', $current_date)->whereNotNull('approve2')->whereNot('approve2', '')->distinct()->count('no_ijin');
             $errorCount[$current_date] = $karyawanCount - $kehadiranCount[$current_date] - $izinCount[$current_date];
         }
 
         //generate today's detail
-        $cuti=[];
-        $tugas=[];
-        $sakit=[];
-        $dispensasi=[];
-        $error=[];
+        $cuti = [];
+        $tugas = [];
+        $sakit = [];
+        $dispensasi = [];
+        $error = [];
 
         $jam_datang = '08:07:00';
         $jam_pulang = '17:00:00';
-        foreach($karyawans as $karyawan){
+        foreach ($karyawans as $karyawan) {
             $karyawan->nama = DataPribadi::where('nip', $karyawan->nip)->first()->nama;
 
             //check izin:
@@ -878,9 +887,9 @@ class DashboardController extends Controller
                         $error[] = $karyawan;
                     } else {
                         // Check absen datang-pulang
-                        if($times->first() >= $jam_datang || $times->last() <= $jam_pulang){
+                        if ($times->first() >= $jam_datang || $times->last() <= $jam_pulang) {
                             if ($times->first() >= $jam_datang) {
-                                $karyawan->error = 'Terlambat: '. $times->first() .' ';
+                                $karyawan->error = 'Terlambat: ' . $times->first() . ' ';
                             }
                             if ($times->last() < $jam_pulang) {
                                 $karyawan->error .= $times->last();
@@ -902,7 +911,7 @@ class DashboardController extends Controller
             'kehadiranCount' => $kehadiranCount,
             'izinCount' => $izinCount,
             'errorCount' => $errorCount,
-            'cuti'=> $cuti,
+            'cuti' => $cuti,
             'tugas' => $tugas,
             'sakit' => $sakit,
             'dispensasi' => $dispensasi,
@@ -918,9 +927,9 @@ class DashboardController extends Controller
         $jam_pulang = '17:00:00';
 
         $absensi = Absensi
-        ::where('nip', $nip)
-        ->where('tgl', 'like', "$tgl%")->distinct()
-        ->get();
+            ::where('nip', $nip)
+            ->where('tgl', 'like', "$tgl%")->distinct()
+            ->get();
 
 
         if ($absensi->isEmpty()) {
@@ -983,14 +992,14 @@ class DashboardController extends Controller
 
             $izin->status = 'Menunggu approve 1';
 
-            if($izin->approve2 != null || $izin->approve1 != '') $izin->status = 'Menunggu approve 2';
-
+            if ($izin->approve2 != null || $izin->approve1 != '') $izin->status = 'Menunggu approve 2';
         }
 
         return $mergedIzin;
     }
 
-    private function getIzin($nip){
+    private function getIzin($nip)
+    {
         $izin = Izin::where('nip', $nip)->orderBy('tgl_ijin', 'asc')->get();
         $dataPekerjaan = DataPekerjaan::where('nip', $nip)->first();
 
