@@ -28,7 +28,7 @@
                                     $pribadi = $dataKaryawan->dataPribadi();
                                     $pekerjaan = $dataKaryawan->dataPekerjaan();
                                 @endphp
-                                <tr class="data-tr" onclick="viewDetails('{{ $pekerjaan->nip }}')">
+                                <tr class="data-tr cursor-pointer" onclick="viewDetails('{{ $pekerjaan->nip }}')">
                                     <td>
                                         <div class="d-flex px-2 py-1">
                                             <div>

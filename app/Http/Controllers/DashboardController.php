@@ -7,6 +7,7 @@ use App\Models\Izin;
 use App\Models\Absensi;
 use App\Models\DataPekerjaan;
 use App\Models\DataPribadi;
+use App\Models\DataLainlain;
 use App\Models\JenisIzin;
 use App\Models\PembaruanData;
 use App\Models\DataKeluarga;
@@ -141,6 +142,54 @@ class DashboardController extends Controller
         $pembaruanData = PembaruanData::where('nip', $nip)->whereNull('tgl_approval')->get()->groupBy('tabel');
 
         return view('data-karyawan-details', compact('dataPribadiAdmin', 'pageTitle', 'breadcrumb', 'dataPribadi', 'dataPekerjaan', 'dataLainlain', 'dataKeluarga', 'pendidikan', 'bahasa', 'organisasi', 'pengalamanKerja', 'absensi', 'izin', 'pembaruanData'));
+    }
+
+    public function update(Request $request, $nip)
+    {
+        if ($request->has('nama')) {
+            $dataPribadi = DataPribadi::find($nip);
+            $dataPribadi->update($request->all());
+        } elseif ($request->has('divisi')) {
+            $dataPekerjaan = DataPekerjaan::find($nip);
+            $dataPekerjaan->update($request->all());
+        } elseif ($request->has('no_kpj')) {
+            $dataLainlain = DataLainlain::find($nip);
+            $dataLainlain->update($request->all());
+        }
+
+        return redirect()->route('data_karyawan.details', $nip)->with('success', 'Data updated successfully.');
+    }
+
+    public function updateKeluarga(Request $request, $id)
+    {
+        $dataKeluarga = DataKeluarga::find($id);
+        if ($dataKeluarga) {
+            $dataKeluarga->update($request->all());
+        }
+
+        return redirect()->back()->with('success', 'Data keluarga updated successfully.');
+    }
+
+    public function updatePendidikan(Request $request, $id)
+    {
+        // Validate the request data
+        $validatedData = $request->validate([
+            'tingkat' => 'required',
+            'sekolah' => 'required',
+            'kota' => 'required',
+            'jurusan' => 'required',
+            'tahun' => 'required',
+            'ipk' => 'required',
+        ]);
+
+        // Find the Pendidikan record by ID
+        $pendidikan = Pendidikan::findOrFail($id);
+
+        // Update the Pendidikan record with the validated data
+        $pendidikan->update($validatedData);
+
+        // Redirect back with a success message
+        return redirect()->back()->with('success', 'Pendidikan data updated successfully.');
     }
 
     //Libur Karyawan

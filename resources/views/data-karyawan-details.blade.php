@@ -1,7 +1,7 @@
 @extends('Layout.app')
 @section('main-content')
     <div class="row gy-4 gy-lg-0 mb-3 ">
-        <div class="col-8 col-lg-4 col-xl-3">
+        <div class="col-8 col-lg-3 col-xl-3">
             <div class="row gy-4 col-12">
                 <div class="card widget-card border-light shadow-sm">
                     <div class="card-body">
@@ -26,7 +26,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 col-lg-8 col-xl-9">
+        <div class="col-8 col-lg-8 col-xl-8">
             <div class="card widget-card border-light shadow-sm">
                 <div class="card-body p-4">
                     <ul class="nav nav-tabs" id="tablist" role="tablist">
@@ -100,293 +100,243 @@
                             }
                         @endphp
 
-                        <div class="tab-pane show active" id="datapribadi-tab-pane" role="tabpanel"
-                            aria-labelledby="datapribadi-tab" tabindex="0">
-                            <form action="#!" class="row gy-3 gy-xxl-4">
+                        <div class="tab-pane show active" id="datapribadi-tab-pane" role="tabpanel" aria-labelledby="datapribadi-tab" tabindex="0">
+                            <form action="{{ route('data_karyawan.update', $dataPribadi->nip) }}" method="POST" class="row gy-3 gy-xxl-4">
+                                @csrf
+                                @method('PUT')
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">Nama</label>
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataPribadi->nama }}">
+                                    <label for="nama" class="form-label">Nama</label>
+                                    <input type="text" class="form-control" id="nama" name="nama" value="{{ $dataPribadi->nama }}" disabled>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">Jenis Kelamin</label>
-                                    <select class="form-control">
-                                        <option value="l"
-                                            @php if ($dataPribadi->jenis_kelamin == 'l') echo 'selected' @endphp>Laki-laki
-                                        </option>
-                                        <option value="p"
-                                            @php if ($dataPribadi->jenis_kelamin == 'p') echo 'selected' @endphp>Perempuan
-                                        </option>
+                                    <label for="jenis_kelamin" class="form-label">Jenis Kelamin</label>
+                                    <select class="form-control" id="jenis_kelamin" name="jenis_kelamin" disabled>
+                                        <option value="l" @if ($dataPribadi->jenis_kelamin == 'l') selected @endif>Laki-laki</option>
+                                        <option value="p" @if ($dataPribadi->jenis_kelamin == 'p') selected @endif>Perempuan</option>
                                     </select>
                                 </div>
                                 <div class="col-12">
-                                    <label for="" class="form-label">Alamat KTP</label>
+                                    <label for="alamat_ktp" class="form-label">Alamat KTP</label>
                                     {!! cekPembaruanPribadi($pembaruanData, 'data_pribadi', 'alamat_ktp') !!}
-                                    <textarea class="form-control" id="input">{{ $dataPribadi->alamat_ktp }}</textarea>
+                                    <textarea class="form-control" id="alamat_ktp" name="alamat_ktp" disabled>{{ $dataPribadi->alamat_ktp }}</textarea>
                                 </div>
                                 <div class="col-12">
-                                    <label for="" class="form-label">Alamat Domisili</label>
+                                    <label for="alamat_domisili" class="form-label">Alamat Domisili</label>
                                     {!! cekPembaruanPribadi($pembaruanData, 'data_pribadi', 'alamat_domisili') !!}
-                                    <textarea class="form-control" id="input">{{ $dataPribadi->alamat_domisili }}</textarea>
+                                    <textarea class="form-control" id="alamat_domisili" name="alamat_domisili" disabled>{{ $dataPribadi->alamat_domisili }}</textarea>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">No. HP</label>
+                                    <label for="no_hp" class="form-label">No. HP</label>
                                     {!! cekPembaruanPribadi($pembaruanData, 'data_pribadi', 'no_hp') !!}
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataPribadi->no_hp }}">
+                                    <input type="text" class="form-control" id="no_hp" name="no_hp" disabled value="{{ $dataPribadi->no_hp }}">
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">Tempat Lahir</label>
+                                    <label for="tempat_lahir" class="form-label">Tempat Lahir</label>
                                     {!! cekPembaruanPribadi($pembaruanData, 'data_pribadi', 'tempat_lahir') !!}
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataPribadi->tempat_lahir }}">
+                                    <input type="text" class="form-control" id="tempat_lahir" name="tempat_lahir" disabled value="{{ $dataPribadi->tempat_lahir }}">
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">Tanggal Lahir</label>
+                                    <label for="tgl_lahir" class="form-label">Tanggal Lahir</label>
                                     {!! cekPembaruanPribadi($pembaruanData, 'data_pribadi', 'tgl_lahir') !!}
-                                    <input type="date" class="form-control" id="input"
-                                        value="{{ $dataPribadi->tgl_lahir }}">
+                                    <input type="date" class="form-control" id="tgl_lahir" name="tgl_lahir" disabled value="{{ $dataPribadi->tgl_lahir }}">
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">Agama</label>
+                                    <label for="agama" class="form-label">Agama</label>
                                     {!! cekPembaruanPribadi($pembaruanData, 'data_pribadi', 'agama') !!}
-                                    <select class="form-control">
-                                        <option value="Islam"
-                                            @php if ($dataPribadi->agama == 'Islam') echo 'selected' @endphp>Islam</option>
-                                        <option value="Kristen"
-                                            @php if ($dataPribadi->agama == 'Kristen') echo 'selected' @endphp>Kristen
-                                        </option>
-                                        <option value="Katolik"
-                                            @php if ($dataPribadi->agama == 'Katolik') echo 'selected' @endphp>Katolik
-                                        </option>
-                                        <option value="Buddha"
-                                            @php if ($dataPribadi->agama == 'Buddha') echo 'selected' @endphp>Buddha
-                                        </option>
-                                        <option value="Hindu"
-                                            @php if ($dataPribadi->agama == 'Hindu') echo 'selected' @endphp>Hindu</option>
-                                        <option value="Konghucu"
-                                            @php if ($dataPribadi->agama == 'Konghucu') echo 'selected' @endphp>Konghucu
-                                        </option>
+                                    <select class="form-control" id="agama" name="agama" disabled>
+                                        <option value="Islam" @if ($dataPribadi->agama == 'Islam') selected @endif>Islam</option>
+                                        <option value="Kristen" @if ($dataPribadi->agama == 'Kristen') selected @endif>Kristen</option>
+                                        <option value="Katolik" @if ($dataPribadi->agama == 'Katolik') selected @endif>Katolik</option>
+                                        <option value="Buddha" @if ($dataPribadi->agama == 'Buddha') selected @endif>Buddha</option>
+                                        <option value="Hindu" @if ($dataPribadi->agama == 'Hindu') selected @endif>Hindu</option>
+                                        <option value="Konghucu" @if ($dataPribadi->agama == 'Konghucu') selected @endif>Konghucu</option>
                                     </select>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">Status Nikah</label>
+                                    <label for="status_nikah" class="form-label">Status Nikah</label>
                                     {!! cekPembaruanPribadi($pembaruanData, 'data_pribadi', 'status_nikah') !!}
-                                    <select class="form-control">
-                                        <option value="0"
-                                            @php if ($dataPribadi->status_nikah == '0') echo 'selected' @endphp>Belum kawin
-                                        </option>
-                                        <option value="1"
-                                            @php if ($dataPribadi->status_nikah == '1') echo 'selected' @endphp>Kawin
-                                        </option>
+                                    <select class="form-control" id="status_nikah" name="status_nikah" disabled>
+                                        <option value="0" @if ($dataPribadi->status_nikah == '0') selected @endif>Belum kawin</option>
+                                        <option value="1" @if ($dataPribadi->status_nikah == '1') selected @endif>Kawin</option>
                                     </select>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">Jumlah Anak</label>
+                                    <label for="jumlah_anak" class="form-label">Jumlah Anak</label>
                                     {!! cekPembaruanPribadi($pembaruanData, 'data_pribadi', 'jumlah_anak') !!}
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataPribadi->jumlah_anak }}">
+                                    <input type="text" class="form-control" id="jumlah_anak" name="jumlah_anak" disabled value="{{ $dataPribadi->jumlah_anak }}">
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">Status PPh21</label>
+                                    <label for="status_pph21" class="form-label">Status PPh21</label>
                                     {!! cekPembaruanPribadi($pembaruanData, 'data_pribadi', 'status_pph21') !!}
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataPribadi->status_pph21 }}">
+                                    <input type="text" class="form-control" id="status_pph21" name="status_pph21" disabled value="{{ $dataPribadi->status_pph21 }}">
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">Pendidikan Terakhir</label>
+                                    <label for="pendidikan_terakhir" class="form-label">Pendidikan Terakhir</label>
                                     {!! cekPembaruanPribadi($pembaruanData, 'data_pribadi', 'pendidikan_terakhir') !!}
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataPribadi->pendidikan_terakhir }}">
+                                    <input type="text" class="form-control" id="pendidikan_terakhir" name="pendidikan_terakhir" disabled value="{{ $dataPribadi->pendidikan_terakhir }}">
                                 </div>
                                 <div class="col-12">
-                                    <button type="" class="btn btn-primary">Edit</button>
-                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                    <button type="button" id="editButtonPribadi" class="btn btn-primary">Perbarui</button>
+                                    <button type="submit" id="saveButtonPribadi" class="btn btn-outline-primary" style="display: none;">Simpan</button>
                                 </div>
                             </form>
                         </div>
 
-                        <div class="tab-pane fade" id="datapekerjaan-tab-pane" role="tabpanel"
-                            aria-labelledby="datapekerjaan-tab" tabindex="0">
-                            <form action="#!" class="row gy-3 gy-xxl-4">
+                        <div class="tab-pane fade" id="datapekerjaan-tab-pane" role="tabpanel" aria-labelledby="datapekerjaan-tab" tabindex="0">
+                            <form action="{{ route('data_karyawan.update', $dataPekerjaan->nip) }}" method="POST" class="row gy-3 gy-xxl-4">
+                                @csrf
+                                @method('PUT')
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">NIP</label>
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataPekerjaan->nip }}">
+                                    <label for="nip" class="form-label">NIP</label>
+                                    <input type="text" class="form-control" id="nip" name="nip" value="{{ $dataPekerjaan->nip }}" disabled>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">Divisi</label>
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataPekerjaan->divisi }}">
+                                    <label for="divisi" class="form-label">Divisi</label>
+                                    <input type="text" class="form-control" id="divisi" name="divisi" value="{{ $dataPekerjaan->divisi }}" disabled>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">Bagian</label>
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataPekerjaan->bagian }}">
+                                    <label for="bagian" class="form-label">Bagian</label>
+                                    <input type="text" class="form-control" id="bagian" name="bagian" value="{{ $dataPekerjaan->bagian }}" disabled>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">Jabatan</label>
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataPekerjaan->jabatan }}">
+                                    <label for="jabatan" class="form-label">Jabatan</label>
+                                    <input type="text" class="form-control" id="jabatan" name="jabatan" value="{{ $dataPekerjaan->jabatan }}" disabled>
                                 </div>
                                 <div class="col-12">
-                                    <label for="" class="form-label">Detail Posisi</label>
-                                    <textarea class="form-control" id="" value="{{ $dataPekerjaan->detail_posisi }}"></textarea>
+                                    <label for="detail_posisi" class="form-label">Detail Posisi</label>
+                                    <textarea class="form-control" id="detail_posisi" name="detail_posisi" disabled>{{ $dataPekerjaan->detail_posisi }}</textarea>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">Group</label>
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataPekerjaan->group }}">
+                                    <label for="group" class="form-label">Group</label>
+                                    <input type="text" class="form-control" id="group" name="group" value="{{ $dataPekerjaan->group }}" disabled>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">Kode Admin</label>
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataPekerjaan->kode_admin }}">
+                                    <label for="kode_admin" class="form-label">Kode Admin</label>
+                                    <input type="text" class="form-control" id="kode_admin" name="kode_admin" value="{{ $dataPekerjaan->kode_admin }}" disabled>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">Kode Kontrak</label>
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataPekerjaan->kode_kontrak }}">
+                                    <label for="kode_kontrak" class="form-label">Kode Kontrak</label>
+                                    <input type="text" class="form-control" id="kode_kontrak" name="kode_kontrak" value="{{ $dataPekerjaan->kode_kontrak }}" disabled>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">Kode Periode</label>
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataPekerjaan->kode_periode }}">
+                                    <label for="kode_periode" class="form-label">Kode Periode</label>
+                                    <input type="text" class="form-control" id="kode_periode" name="kode_periode" value="{{ $dataPekerjaan->kode_periode }}" disabled>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">Sales Office</label>
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataPekerjaan->sales_office }}">
+                                    <label for="sales_office" class="form-label">Sales Office</label>
+                                    <input type="text" class="form-control" id="sales_office" name="sales_office" value="{{ $dataPekerjaan->sales_office }}" disabled>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">Tanggal Masuk</label>
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataPekerjaan->tgl_masuk }}">
+                                    <label for="tgl_masuk" class="form-label">Tanggal Masuk</label>
+                                    <input type="text" class="form-control" id="tgl_masuk" name="tgl_masuk" value="{{ $dataPekerjaan->tgl_masuk }}" disabled>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">Tanggal Penetapan</label>
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataPekerjaan->tgl_penetapan }}">
+                                    <label for="tgl_penetapan" class="form-label">Tanggal Penetapan</label>
+                                    <input type="text" class="form-control" id="tgl_penetapan" name="tgl_penetapan" value="{{ $dataPekerjaan->tgl_penetapan }}" disabled>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">Status Karyawan</label>
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataPekerjaan->status_karyawan }}">
+                                    <label for="status_karyawan" class="form-label">Status Karyawan</label>
+                                    <input type="text" class="form-control" id="status_karyawan" name="status_karyawan" value="{{ $dataPekerjaan->status_karyawan }}" disabled>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">Tanggal Keluar</label>
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataPekerjaan->tgl_keluar }}">
+                                    <label for="tgl_keluar" class="form-label">Tanggal Keluar</label>
+                                    <input type="text" class="form-control" id="tgl_keluar" name="tgl_keluar" value="{{ $dataPekerjaan->tgl_keluar }}" disabled>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">Gaji Perbulan</label>
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataPekerjaan->gaji_perbulan }}">
+                                    <label for="gaji_perbulan" class="form-label">Gaji Perbulan</label>
+                                    <input type="text" class="form-control" id="gaji_perbulan" name="gaji_perbulan" value="{{ $dataPekerjaan->gaji_perbulan }}" disabled>
                                 </div>
                                 <div class="col-12">
-                                    <label for="" class="form-label">Alasan Keluar</label>
-                                    <textarea class="form-control" id="" value="{{ $dataPekerjaan->alasan_keluar }}"></textarea>
+                                    <label for="alasan_keluar" class="form-label">Alasan Keluar</label>
+                                    <textarea class="form-control" id="alasan_keluar" name="alasan_keluar" disabled>{{ $dataPekerjaan->alasan_keluar }}</textarea>
                                 </div>
                                 <div class="col-12">
-                                    <label for="" class="form-label">Pengalaman</label>
-                                    <textarea class="form-control" id="" value="{{ $dataPekerjaan->pengalaman }}"></textarea>
+                                    <label for="pengalaman" class="form-label">Pengalaman</label>
+                                    <textarea class="form-control" id="pengalaman" name="pengalaman" disabled>{{ $dataPekerjaan->pengalaman }}</textarea>
                                 </div>
                                 <div class="col-12">
-                                    <button type="" class="btn btn-primary">Edit</button>
-                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                    <button type="button" id="editButtonPekerjaan" class="btn btn-primary">Perbarui</button>
+                                    <button type="submit" id="saveButtonPekerjaan" class="btn btn-outline-primary" style="display: none;">Simpan</button>
                                 </div>
                             </form>
                         </div>
 
-                        <div class="tab-pane fade" id="datalainlain-tab-pane" role="tabpanel"
-                            aria-labelledby="datalainlain-tab" tabindex="0">
-                            <form action="#!" class="row gy-3 gy-xxl-4">
+                        <div class="tab-pane fade" id="datalainlain-tab-pane" role="tabpanel" aria-labelledby="datalainlain-tab" tabindex="0">
+                            <form action="{{ route('data_karyawan.update', $dataLainlain->nip) }}" method="POST" class="row gy-3 gy-xxl-4">
+                                @csrf
+                                @method('PUT')
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">No. KPJ</label>
+                                    <label for="no_kpj" class="form-label">No. KPJ</label>
                                     {!! cekPembaruanPribadi($pembaruanData, 'data_lainlain', 'no_kpj') !!}
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataLainlain->no_kpj }}">
+                                    <input type="text" class="form-control" id="no_kpj" name="no_kpj" value="{{ $dataLainlain->no_kpj }}" disabled>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">No. HLD</label>
+                                    <label for="no_hld" class="form-label">No. HLD</label>
                                     {!! cekPembaruanPribadi($pembaruanData, 'data_lainlain', 'no_hld') !!}
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataLainlain->no_hld }}">
+                                    <input type="text" class="form-control" id="no_hld" name="no_hld" value="{{ $dataLainlain->no_hld }}" disabled>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">No. KTP</label>
+                                    <label for="no_ktp" class="form-label">No. KTP</label>
                                     {!! cekPembaruanPribadi($pembaruanData, 'data_lainlain', 'no_ktp') !!}
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataLainlain->no_ktp }}">
+                                    <input type="text" class="form-control" id="no_ktp" name="no_ktp" value="{{ $dataLainlain->no_ktp }}" disabled>
                                 </div>
-                                <div class="col-12 col-md-6">No. NPWP
-                                    <label for="" class="form-label">Nama</label>
+                                <div class="col-12 col-md-6">
+                                    <label for="no_npwp" class="form-label">No. NPWP</label>
                                     {!! cekPembaruanPribadi($pembaruanData, 'data_lainlain', 'no_npwp') !!}
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataLainlain->no_npwp }}">
+                                    <input type="text" class="form-control" id="no_npwp" name="no_npwp" value="{{ $dataLainlain->no_npwp }}" disabled>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">Potong ASTEK</label>
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataLainlain->potong_astek }}">
+                                    <label for="potong_astek" class="form-label">Potong ASTEK</label>
+                                    <input type="text" class="form-control" id="potong_astek" name="potong_astek" value="{{ $dataLainlain->potong_astek }}" disabled>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">Asuransi</label>
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataLainlain->asuransi }}">
+                                    <label for="asuransi" class="form-label">Asuransi</label>
+                                    <input type="text" class="form-control" id="asuransi" name="asuransi" value="{{ $dataLainlain->asuransi }}" disabled>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">No. Asuransi</label>
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataLainlain->no_asuransi }}">
+                                    <label for="no_asuransi" class="form-label">No. Asuransi</label>
+                                    <input type="text" class="form-control" id="no_asuransi" name="no_asuransi" value="{{ $dataLainlain->no_asuransi }}" disabled>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">Kode Wings</label>
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataLainlain->kode_wings }}">
+                                    <label for="kode_wings" class="form-label">Kode Wings</label>
+                                    <input type="text" class="form-control" id="kode_wings" name="kode_wings" value="{{ $dataLainlain->kode_wings }}" disabled>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">Bank</label>
+                                    <label for="bank" class="form-label">Bank</label>
                                     {!! cekPembaruanPribadi($pembaruanData, 'data_lainlain', 'bank') !!}
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataLainlain->bank }}">
+                                    <input type="text" class="form-control" id="bank" name="bank" value="{{ $dataLainlain->bank }}" disabled>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">No. Rekening</label>
+                                    <label for="no_rekening" class="form-label">No. Rekening</label>
                                     {!! cekPembaruanPribadi($pembaruanData, 'data_lainlain', 'no_rekening') !!}
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataLainlain->no_rekening }}">
+                                    <input type="text" class="form-control" id="no_rekening" name="no_rekening" value="{{ $dataLainlain->no_rekening }}" disabled>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">No. Kendaraan</label>
+                                    <label for="no_kendaraan" class="form-label">No. Kendaraan</label>
                                     {!! cekPembaruanPribadi($pembaruanData, 'data_lainlain', 'no_kendaraan') !!}
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataLainlain->no_kendaraan }}">
+                                    <input type="text" class="form-control" id="no_kendaraan" name="no_kendaraan" value="{{ $dataLainlain->no_kendaraan }}" disabled>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">Jari Bermasalah</label>
+                                    <label for="jari_bermasalah" class="form-label">Jari Bermasalah</label>
                                     {!! cekPembaruanPribadi($pembaruanData, 'data_lainlain', 'jari_bermasalah') !!}
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataLainlain->jari_bermasalah }}">
+                                    <input type="text" class="form-control" id="jari_bermasalah" name="jari_bermasalah" value="{{ $dataLainlain->jari_bermasalah }}" disabled>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">Jumlah SP</label>
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataLainlain->jumlah_sp }}">
+                                    <label for="jumlah_sp" class="form-label">Jumlah SP</label>
+                                    <input type="text" class="form-control" id="jumlah_sp" name="jumlah_sp" value="{{ $dataLainlain->jumlah_sp }}" disabled>
                                 </div>
                                 <div class="col-12 col-md-6">
-                                    <label for="" class="form-label">Email</label>
+                                    <label for="email" class="form-label">Email</label>
                                     {!! cekPembaruanPribadi($pembaruanData, 'data_lainlain', 'email') !!}
-                                    <input type="text" class="form-control" id="input"
-                                        value="{{ $dataLainlain->email }}">
+                                    <input type="text" class="form-control" id="email" name="email" value="{{ $dataLainlain->email }}" disabled>
                                 </div>
                                 <div class="col-12">
-                                    <label for="" class="form-label">Catatan</label>
-                                    <textarea class="form-control" id="">{{ $dataLainlain->catatan }}</textarea>
+                                    <label for="catatan" class="form-label">Catatan</label>
+                                    <textarea class="form-control" id="catatan" name="catatan" disabled>{{ $dataLainlain->catatan }}</textarea>
                                 </div>
                                 <div class="col-12">
-                                    <button type="" class="btn btn-primary">Edit</button>
-                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                    <button type="button" id="editButtonLainlain" class="btn btn-primary">Perbarui</button>
+                                    <button type="submit" id="saveButtonLainlain" class="btn btn-outline-primary" style="display: none;">Simpan</button>
                                 </div>
                             </form>
                         </div>
@@ -438,96 +388,85 @@
                             </div>
                         @endforeach
 
-                        <div class="tab-pane fade" id="datakeluarga-tab-pane" role="tabpanel"
-                            aria-labelledby="datakeluarga-tab" tabindex="0">
+                        <div class="tab-pane fade" id="datakeluarga-tab-pane" role="tabpanel" aria-labelledby="datakeluarga-tab" tabindex="0">
                             @foreach ($dataKeluarga as $keluarga)
                                 <div class="card accordion" id="accordion{{ $keluarga->id }}">
                                     <div class="card-header" id="heading{{ $keluarga->id }}">
-                                        <h2 class="mb-0 ">
-                                            <button class="btn-link accordion-button" type="button"
-                                                data-toggle="collapse" data-target="#collapse{{ $keluarga->id }}"
-                                                aria-expanded="false" aria-controls="collapse{{ $keluarga->id }}">
+                                        <h2 class="mb-0">
+                                            <button class="btn-link accordion-button" type="button" data-toggle="collapse"
+                                                data-target="#collapse{{ $keluarga->id }}" aria-expanded="false"
+                                                aria-controls="collapse{{ $keluarga->id }}">
                                                 @if (!$keluarga->approved_by)
-                                                    <i class='fas fa-exclamation-triangle warning-icon me-3'
-                                                        data-bs-toggle='modal'></i>
+                                                    <i class='fas fa-exclamation-triangle warning-icon me-3' data-bs-toggle='modal'></i>
                                                 @endif
                                                 {{ $keluarga->hubungan }} - {{ $keluarga->nama }}
                                             </button>
                                         </h2>
                                     </div>
 
-                                    <div id="collapse{{ $keluarga->id }}" class="collapse"
-                                        aria-labelledby="heading{{ $keluarga->id }}"
+                                    <div id="collapse{{ $keluarga->id }}" class="collapse" aria-labelledby="heading{{ $keluarga->id }}"
                                         data-parent="#accordion{{ $keluarga->id }}">
                                         <div class="card-body">
-                                            <form action="#!" class="row gy-3 gy-xxl-4">
+                                            <form action="{{ route('data_keluarga.update', $keluarga->id) }}" method="POST" class="row gy-3 gy-xxl-4">
+                                                @method('PUT')
+                                                @csrf
                                                 <div class="col-12 col-md-6">
                                                     <label for="name{{ $keluarga->id }}" class="form-label">Nama</label>
-                                                    <input type="text" class="form-control"
-                                                        id="name{{ $keluarga->id }}" value="{{ $keluarga->nama }}">
+                                                    <input type="text" name="nama" class="form-control" id="name{{ $keluarga->id }}"
+                                                        value="{{ $keluarga->nama }}" disabled>
                                                 </div>
                                                 <div class="col-12 col-md-6">
-                                                    <label for="relationship{{ $keluarga->id }}"
-                                                        class="form-label">Hubungan</label>
-                                                    <input type="text" class="form-control"
-                                                        id="relationship{{ $keluarga->id }}"
-                                                        value="{{ $keluarga->hubungan }}">
+                                                    <label for="relationship{{ $keluarga->id }}" class="form-label">Hubungan</label>
+                                                    <input type="text" name="hubungan" class="form-control" id="relationship{{ $keluarga->id }}"
+                                                        value="{{ $keluarga->hubungan }}" disabled>
                                                 </div>
                                                 <div class="col-12 col-md-6">
                                                     <label for="" class="form-label">Jenis Kelamin</label>
-                                                    <select class="form-control">
-                                                        <option value="l"
-                                                            @if ($keluarga->jenis_kelamin == 'l') selected @endif>Laki-laki
+                                                    <select class="form-control" name="jenis_kelamin" disabled>
+                                                        <option value="l" @if ($keluarga->jenis_kelamin == 'l') selected @endif>Laki-laki
                                                         </option>
-                                                        <option value="p"
-                                                            @if ($keluarga->jenis_kelamin == 'p') selected @endif>Perempuan
+                                                        <option value="p" @if ($keluarga->jenis_kelamin == 'p') selected @endif>Perempuan
                                                         </option>
                                                     </select>
                                                 </div>
                                                 <div class="col-12 col-md-6">
                                                     <label for="" class="form-label">Tempat Lahir</label>
-                                                    <input type="text" class="form-control" id="input"
-                                                        value="{{ $keluarga->tempat_lahir }}">
+                                                    <input type="text" name="tempat_lahir" class="form-control" id="input"
+                                                        value="{{ $keluarga->tempat_lahir }}" disabled>
                                                 </div>
                                                 <div class="col-12 col-md-6">
                                                     <label for="" class="form-label">Tanggal Lahir</label>
-                                                    <input type="date" class="form-control" id="input"
-                                                        value="{{ $keluarga->tgl_lahir }}">
+                                                    <input type="date" name="tgl_lahir" class="form-control" id="input"
+                                                        value="{{ $keluarga->tgl_lahir }}" disabled>
                                                 </div>
                                                 <div class="col-12 col-md-6">
                                                     <label for="" class="form-label">Pendidikan Terakhir</label>
-                                                    <input type="text" class="form-control" id="input"
-                                                        value="{{ $keluarga->pendidikan }}">
+                                                    <input type="text" name="pendidikan" class="form-control" id="input"
+                                                        value="{{ $keluarga->pendidikan }}" disabled>
                                                 </div>
                                                 <div class="col-12 col-md-6">
                                                     <label for="" class="form-label">Pekerjaan</label>
-                                                    <input type="text" class="form-control" id="input"
-                                                        value="{{ $keluarga->pekerjaan }}">
+                                                    <input type="text" name="pekerjaan" class="form-control" id="input"
+                                                        value="{{ $keluarga->pekerjaan }}" disabled>
                                                 </div>
                                                 <div class="col-12">
-                                                    <label for="notes{{ $keluarga->id }}"
-                                                        class="form-label">Keterangan</label>
-                                                    <textarea class="form-control" id="notes{{ $keluarga->id }}">{{ $keluarga->keterangan }}</textarea>
+                                                    <label for="notes{{ $keluarga->id }}" class="form-label">Keterangan</label>
+                                                    <textarea class="form-control" name="keterangan" id="notes{{ $keluarga->id }}" disabled>{{ $keluarga->keterangan }}</textarea>
                                                 </div>
                                                 <div class="col-12">
-                                                    @if ($keluarga->approved_by)
-                                                        <button type="button" class="btn btn-primary">Edit</button>
-                                                        <button type="submit" class="btn btn-primary">Simpan</button>
-                                                    @endif
+                                                    <button type="button" class="btn btn-outline-primary btn-edit" data-id="{{ $keluarga->id }}">Perbarui</button>
+                                                    <button type="submit" class="btn btn-primary btn-submit" data-id="{{ $keluarga->id }}" style="display: none;">Perbarui</button>
                                                     @php
-                                                        $pembaruan = App\Models\PembaruanData::where(
-                                                            'tabel',
-                                                            'data_keluarga',
-                                                        )
+                                                        $pembaruan = App\Models\PembaruanData::where('tabel', 'data_keluarga')
                                                             ->whereNull('tgl_approval')
                                                             ->firstWhere('data_baru', $keluarga->id);
                                                     @endphp
                                                     @if ($pembaruan)
-                                                        <button type='button' class='btn btn-outline-warning'
-                                                            data-bs-toggle='modal'
-                                                            data-bs-target='#keluargaModal{{ $keluarga->id }}'><i
-                                                                class='fas fa-exclamation-triangle warning-icon me-2'></i>Lihat
-                                                            Pembaruan</button>
+                                                        <button type='button' class='btn btn-outline-warning' data-bs-toggle='modal'
+                                                            data-bs-target='#keluargaModal{{ $keluarga->id }}'>
+                                                            <i class='fas fa-exclamation-triangle warning-icon me-2'></i>
+                                                            Lihat Pembaruan
+                                                        </button>
                                                     @endif
                                                 </div>
                                             </form>
@@ -543,11 +482,9 @@
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title" id="keluargaModalLabel{{ $keluarga->id }}">
-                                                        Persetujuan Pembaruan - {{ $keluarga->hubungan }} -
-                                                        {{ $keluarga->nama }}
+                                                        Persetujuan Pembaruan - {{ $keluarga->hubungan }} - {{ $keluarga->nama }}
                                                     </h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
                                                     @php
@@ -601,8 +538,7 @@
                                                             <p>No data available.</p>
                                                         @endif
                                                     @endif
-                                                    <form method="POST"
-                                                        action="{{ route('approvePembaruan', $pembaruan->id) }}">
+                                                    <form method="POST" action="{{ route('approvePembaruan', $pembaruan->id) }}">
                                                         @csrf
                                                         @method('PATCH')
                                                         <div class="mb-3">
@@ -610,13 +546,11 @@
                                                                 onclick="return confirm('Apakah anda yakin ingin MENERIMA pengajuan ini?');">Terima</button>
                                                         </div>
                                                     </form>
-                                                    <form method="POST"
-                                                        action="{{ route('rejectPembaruan', $pembaruan->id) }}">
+                                                    <form method="POST" action="{{ route('rejectPembaruan', $pembaruan->id) }}">
                                                         @csrf
                                                         @method('PATCH')
                                                         <div class="mb-3">
-                                                            <label for="alasan" class="form-label">Alasan
-                                                                Penolakan</label>
+                                                            <label for="alasan" class="form-label">Alasan Penolakan</label>
                                                             <textarea class="form-control" id="alasan" name="alasan"></textarea>
                                                         </div>
                                                         <button type="submit" class="btn btn-danger"
@@ -630,15 +564,14 @@
                             @endforeach
                         </div>
 
-                        <div class="tab-pane fade" id="pendidikan-tab-pane" role="tabpanel"
-                            aria-labelledby="pendidikan-tab" tabindex="0">
+                        <div class="tab-pane fade" id="pendidikan-tab-pane" role="tabpanel" aria-labelledby="pendidikan-tab" tabindex="0">
                             @foreach ($pendidikan as $dataPendidikan)
                                 <div class="card accordion" id="accordion{{ $dataPendidikan->id }}">
                                     <div class="card-header" id="heading{{ $dataPendidikan->id }}">
                                         <h2 class="mb-0">
-                                            <button class="btn-link accordion-button" type="button"
-                                                data-toggle="collapse" data-target="#collapse{{ $dataPendidikan->id }}"
-                                                aria-expanded="false" aria-controls="collapse{{ $dataPendidikan->id }}">
+                                            <button class="btn-link accordion-button" type="button" data-toggle="collapse"
+                                                data-target="#collapse{{ $dataPendidikan->id }}" aria-expanded="false"
+                                                aria-controls="collapse{{ $dataPendidikan->id }}">
                                                 @if (!$dataPendidikan->approved_by)
                                                     <i class='fas fa-exclamation-triangle warning-icon me-3'></i>
                                                 @endif
@@ -647,63 +580,52 @@
                                         </h2>
                                     </div>
 
-                                    <div id="collapse{{ $dataPendidikan->id }}" class="collapse"
-                                        aria-labelledby="heading{{ $dataPendidikan->id }}"
+                                    <div id="collapse{{ $dataPendidikan->id }}" class="collapse" aria-labelledby="heading{{ $dataPendidikan->id }}"
                                         data-parent="#accordion{{ $dataPendidikan->id }}">
                                         <div class="card-body">
-                                            <form action="#!" class="row gy-3 gy-xxl-4">
+                                            <form action="{{ route('pendidikan.update', $dataPendidikan->id) }}" method="POST"
+                                                class="row gy-3 gy-xxl-4">
+                                                @method('PUT')
+                                                @csrf
                                                 <div class="col-12 col-md-6">
-                                                    <label for="tingkat{{ $dataPendidikan->id }}"
-                                                        class="form-label">Tingkat</label>
-                                                    <input type="text" class="form-control"
-                                                        id="tingkat{{ $dataPendidikan->id }}"
-                                                        value="{{ $dataPendidikan->tingkat }}">
+                                                    <label for="tingkat{{ $dataPendidikan->id }}" class="form-label">Tingkat</label>
+                                                    <input type="text" name="tingkat" class="form-control"
+                                                        id="tingkat{{ $dataPendidikan->id }}" value="{{ $dataPendidikan->tingkat }}" disabled>
                                                 </div>
                                                 <div class="col-12 col-md-6">
-                                                    <label for="sekolah{{ $dataPendidikan->id }}"
-                                                        class="form-label">Sekolah</label>
-                                                    <input type="text" class="form-control"
-                                                        id="sekolah{{ $dataPendidikan->id }}"
-                                                        value="{{ $dataPendidikan->sekolah }}">
+                                                    <label for="sekolah{{ $dataPendidikan->id }}" class="form-label">Sekolah</label>
+                                                    <input type="text" name="sekolah" class="form-control"
+                                                        id="sekolah{{ $dataPendidikan->id }}" value="{{ $dataPendidikan->sekolah }}" disabled>
                                                 </div>
                                                 <div class="col-12 col-md-6">
-                                                    <label for="kota{{ $dataPendidikan->id }}"
-                                                        class="form-label">Kota</label>
-                                                    <input type="text" class="form-control"
-                                                        id="kota{{ $dataPendidikan->id }}"
-                                                        value="{{ $dataPendidikan->kota }}">
+                                                    <label for="kota{{ $dataPendidikan->id }}" class="form-label">Kota</label>
+                                                    <input type="text" name="kota" class="form-control" id="kota{{ $dataPendidikan->id }}"
+                                                        value="{{ $dataPendidikan->kota }}" disabled>
                                                 </div>
                                                 <div class="col-12 col-md-6">
-                                                    <label for="jurusan{{ $dataPendidikan->id }}"
-                                                        class="form-label">Jurusan</label>
-                                                    <input type="text" class="form-control"
-                                                        id="jurusan{{ $dataPendidikan->id }}"
-                                                        value="{{ $dataPendidikan->jurusan }}">
+                                                    <label for="jurusan{{ $dataPendidikan->id }}" class="form-label">Jurusan</label>
+                                                    <input type="text" name="jurusan" class="form-control"
+                                                        id="jurusan{{ $dataPendidikan->id }}" value="{{ $dataPendidikan->jurusan }}" disabled>
                                                 </div>
                                                 <div class="col-12 col-md-6">
-                                                    <label for="tahun{{ $dataPendidikan->id }}"
-                                                        class="form-label">Tahun</label>
-                                                    <input type="text" class="form-control"
-                                                        id="tahun{{ $dataPendidikan->id }}"
-                                                        value="{{ $dataPendidikan->tahun }}">
+                                                    <label for="tahun{{ $dataPendidikan->id }}" class="form-label">Tahun</label>
+                                                    <input type="text" name="tahun" class="form-control" id="tahun{{ $dataPendidikan->id }}"
+                                                        value="{{ $dataPendidikan->tahun }}" disabled>
                                                 </div>
                                                 <div class="col-12 col-md-6">
-                                                    <label for="ipk{{ $dataPendidikan->id }}"
-                                                        class="form-label">IPK</label>
-                                                    <input type="text" class="form-control"
-                                                        id="ipk{{ $dataPendidikan->id }}"
-                                                        value="{{ $dataPendidikan->ipk }}">
+                                                    <label for="ipk{{ $dataPendidikan->id }}" class="form-label">IPK</label>
+                                                    <input type="text" name="ipk" class="form-control" id="ipk{{ $dataPendidikan->id }}"
+                                                        value="{{ $dataPendidikan->ipk }}" disabled>
                                                 </div>
                                                 <div class="col-12">
                                                     @if ($dataPendidikan->approved_by)
-                                                        <button type="button" class="btn btn-primary">Edit</button>
-                                                        <button type="submit" class="btn btn-primary">Simpan</button>
+                                                        <button type="button" class="btn btn-outline-success btn-edit"
+                                                            data-id="{{ $dataPendidikan->id }}">Perbarui</button>
+                                                        <button type="submit" class="btn btn-primary btn-submit"
+                                                            data-id="{{ $dataPendidikan->id }}" style="display: none;">Perbarui</button>
                                                     @endif
                                                     @php
-                                                        $pembaruan = App\Models\PembaruanData::where(
-                                                            'tabel',
-                                                            'pendidikan',
-                                                        )
+                                                        $pembaruan = App\Models\PembaruanData::where('tabel', 'pendidikan')
                                                             ->whereNull('tgl_approval')
                                                             ->firstWhere('data_baru', $dataPendidikan->id);
                                                     @endphp
@@ -711,9 +633,7 @@
                                                         <button type='button' class='btn btn-outline-warning'
                                                             data-bs-toggle='modal'
                                                             data-bs-target='#pendidikanModal{{ $dataPendidikan->id }}'>
-                                                            <i
-                                                                class='fas fa-exclamation-triangle warning-icon me-2'></i>Lihat
-                                                            Pembaruan
+                                                            <i class='fas fa-exclamation-triangle warning-icon me-2'></i>Lihat Pembaruan
                                                         </button>
                                                     @endif
                                                 </div>
@@ -798,9 +718,9 @@
                                                         @csrf
                                                         @method('PATCH')
                                                         <div class="mb-3">
-                                                            <label for="alasan" class="form-label">Alasan
-                                                                Penolakan</label>
-                                                            <textarea class="form-control" id="alasan" name="alasan"></textarea>
+                                                            <label for="alasan" class="form-label">Alasan Penolakan</label>
+                                                            <textarea class="form-control" id="alasan"
+                                                                name="alasan"></textarea>
                                                         </div>
                                                         <button type="submit" class="btn btn-danger"
                                                             onclick="return confirm('Apakah anda yakin ingin MENOLAK pengajuan ini??');">Tolak</button>
@@ -871,8 +791,8 @@
                                                 </div>
                                                 <div class="col-12">
                                                     @if ($dataBahasa->approved_by)
-                                                        <button type="button" class="btn btn-primary">Edit</button>
-                                                        <button type="submit" class="btn btn-primary">Simpan</button>
+                                                        <button type="button" class="btn btn-primary">Perbarui</button>
+                                                        <button type="submit" class="btn btn-outline-primary">Simpan</button>
                                                     @endif
                                                     @php
                                                         $pembaruan = App\Models\PembaruanData::where('tabel', 'bahasa')
@@ -1034,8 +954,8 @@
                                                 </div>
                                                 <div class="col-12">
                                                     @if ($dataOrganisasi->approved_by)
-                                                        <button type="button" class="btn btn-primary">Edit</button>
-                                                        <button type="submit" class="btn btn-primary">Simpan</button>
+                                                        <button type="button" class="btn btn-primary">Perbarui</button>
+                                                        <button type="submit" class="btn btn-outline-primary">Simpan</button>
                                                     @endif
                                                     @php
                                                         $pembaruan = App\Models\PembaruanData::where(
@@ -1252,8 +1172,8 @@
                                                 </div>
                                                 <div class="col-12">
                                                     @if ($pengalaman->approved_by)
-                                                        <button type="button" class="btn btn-primary">Edit</button>
-                                                        <button type="submit" class="btn btn-primary">Simpan</button>
+                                                        <button type="button" class="btn btn-primary">Perbarui</button>
+                                                        <button type="submit" class="btn btn-outline-primary">Simpan</button>
                                                     @endif
                                                     @php
                                                         $pembaruan = App\Models\PembaruanData::where(
@@ -1931,6 +1851,57 @@
                     const nip = this.dataset.nip;
                     fetchDetail(type, id, nip);
                 });
+            });
+        });
+
+        document.getElementById('editButtonPribadi').addEventListener('click', function() {
+            var inputs = document.querySelectorAll('#datapribadi-tab-pane input, #datapribadi-tab-pane select, #datapribadi-tab-pane textarea');
+            inputs.forEach(function(input) {
+                input.disabled = false;
+            });
+            document.getElementById('saveButtonPribadi').style.display = 'inline-block';
+            this.style.display = 'none';
+        });
+
+        document.getElementById('editButtonPekerjaan').addEventListener('click', function() {
+            var inputs = document.querySelectorAll('#datapekerjaan-tab-pane input, #datapekerjaan-tab-pane select, #datapekerjaan-tab-pane textarea');
+            inputs.forEach(function(input) {
+                input.disabled = false;
+            });
+            document.getElementById('saveButtonPekerjaan').style.display = 'inline-block';
+            this.style.display = 'none';
+        });
+
+        document.getElementById('editButtonLainlain').addEventListener('click', function() {
+            var inputs = document.querySelectorAll('#datalainlain-tab-pane input, #datalainlain-tab-pane select, #datalainlain-tab-pane textarea');
+            inputs.forEach(function(input) {
+                input.disabled = false;
+            });
+            document.getElementById('saveButtonLainlain').style.display = 'inline-block';
+            this.style.display = 'none';
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const editButtons = document.querySelectorAll('.btn-edit');
+            editButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const id = this.getAttribute('data-id');
+                    const formFields = document.querySelectorAll(`#accordion${id} .form-control`);
+                    const submitButton = document.querySelector(`#accordion${id} .btn-submit`);
+
+                    formFields.forEach(field => {
+                        field.removeAttribute('disabled');
+                    });
+                    submitButton.style.display = 'inline-block';
+                });
+            });
+        });
+
+        $(document).ready(function() {
+            $('.btn-edit').click(function() {
+                var id = $(this).data('id');
+                $('#tingkat' + id + ', #sekolah' + id + ', #kota' + id + ', #jurusan' + id + ', #tahun' + id + ', #ipk' + id).prop('disabled', false);
+                $('.btn-submit[data-id="' + id + '"]').show();
             });
         });
 

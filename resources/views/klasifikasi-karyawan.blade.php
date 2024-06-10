@@ -78,7 +78,7 @@
                                         $class = ''; // Normal segment
                                     }
                                 @endphp
-                                    <tr class="data-tr {{$class}}" onclick="viewDataKaryawan()">
+                                    <tr class="data-tr cursor-pointer {{$class}}" onclick="viewDetails('{{ $dataKaryawan->dataPribadi()->nip }}')">
                                         <td>
                                             <div class="d-flex px-2 py-1">
                                                 <div>
@@ -128,6 +128,10 @@
         document.querySelector('input[name="good_limit"]').value = 90;
         document.querySelector('input[name="not_good_limit"]').value = 80;
         document.querySelector('form').submit();
+    }
+
+    function viewDetails(nip) {
+        window.location.href = `/data-karyawan/${nip}`;
     }
 </script>
 
