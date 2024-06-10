@@ -543,7 +543,8 @@
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title" id="keluargaModalLabel{{ $keluarga->id }}">
-                                                        Approve Data - {{ $keluarga->hubungan }} - {{ $keluarga->nama }}
+                                                        Persetujuan Pembaruan - {{ $keluarga->hubungan }} -
+                                                        {{ $keluarga->nama }}
                                                     </h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                         aria-label="Close"></button>
@@ -731,7 +732,7 @@
                                                 <div class="modal-header">
                                                     <h5 class="modal-title"
                                                         id="pendidikanModalLabel{{ $dataPendidikan->id }}">
-                                                        Approve Data - {{ $dataPendidikan->tingkat }} -
+                                                        Persetujuan Pembaruan - {{ $dataPendidikan->tingkat }} -
                                                         {{ $dataPendidikan->tahun }}
                                                     </h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -901,7 +902,7 @@
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title" id="bahasaModalLabel{{ $dataBahasa->id }}">
-                                                        Approve Data - {{ $dataBahasa->bahasa }}
+                                                        Persetujuan Pembaruan - {{ $dataBahasa->bahasa }}
                                                     </h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                         aria-label="Close"></button>
@@ -1067,7 +1068,7 @@
                                                 <div class="modal-header">
                                                     <h5 class="modal-title"
                                                         id="organisasiModalLabel{{ $dataOrganisasi->id }}">
-                                                        Approve Data - {{ $dataOrganisasi->macam_kegiatan }} -
+                                                        Persetujuan Pembaruan - {{ $dataOrganisasi->macam_kegiatan }} -
                                                         {{ $dataOrganisasi->tahun }}
                                                     </h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -1286,7 +1287,7 @@
                                                 <div class="modal-header">
                                                     <h5 class="modal-title"
                                                         id="pengalamanKerjaModalLabel{{ $pengalaman->id }}">
-                                                        Approve Data - {{ $pengalaman->nama_perusahaan }} -
+                                                        Persetujuan Pembaruan - {{ $pengalaman->nama_perusahaan }} -
                                                         {{ $pengalaman->tahun_awal }}
                                                     </h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -1424,7 +1425,9 @@
                                         <ul>
                                             @foreach ($absensi->cuti as $cuti)
                                                 <li><a href="javascript:void(0)" class="detail-link" data-type="cuti"
-                                                        data-id="{{ $cuti }}" data-nip="{{ $dataPekerjaan->nip }}">{{ $cuti }}</a></li>
+                                                        data-id="{{ $cuti }}"
+                                                        data-nip="{{ $dataPekerjaan->nip }}">{{ $cuti }}</a>
+                                                </li>
                                             @endforeach
                                         </ul>
                                     </div>
@@ -1449,7 +1452,9 @@
                                         <ul>
                                             @foreach ($absensi->tugas as $tugas)
                                                 <li><a href="javascript:void(0)" class="detail-link" data-type="tugas"
-                                                        data-id="{{ $tugas }}" data-nip="{{ $dataPekerjaan->nip }}">{{ $tugas }}</a></li>
+                                                        data-id="{{ $tugas }}"
+                                                        data-nip="{{ $dataPekerjaan->nip }}">{{ $tugas }}</a>
+                                                </li>
                                             @endforeach
                                         </ul>
                                     </div>
@@ -1473,8 +1478,10 @@
                                         <p class="text-bold">{{ count($absensi->error) }} absensi bermasalah</p>
                                         <ul>
                                             @foreach ($absensi->error as $error)
-                                                <li><a href="javascript:void(0)" class="detail-link" data-type="error"
-                                                        data-id="{{ $error }}" data-nip="{{ $dataPekerjaan->nip }}">{{ $error }}</a></li>
+                                                <li><a href="javascript:void(0)" class="detail-link" data-type="error" id="tgl"
+                                                        data-id="{{ $error }}"
+                                                        data-nip="{{ $dataPekerjaan->nip }}">{{ $error }}</a>
+                                                </li>
                                             @endforeach
                                         </ul>
                                     </div>
@@ -1806,7 +1813,8 @@
                                                                                     </h6>
                                                                                     <p
                                                                                         class="text-xs text-secondary mb-0">
-                                                                                        {{ $anotherIzin->dataPribadi->nip }}</p>
+                                                                                        {{ $anotherIzin->dataPribadi->nip }}
+                                                                                    </p>
                                                                                 </div>
                                                                             </div>
                                                                         </td>
@@ -1898,6 +1906,10 @@
 
 @push('custom-scripts')
     <script>
+        document.querySelector('.chart').addEventListener('click', function() {
+            document.getElementById('absensi-tab').click();
+        });
+
         document.addEventListener('DOMContentLoaded', (event) => {
             const modals = document.querySelectorAll('.modal');
 
@@ -1922,6 +1934,34 @@
             });
         });
 
+        function formatDateIndonesian(dateString) {
+            // Create a Date object from the given date string
+            const date = new Date(dateString);
+
+            // Array of day names in Indonesian
+            const days = [
+                'Minggu', // Sunday
+                'Senin', // Monday
+                'Selasa', // Tuesday
+                'Rabu', // Wednesday
+                'Kamis', // Thursday
+                'Jumat', // Friday
+                'Sabtu' // Saturday
+            ];
+
+            // Get the day number (0 for Sunday, 1 for Monday, ..., 6 for Saturday)
+            const dayName = days[date.getDay()];
+
+            // Format the date in the desired format
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+            const year = date.getFullYear();
+
+            const formattedDate = `${dayName}, ${day}-${month}-${year}`;
+
+            return formattedDate;
+        }
+
         function fetchDetail(type, id, nip) {
             fetch(`/absensi/detail/${type}/${id}/${nip}`)
                 .then(response => response.json())
@@ -1940,9 +1980,12 @@
                                 <textarea class="form-control" id="keterangan" readonly>${data.detail.keterangan}</textarea>
                             </div>
                         `;
+
+                        document.getElementById('tgl').value = formatDateIndonesian(document.getElementById('tgl').value);
+
                         } else {
                             document.getElementById('noIjin').value = data.detail.no_ijin;
-                            document.getElementById('tglIjin').value = data.detail.tgl_ijin;
+                            document.getElementById('tglIjin').value = formatDateIndonesian(data.detail.tgl_ijin);
                             document.getElementById('jenisIjin').value = data.detail.jenis_ijin;
                             document.getElementById('notes').value = data.detail.keterangan;
                             document.getElementById('jamIn').value = data.detail.jam_in ?? '';

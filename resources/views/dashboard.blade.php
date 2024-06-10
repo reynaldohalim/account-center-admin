@@ -78,12 +78,11 @@
                 </div>
                 <div class="card-body">
                     <h6 class="mb-0 text-center">Kehadiran ({{end($chartData->kehadiranCount)}})</h6>
-                    {{-- <p class="text-sm "> (<span class="font-weight-bolder">+15%</span>) dari hari kemarin. </p> --}}
                 </div>
             </div>
         </div>
         <div class="col-lg-4 mt-4 mb-3">
-            <div class="card z-index-2 ">
+            <div class="card z-index-2">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
                     <div class="bg-gradient-dark shadow-dark border-radius-lg py-3 pe-1">
                         <div class="chart">
@@ -91,9 +90,93 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-body">
-                    <h6 class="mb-0 text-center">Izin tugas / cuti ({{end($chartData->izinCount)}})</h6>
-                    {{-- <p class="text-sm ">15 tugas, 14 izin</p> --}}
+                <div class="card-body accordion" id="izincuti_cardbody">
+                    <h6 class="mb-0 text-center link" type='button' id="izincuti_heading" data-toggle="collapse" data-target="#collapseIzinCuti"
+                    aria-expanded="false" aria-controls="collapseIzinCuti">
+                        Izin tugas / cuti ({{end($chartData->izinCount)}})
+                    </h6>
+                    <div id="collapseIzinCuti" class="collapse" aria-labelledby="izincuti_heading"
+                        data-parent="#izincuti_cardbody">
+                        @if (count($chartData->tugas) > 0)
+                            <h6 class="text-sm mb-3" type='button' id="tugas_heading" data-toggle="collapse" data-target="#collapseTugas"
+                            aria-expanded="false" aria-controls="collapseTugas">Tugas ({{count($chartData->tugas)}})</h6>
+                            <div class="timeline timeline-one-side collapse" id="collapseTugas" aria-labelledby="tugas_heading"
+                            data-parent="#collapseIzinCuti">
+                                @foreach ($chartData->tugas as $karyawan)
+                                    <div class="timeline-block mb-3">
+                                        <span class="timeline-step">
+                                            <img src="../assets/img/pp.png" class="avatar avatar-sm me-1" alt="xd">
+                                        </span>
+                                        <div class="timeline-content">
+                                            <h6 class="text-dark text-sm font-weight-bold mb-0"> {{$karyawan->nip}} - {{$karyawan->nama}}</h6>
+                                            <h6 class="text-dark text-sm font-weight-bold mb-0"> {{$karyawan->divisi}}</h6>
+                                            <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">{{$karyawan->tugas->jenis_ijin}}</p>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+                        @if (count($chartData->dispensasi) > 0)
+                            <h6 class="text-sm mb-3" type='button' id="dispensasi_heading" data-toggle="collapse" data-target="#collapsedispensasi"
+                            aria-expanded="false" aria-controls="collapsedispensasi">Dispensasi ({{count($chartData->dispensasi)}})</h6>
+                            <div class="timeline timeline-one-side collapse" id="collapsedispensasi" aria-labelledby="dispensasi_heading"
+                            data-parent="#collapseIzinCuti">
+                                @foreach ($chartData->dispensasi as $karyawan)
+                                    <div class="timeline-block mb-3">
+                                        <span class="timeline-step">
+                                            <img src="../assets/img/pp.png" class="avatar avatar-sm me-1" alt="xd">
+                                        </span>
+                                        <div class="timeline-content">
+                                            <h6 class="text-dark text-sm font-weight-bold mb-0"> {{$karyawan->nip}} - {{$karyawan->nama}}</h6>
+                                            <h6 class="text-dark text-sm font-weight-bold mb-0"> {{$karyawan->divisi}}</h6>
+                                            <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">{{$karyawan->dispensasi->jenis_ijin}}</p>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+                        @if (count($chartData->cuti) > 0)
+                            <h6 class="text-sm mb-3" type='button' id="cuti_heading" data-toggle="collapse" data-target="#collapsecuti"
+                            aria-expanded="false" aria-controls="collapsecuti">Cuti ({{count($chartData->cuti)}})</h6>
+                            <div class="timeline timeline-one-side collapse" id="collapsecuti" aria-labelledby="cuti_heading"
+                            data-parent="#collapseIzinCuti">
+                                @foreach ($chartData->cuti as $karyawan)
+                                    <div class="timeline-block mb-3">
+                                        <span class="timeline-step">
+                                            <img src="../assets/img/pp.png" class="avatar avatar-sm me-1" alt="xd">
+                                        </span>
+                                        <div class="timeline-content">
+                                            <h6 class="text-dark text-sm font-weight-bold mb-0"> {{$karyawan->nip}} - {{$karyawan->nama}}</h6>
+                                            <h6 class="text-dark text-sm font-weight-bold mb-0"> {{$karyawan->divisi}}</h6>
+                                            <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">{{$karyawan->cuti->jenis_ijin}}</p>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+                        @if (count($chartData->sakit) > 0)
+                            <h6 class="text-sm mb-3" type='button' id="sakit_heading" data-toggle="collapse" data-target="#collapsesakit"
+                            aria-expanded="false" aria-controls="collapsesakit">
+                            Sakit ({{count($chartData->sakit)}})
+                            </h6>
+
+                            <div class="timeline timeline-one-side collapse" id="collapsesakit" aria-labelledby="sakit_heading"
+                            data-parent="#collapseIzinCuti">
+                                @foreach ($chartData->sakit as $karyawan)
+                                    <div class="timeline-block mb-3">
+                                        <span class="timeline-step">
+                                            <img src="../assets/img/pp.png" class="avatar avatar-sm me-1" alt="xd">
+                                        </span>
+                                        <div class="timeline-content">
+                                            <h6 class="text-dark text-sm font-weight-bold mb-0"> {{$karyawan->nip}} - {{$karyawan->nama}}</h6>
+                                            <h6 class="text-dark text-sm font-weight-bold mb-0"> {{$karyawan->divisi}}</h6>
+                                            <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">{{$karyawan->sakit->jenis_ijin}}</p>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
@@ -108,7 +191,6 @@
                 </div>
                 <div class="card-body">
                     <h6 class="mb-0 text-center">Tidak hadir tanpa izin ({{end($chartData->errorCount)}})</h6>
-                    {{-- <p class="text-sm "></p> --}}
                 </div>
             </div>
         </div>
@@ -187,70 +269,46 @@
             </div>
         </div>
         <div class="col-lg-4 col-md-6">
-            <div class="card p-3">
+            <div class="card p-3" id="card_error">
                 <div class="card-header pb-0">
-                    {{-- <div class="dropdown float-lg-end pe-4">
-                        <a class="cursor-pointer" id="dropdownTable" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            <i class="fa fa-ellipsis-v text-secondary"></i>
-                        </a>
-                        <ul class="dropdown-menu px-2 py-3 ms-sm-n4 ms-n5" aria-labelledby="dropdownTable">
-                            <li><a class="dropdown-item border-radius-md" href="javascript:;">Lihat semua</a></li>
-                            <li><a class="dropdown-item border-radius-md" href="javascript:;">Another action</a></li>
-                            <li><a class="dropdown-item border-radius-md" href="javascript:;">Something else here</a>
-                            </li>
-                        </ul>
-                    </div> --}}
-                    <h6><i class='fas fa-exclamation-triangle primary-icon me-3'></i>Terlambat / Tidak absen (4)</h6>
-                    {{-- <p class="text-sm">
-                        <i class="fa fa-arrow-up text-success" aria-hidden="true"></i>
-                        <span class="font-weight-bold">24%</span> this month
-                    </p> --}}
+                    <h6><i class='fas fa-exclamation-triangle primary-icon me-3'></i>Terlambat / Tidak absen ({{count($chartData->error)}})</h6>
                 </div>
                 <div class="card-body p-3">
                     <div class="timeline timeline-one-side">
-
-                        <div class="timeline-block mb-3">
-                            <span class="timeline-step">
-                                <img src="../assets/img/pp.png" class="avatar avatar-sm me-1" alt="xd">
-                            </span>
-                            <div class="timeline-content">
-                                <h6 class="text-dark text-sm font-weight-bold mb-0">Non-Staff - Rudy Sanjaya</h6>
-                                </h6>
-                                <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">08:07:09</p>
+                        @foreach (array_slice($chartData->error, 0, 4) as $karyawan)
+                            <div class="timeline-block mb-3">
+                                <span class="timeline-step">
+                                    <img src="../assets/img/pp.png" class="avatar avatar-sm me-1" alt="xd">
+                                </span>
+                                <div class="timeline-content">
+                                    <h6 class="text-dark text-sm font-weight-bold mb-0"> {{$karyawan->nip}} - {{$karyawan->nama}}</h6>
+                                    <h6 class="text-dark text-sm font-weight-bold mb-0"> {{$karyawan->divisi}}</h6>
+                                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">{{$karyawan->error}}</p>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="timeline-block mb-3">
-                            <span class="timeline-step">
-                                <img src="../assets/img/pp.png" class="avatar avatar-sm me-1" alt="xd">
-                            </span>
-                            <div class="timeline-content">
-                                <h6 class="text-dark text-sm font-weight-bold mb-0">IT - Anton Andika</h6>
-                                </h6>
-                                <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">08:07:29</p>
+                        @endforeach
+                    </div>
+                    <div class="timeline timeline-one-side collapse" id="collapseerror" aria-labelledby="error_heading"
+                    data-parent="#card_error">
+                        @foreach (array_slice($chartData->error, 4) as $karyawan)
+                            <div class="timeline-block mb-3">
+                                <span class="timeline-step">
+                                    <img src="../assets/img/pp.png" class="avatar avatar-sm me-1" alt="xd">
+                                </span>
+                                <div class="timeline-content">
+                                    <h6 class="text-dark text-sm font-weight-bold mb-0"> {{$karyawan->nip}} - {{$karyawan->nama}}</h6>
+                                    <h6 class="text-dark text-sm font-weight-bold mb-0"> {{$karyawan->divisi}}</h6>
+                                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">{{$karyawan->error}}</p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="timeline-block mb-3">
-                            <span class="timeline-step">
-                                <img src="../assets/img/pp.png" class="avatar avatar-sm me-1" alt="xd">
-                            </span>
-                            <div class="timeline-content">
-                                <h6 class="text-dark text-sm font-weight-bold mb-0">Export - Rachel Wisman</h6>
-                                </h6>
-                                <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">08:11:01</p>
-                            </div>
-                        </div>
-                        <div class="timeline-block mb-3">
-                            <span class="timeline-step">
-                                <img src="../assets/img/pp.png" class="avatar avatar-sm me-1" alt="xd">
-                            </span>
-                            <div class="timeline-content">
-                                <h6 class="text-dark text-sm font-weight-bold mb-0">IT - Natalia Salim</h6>
-                                </h6>
-                                <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">08:21:55</p>
-                            </div>
-                        </div>
+                        @endforeach
+                    </div>
+                    <div type='button' id="error_heading" data-toggle="collapse" data-target="#collapseerror"
+                    aria-expanded="false" aria-controls="collapseerror">
+                        <h6 class="cursor-pointer text-sm" >
+                            <i class="fa fa-ellipsis-v text-secondary me-3 mt-2"></i>
+                            Lihat semua
+                        </h6>
                     </div>
                 </div>
             </div>

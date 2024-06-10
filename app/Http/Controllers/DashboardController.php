@@ -42,7 +42,7 @@ class DashboardController extends Controller
         $izin = $this->getPendingIzin();
         $countIzin = count($izin);
 
-        $today = '2023-08-11';
+        $today = '2023-08-15';
         // $today = date('Y-m-d');
         $chartData = $this->generateDashboardCharts($today, 5);
 
@@ -600,8 +600,6 @@ class DashboardController extends Controller
 
         $jam_datang = '08:07:00';
         $jam_pulang = '17:00:00';
-        // $tgl_awal = '2023-06-01';
-        // $tgl_akhir = '2023-12-18';
         $sql_tgl_akhir = Carbon::parse($tgl_akhir)->addDay()->format('Y-m-d');
 
         // Query izin
@@ -612,7 +610,7 @@ class DashboardController extends Controller
 
         // Query absensi
         $absensi = Absensi::where('nip', $nip)
-            ->whereBetween('tgl', [$tgl_awal, $sql_tgl_akhir])
+            ->whereBetween('tgl', [$tgl_awal, $sql_tgl_akhir])->distinct()
             ->get();
 
         // Query libur_karyawan
@@ -622,15 +620,17 @@ class DashboardController extends Controller
         // Check workdays/weekend
         $dt_tgl_awal = new DateTime($tgl_awal);
         $dt_tgl_akhir = new DateTime($tgl_akhir);
-        $workdays_count = 0;
 
         foreach (new DatePeriod($dt_tgl_awal, new DateInterval('P1D'), $dt_tgl_akhir->modify('+1 day')) as $date) {
             $date_str = $date->format('Y-m-d');
 
+            $filtered_libur = $libur->filter(function ($item) use ($date_str) {
+                return $item->tgl === $date_str;
+            });
+
             // Check weekends
             $weekends = [6, 7]; // 1=mon, 2=tues, 3=wed... 7=sun
-            if (!in_array($date->format('N'), $weekends)) {
-                $workdays_count++;
+            if (!in_array($date->format('N'), $weekends) && $filtered_libur->isEmpty()) {
 
                 // Check approved izin/cuti bersama
                 $filtered_izin = $izin->filter(function ($item) use ($date_str) {
@@ -788,46 +788,140 @@ class DashboardController extends Controller
         $currentDate = new DateTime($today);
 
         while (count($workdays) < $daysBefore) {
-            // Check if the current date is a weekday (Mon-Fri)
-            if ($currentDate->format('N') < 6) {
+            $libur = LiburKaryawan::where('tgl', $currentDate->format('Y-m-d'))->first();
+
+            // Check if the current date is a weekday (Mon-Fri) and not libur
+            if ($currentDate->format('N') < 6 && !isset($libur)) {
                 $workdays[] = $currentDate->format('Y-m-d');
             }
             // Move to the previous day
             $currentDate->sub(new DateInterval('P1D'));
         }
-
         $workdays = array_reverse($workdays);
-        $karyawanCount = DataPekerjaan::count('nip');
+
+        $karyawans = DataPekerjaan::get();
+
+        $karyawanCount = $karyawans->count();
         foreach($workdays as $current_date){
             $kehadiranCount[$current_date] = Absensi::where('tgl', 'like', $current_date . '%')->distinct()->count('nip');
-            $izinCount[$current_date] = Izin::where('tgl_ijin', $current_date)->whereNotNull('approve2')->distinct()->count('no_ijin');
+            $izinCount[$current_date] = Izin::where('tgl_ijin', $current_date)->whereNotNull('approve2')->whereNot('approve2', '')->distinct()->count('no_ijin');
             $errorCount[$current_date] = $karyawanCount - $kehadiranCount[$current_date] - $izinCount[$current_date];
         }
+
+        //generate today's detail
+        $cuti=[];
+        $tugas=[];
+        $sakit=[];
+        $dispensasi=[];
+        $error=[];
+
+        $jam_datang = '08:07:00';
+        $jam_pulang = '17:00:00';
+        foreach($karyawans as $karyawan){
+            $karyawan->nama = DataPribadi::where('nip', $karyawan->nip)->first()->nama;
+
+            //check izin:
+            $filtered_izin = Izin::where('tgl_ijin', $today)->where('nip', $karyawan->nip)->whereNotNull('approve2')->whereNot('approve2', '')->first();
+            $filtered_absen = Absensi::where('nip', $karyawan->nip)->where('tgl', 'like', "$today%")->distinct()->get();
+
+            if (isset($filtered_izin)) {
+                $jenis_ijin = $filtered_izin->jenis_ijin;
+                $firstchar_jenis_ijin = substr($jenis_ijin, 0, 1);
+
+                if ($firstchar_jenis_ijin == 'A') {
+                    $karyawan->cuti = $filtered_izin;
+                    $cuti[] = $karyawan; // izin cuti
+                } elseif ($firstchar_jenis_ijin == 'C') {
+                    $karyawan->tugas = $filtered_izin;
+                    $tugas[] = $karyawan; // izin tugas
+                } elseif ($firstchar_jenis_ijin == 'D') {
+                    $karyawan->sakit = $filtered_izin; // izin dispensasi;
+                    $sakit[] = $karyawan;
+                } elseif ($firstchar_jenis_ijin == 'B') {
+                    if ($jenis_ijin == 'B.360') {
+                        $karyawan->dispensasi = $filtered_izin; // izin dispensasi;
+                        $dispensasi[] = $karyawan;
+                    } else {
+                        $karyawan->dispensasi = $filtered_izin;
+                        $dispensasi[] = $karyawan;
+                        if ($filtered_absen->isNotEmpty()) {
+                            // Get time absen
+                            $times = $filtered_absen->map(function ($item) {
+                                return substr($item->tgl, 11);
+                            })->sort()->values();
+
+                            if (in_array($jenis_ijin, ['B.310', 'B.340', 'B.370'])) {
+                                // tidak absen datang, izin terlambat, terlambat dispensasi
+                                if ($times->first() < $jam_pulang) {
+                                    $karyawan->error = $times[0];
+                                    $error[] = $karyawan;
+                                }
+                            } elseif (in_array($jenis_ijin, ['B.320', 'B.350'])) {
+                                // tidak absen pulang, izin pulang awal
+                                if ($times->first() >= $jam_datang) {
+                                    $karyawan->error = $times[0];
+                                    $error[] = $karyawan;
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                if ($filtered_absen->isNotEmpty()) {
+                    // Get time absen
+                    $times = $filtered_absen->map(function ($item) {
+                        return substr($item->tgl, 11);
+                    })->sort()->values();
+
+                    if ($times->count() < 2) {
+                        $karyawan->error = 'Absen tidak lengkap';
+                        $error[] = $karyawan;
+                    } else {
+                        // Check absen datang-pulang
+                        if($times->first() >= $jam_datang || $times->last() <= $jam_pulang){
+                            if ($times->first() >= $jam_datang) {
+                                $karyawan->error = 'Terlambat: '. $times->first() .' ';
+                            }
+                            if ($times->last() < $jam_pulang) {
+                                $karyawan->error .= $times->last();
+                            }
+                            $error[] = $karyawan;
+                        }
+                    }
+                } else {
+                    // tidak ada data absen
+                    $karyawan->error = 'Tidak absen';
+                    $error[] = $karyawan;
+                }
+            }
+        }
+
+        $errorCount[$today] = count($error);
 
         return (object) [
             'kehadiranCount' => $kehadiranCount,
             'izinCount' => $izinCount,
-            'errorCount' => $errorCount
+            'errorCount' => $errorCount,
+            'cuti'=> $cuti,
+            'tugas' => $tugas,
+            'sakit' => $sakit,
+            'dispensasi' => $dispensasi,
+            'error' => $error
         ];
     }
 
     //izin
-    private function fetchErrorDetail($id, $nip)
+    private function fetchErrorDetail($tgl, $nip)
     {
-        // Assuming $id is in the format 'YYYY-MM-DD'
-        // $nip = 'your_nip_value'; // Replace with actual NIP value
-        $detail_absen = $id; // Assuming $id represents the date
-
-        $jenis_detail = 'error';
         $keterangan  = '';
         $jam_datang = '08:07:00';
         $jam_pulang = '17:00:00';
 
-        // Fetch absensi data
-        $absensi = DB::table('absensi')
-            ->where('nip', $nip)
-            ->where('tgl', 'like', "$detail_absen%")
-            ->get();
+        $absensi = Absensi
+        ::where('nip', $nip)
+        ->where('tgl', 'like', "$tgl%")->distinct()
+        ->get();
+
 
         if ($absensi->isEmpty()) {
             $keterangan = 'Tidak absen';
@@ -840,7 +934,7 @@ class DashboardController extends Controller
                 $izin = DB::table('ijin')
                     ->where('nip', $nip)
                     ->whereNotNull('approve2')
-                    ->where('tgl_ijin', $detail_absen)
+                    ->where('tgl_ijin', $tgl)
                     ->get();
 
                 if ($izin->isEmpty()) {
@@ -855,12 +949,12 @@ class DashboardController extends Controller
                 }
             } else {
                 if ($times[0] >= $jam_datang) $keterangan = 'Terlambat (' . $times[0] . '). ';
-                if ($times[1] < $jam_pulang) $keterangan .= 'Pulang awal (' . $times[1] . ').';
+                if (end($times) < $jam_pulang) $keterangan .= 'Pulang awal (' . end($times) . ').';
             }
         }
 
         return [
-            'tgl' => $detail_absen,
+            'tgl' => $tgl,
             'keterangan' => $keterangan,
         ];
     }
