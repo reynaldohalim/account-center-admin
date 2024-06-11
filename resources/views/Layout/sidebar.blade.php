@@ -25,22 +25,26 @@
                     <span class="nav-link-text ms-1">Data Karyawan</span>
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link text-white {{ Request::is('pengaturan-libur') ? 'active bg-gradient-primary' : '' }}" href="../pengaturan-libur">
-                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">edit_calendar</i>
-                    </div>
-                    <span class="nav-link-text ms-1">Pengaturan Libur</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-white {{ Request::is('pengajuan-pembaruan') ? 'active bg-gradient-primary' : '' }}" href="../pengajuan-pembaruan">
-                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">edit_note</i>
-                    </div>
-                    <span class="nav-link-text ms-1">Pengajuan Pembaruan</span>
-                </a>
-            </li>
+            @if ($akses->tipe_admin == 0)
+                <li class="nav-item admin-item">
+                    <a class="nav-link text-white {{ Request::is('pengaturan-libur') ? 'active bg-gradient-primary' : '' }}" href="../pengaturan-libur">
+                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="material-icons opacity-10">edit_calendar</i>
+                        </div>
+                        <span class="nav-link-text ms-1">Pengaturan Libur</span>
+                    </a>
+                </li>
+            @endif
+            @if ($akses->tipe_admin != 1)
+                <li class="nav-item admin-item">
+                    <a class="nav-link text-white {{ Request::is('pengajuan-pembaruan') ? 'active bg-gradient-primary' : '' }}" href="../pengajuan-pembaruan">
+                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="material-icons opacity-10">edit_note</i>
+                        </div>
+                        <span class="nav-link-text ms-1">Pengajuan Pembaruan</span>
+                    </a>
+                </li>
+            @endif
             <li class="nav-item">
                 <a class="nav-link text-white {{ Request::is('pengajuan-izin') ? 'active bg-gradient-primary' : '' }}" href="../pengajuan-izin">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -57,25 +61,29 @@
                     <span class="nav-link-text ms-1">Klasifikasi Karyawan</span>
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link text-white {{ Request::is('notifikasi') ? 'active bg-gradient-primary' : '' }}" href="../notifikasi">
-                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">notifications</i>
-                    </div>
-                    <span class="nav-link-text ms-1">Notifikasi</span>
-                </a>
-            </li>
+            @if ($akses->tipe_admin == 0)
+                <li class="nav-item">
+                    <a class="nav-link text-white {{ Request::is('notifikasi') ? 'active bg-gradient-primary' : '' }}" href="../notifikasi">
+                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="material-icons opacity-10">notifications</i>
+                        </div>
+                        <span class="nav-link-text ms-1">Notifikasi</span>
+                    </a>
+                </li>
+            @endif
             <li class="nav-item mt-3">
                 <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">Pengaturan akun</h6>
             </li>
-            <li class="nav-item">
-                <a class="nav-link text-white {{ Request::is('manajemen-hak-akses') ? 'active bg-gradient-primary' : '' }}" href="../manajemen-hak-akses">
-                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="material-icons opacity-10">manage_accounts</i>
-                    </div>
-                    <span class="nav-link-text ms-1">Manajemen Hak Akses</span>
-                </a>
-            </li>
+            @if ($akses->tipe_admin == 0)
+                <li class="nav-item admin-item">
+                    <a class="nav-link text-white {{ Request::is('manajemen-hak-akses') ? 'active bg-gradient-primary' : '' }}" href="../manajemen-hak-akses">
+                        <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <i class="material-icons opacity-10">manage_accounts</i>
+                        </div>
+                        <span class="nav-link-text ms-1">Manajemen Hak Akses</span>
+                    </a>
+                </li>
+            @endif
             <li class="nav-item">
                 <a class="nav-link text-white {{ Request::is('ganti-password') ? 'active bg-gradient-primary' : '' }}" href="../ganti-password">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -84,7 +92,6 @@
                     <span class="nav-link-text ms-1">Ganti Password</span>
                 </a>
             </li>
-
         </ul>
     </div>
     <div class="sidenav-footer position-absolute w-100 bottom-0">

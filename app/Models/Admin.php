@@ -49,7 +49,7 @@ class Admin extends Authenticatable
 
     public function aksesAdmin()
     {
-        return $this->hasMany(AksesAdmin::class, 'nip', 'nip');
+        return $this->hasOne(AksesAdmin::class, 'nip', 'nip');
     }
-
 }
+

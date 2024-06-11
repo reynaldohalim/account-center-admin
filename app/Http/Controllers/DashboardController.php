@@ -37,7 +37,8 @@ class DashboardController extends Controller
     public function index()
     {
         $admin = auth()->user();
-        $dataPekerjaan = $admin->dataPekerjaan;
+        $akses = $admin->aksesAdmin;
+
         $dataPribadiAdmin = $admin->dataPribadi;
 
         $izin = $this->getPendingIzin();
@@ -50,18 +51,22 @@ class DashboardController extends Controller
         $pageTitle = 'Halaman Utama';
         $breadcrumb = ['Admin', $pageTitle];
 
-        return view('dashboard', compact('admin', 'dataPekerjaan', 'dataPribadiAdmin', 'izin', 'countIzin', 'pageTitle', 'breadcrumb', 'chartData'));
+        return view('dashboard', compact('akses', 'dataPribadiAdmin', 'izin', 'countIzin', 'pageTitle', 'breadcrumb', 'chartData'));
     }
 
     //Data Karyawan
     public function data_karyawan()
     {
         $admin = auth()->user();
+        $akses = $admin->aksesAdmin;
         $dataPribadiAdmin = $admin->dataPribadi;
         $pageTitle = 'Data Karyawan';
         $breadcrumb = ['Admin', $pageTitle];
 
-        $nips = DataPekerjaan::distinct()->pluck('nip');
+        $nips = DataPekerjaan::distinct();
+        if($akses->divisi != null) $nips = $nips->where('divisi', $akses->divisi);
+
+        $nips = $nips->pluck('nip');
 
         // Create DataKaryawan instances
         $dataKaryawanInstances = $nips->map(function ($nip) {
@@ -74,7 +79,7 @@ class DashboardController extends Controller
         });
         $dataKaryawan = $dataKaryawanGrouped;
 
-        return view('data-karyawan', compact('pageTitle', 'breadcrumb', 'dataKaryawan', 'dataPribadiAdmin'));
+        return view('data-karyawan', compact('akses', 'pageTitle', 'breadcrumb', 'dataKaryawan', 'dataPribadiAdmin'));
     }
 
     public function fetchAllKaryawans($divisi)
@@ -124,6 +129,7 @@ class DashboardController extends Controller
     {
 
         $admin = auth()->user();
+        $akses = $admin->aksesAdmin;
         $dataPribadiAdmin = $admin->dataPribadi;
         $pageTitle = 'Detail Karyawan';
         $breadcrumb = ['Admin', 'Data Karyawan', $pageTitle];
@@ -141,7 +147,7 @@ class DashboardController extends Controller
         $izin = $this->getIzin($nip);
         $pembaruanData = PembaruanData::where('nip', $nip)->whereNull('tgl_approval')->get()->groupBy('tabel');
 
-        return view('data-karyawan-details', compact('dataPribadiAdmin', 'pageTitle', 'breadcrumb', 'dataPribadi', 'dataPekerjaan', 'dataLainlain', 'dataKeluarga', 'pendidikan', 'bahasa', 'organisasi', 'pengalamanKerja', 'absensi', 'izin', 'pembaruanData'));
+        return view('data-karyawan-details', compact('akses', 'dataPribadiAdmin', 'pageTitle', 'breadcrumb', 'dataPribadi', 'dataPekerjaan', 'dataLainlain', 'dataKeluarga', 'pendidikan', 'bahasa', 'organisasi', 'pengalamanKerja', 'absensi', 'izin', 'pembaruanData'));
     }
 
     public function update(Request $request, $nip)
@@ -192,6 +198,90 @@ class DashboardController extends Controller
         return redirect()->back()->with('success', 'Pendidikan data updated successfully.');
     }
 
+    public function updateBahasa(Request $request, $id)
+    {
+        // Validate the request data
+        $validatedData = $request->validate([
+            'bahasa' => 'required',
+            'mendengar' => 'required',
+            'membaca' => 'required',
+            'bicara' => 'required',
+            'menulis' => 'required',
+        ]);
+
+        // Find the Bahasa record by ID
+        $bahasa = Bahasa::findOrFail($id);
+
+        // Update the Bahasa record with the validated data
+        $bahasa->update($validatedData);
+
+        // Redirect back with a success message
+        return redirect()->back()->with('success', 'Bahasa data updated successfully.');
+    }
+
+    public function updateOrganisasi(Request $request, $id)
+    {
+        // Validate the request data
+        $validatedData = $request->validate([
+            'macam_kegiatan' => 'required',
+            'jabatan' => 'required',
+            'tahun' => 'required',
+            'keterangan' => 'nullable',
+        ]);
+
+        // Find the Organisasi record by ID
+        $organisasi = Organisasi::findOrFail($id);
+
+        // Update the Organisasi record with the validated data
+        $organisasi->update($validatedData);
+
+        // Redirect back with a success message
+        return redirect()->back()->with('success', 'Organisasi data updated successfully.');
+    }
+
+    public function updatePengalamanKerja(Request $request, $id)
+    {
+        // Find the pengalaman kerja record by ID
+        $pengalamanKerja = PengalamanKerja::findOrFail($id);
+
+        // Validate the request
+        $request->validate([
+            'nama_perusahaan' => 'required|string|max:255',
+            'alamat' => 'required|string',
+            'tahun_awal' => 'required|integer',
+            'tahun_akhir' => 'required|integer',
+            'alasan_pindah' => 'required|string|max:255',
+            'total_karyawan' => 'required|integer',
+            'uraian_pekerjaan' => 'required|string',
+            'nama_atasan' => 'required|string|max:255',
+            'no_telepon' => 'required|string|max:15',
+            'gaji' => 'required|string|max:255',
+            'jabatan_awal' => 'required|string|max:255',
+            'jabatan_akhir' => 'required|string|max:255',
+            'total_bawahan' => 'required|integer',
+        ]);
+
+        // Update the pengalaman kerja record
+        $pengalamanKerja->update([
+            'nama_perusahaan' => $request->input('nama_perusahaan'),
+            'alamat' => $request->input('alamat'),
+            'tahun_awal' => $request->input('tahun_awal'),
+            'tahun_akhir' => $request->input('tahun_akhir'),
+            'alasan_pindah' => $request->input('alasan_pindah'),
+            'total_karyawan' => $request->input('total_karyawan'),
+            'uraian_pekerjaan' => $request->input('uraian_pekerjaan'),
+            'nama_atasan' => $request->input('nama_atasan'),
+            'no_telepon' => $request->input('no_telepon'),
+            'gaji' => $request->input('gaji'),
+            'jabatan_awal' => $request->input('jabatan_awal'),
+            'jabatan_akhir' => $request->input('jabatan_akhir'),
+            'total_bawahan' => $request->input('total_bawahan'),
+        ]);
+
+        // Redirect back with a success message
+        return redirect()->back()->with('success', 'Pengalaman kerja updated successfully.');
+    }
+
     //Libur Karyawan
     public function pengaturan_libur()
     {
@@ -199,11 +289,12 @@ class DashboardController extends Controller
         $breadcrumb = ['Admin', $pageTitle];
 
         $admin = auth()->user();
+        $akses = $admin->aksesAdmin;
         $dataPribadiAdmin = $admin->dataPribadi;
 
         $liburKaryawan = LiburKaryawan::all();
 
-        return view('pengaturan-libur', compact('pageTitle', 'breadcrumb', 'dataPribadiAdmin', 'liburKaryawan'));
+        return view('pengaturan-libur', compact('akses', 'pageTitle', 'breadcrumb', 'dataPribadiAdmin', 'liburKaryawan'));
     }
 
     public function storeLiburKaryawan(Request $request)
@@ -252,6 +343,7 @@ class DashboardController extends Controller
         $breadcrumb = ['Admin', $pageTitle];
 
         $admin = auth()->user();
+        $akses = $admin->aksesAdmin;
         $dataPribadiAdmin = $admin->dataPribadi;
 
         $nips = PembaruanData::whereNot('tabel', '')->whereNull('tgl_approval')->distinct()->pluck('nip');
@@ -264,7 +356,7 @@ class DashboardController extends Controller
         })->toArray(); // Convert to array to avoid collection issues in Blade
 
 
-        return view('pengajuan-pembaruan', compact('pageTitle', 'breadcrumb', 'dataPribadiAdmin', 'arrPembaruan'));
+        return view('pengajuan-pembaruan', compact('akses', 'pageTitle', 'breadcrumb', 'dataPribadiAdmin', 'arrPembaruan'));
     }
 
     public function approvePembaruan($id)
@@ -355,10 +447,11 @@ class DashboardController extends Controller
         $breadcrumb = ['Admin', $pageTitle];
 
         $admin = auth()->user();
+        $akses = $admin->aksesAdmin;
         $dataPribadiAdmin = $admin->dataPribadi;
 
         $izin = $this->getPendingIzin();
-        return view('pengajuan-izin', compact('pageTitle', 'breadcrumb', 'dataPribadiAdmin', 'izin'));
+        return view('pengajuan-izin', compact('akses', 'pageTitle', 'breadcrumb', 'dataPribadiAdmin', 'izin'));
     }
 
     public function izin_approve1(Request $request)
@@ -415,15 +508,20 @@ class DashboardController extends Controller
     }
 
     //Klasifikasi karyawan
-public function klasifikasi_karyawan(Request $request)
+    public function klasifikasi_karyawan(Request $request)
     {
+        $admin = auth()->user();
+        $akses = $admin->aksesAdmin;
         $sortBy = $request->get('sortBy', 'presensi'); // Default sorting by 'Presensi'
         $sortOrder = $request->get('sortOrder', 'desc'); // Default sorting order descending
 
         $goodLimit = $request->input('good_limit', 90);
         $notGoodLimit = $request->input('not_good_limit', 80);
 
-        $nips = DataPekerjaan::distinct()->pluck('nip');
+        $nips = DataPekerjaan::distinct();
+        if($akses->divisi != null) $nips = $nips->where('divisi', $akses->divisi);
+
+        $nips = $nips->pluck('nip');
 
         // Create DataKaryawan instances
         $dataKaryawanInstances = $nips->map(function ($nip) {
@@ -450,8 +548,9 @@ public function klasifikasi_karyawan(Request $request)
         $breadcrumb = ['Admin', $pageTitle];
 
         $admin = auth()->user();
+        $akses = $admin->aksesAdmin;
         $dataPribadiAdmin = $admin->dataPribadi;
-        return view('klasifikasi-karyawan', compact('pageTitle', 'breadcrumb', 'dataPribadiAdmin', 'dataKaryawanInstances', 'sortBy', 'sortOrder', 'goodLimit', 'notGoodLimit'));
+        return view('klasifikasi-karyawan', compact('akses', 'pageTitle', 'breadcrumb', 'dataPribadiAdmin', 'dataKaryawanInstances', 'sortBy', 'sortOrder', 'goodLimit', 'notGoodLimit'));
     }
 
     //notifikasi
@@ -461,9 +560,10 @@ public function klasifikasi_karyawan(Request $request)
         $breadcrumb = ['Admin', $pageTitle];
 
         $admin = auth()->user();
+        $akses = $admin->aksesAdmin;
         $dataPribadiAdmin = $admin->dataPribadi;
 
-        return view('notifikasi', compact('pageTitle', 'breadcrumb', 'dataPribadiAdmin'));
+        return view('notifikasi', compact('akses', 'pageTitle', 'breadcrumb', 'dataPribadiAdmin'));
     }
 
     // IAM Manajemen Hak Akses
@@ -473,6 +573,7 @@ public function klasifikasi_karyawan(Request $request)
         $breadcrumb = ['Admin', $pageTitle];
 
         $admin = auth()->user();
+        $akses = $admin->aksesAdmin;
         $dataPribadiAdmin = $admin->dataPribadi;
 
         $aksesAdmin = AksesAdmin::get();
@@ -482,7 +583,7 @@ public function klasifikasi_karyawan(Request $request)
         }
 
 
-        return view('manajemen-hak-akses', compact('pageTitle', 'breadcrumb', 'dataPribadiAdmin', 'aksesAdmin'));
+        return view('manajemen-hak-akses', compact('akses', 'pageTitle', 'breadcrumb', 'dataPribadiAdmin', 'aksesAdmin'));
     }
 
     public function searchAdmin(Request $request)
@@ -522,7 +623,7 @@ public function klasifikasi_karyawan(Request $request)
             'bagian' => 'nullable|string',
             'jabatan' => 'nullable|string',
             'group' => 'nullable|string',
-            'approval_izin' => 'required|integer',
+            'tipe_admin' => 'required|integer',
         ]);
 
         // Check if the NIP exists in the Admin model
@@ -839,6 +940,8 @@ public function klasifikasi_karyawan(Request $request)
 
     private function generateDashboardCharts($today, $daysBefore)
     {
+        $admin = auth()->user();
+        $akses = $admin->aksesAdmin;
         $kehadiranCount = [];
         $izinCount = [];
         $errorCount = [];
@@ -858,6 +961,7 @@ public function klasifikasi_karyawan(Request $request)
         $workdays = array_reverse($workdays);
 
         $karyawans = DataPekerjaan::get();
+        if($akses->divisi != null) $karyawans = $karyawans->where('divisi', $akses->divisi);
 
         $karyawanCount = $karyawans->count();
         foreach ($workdays as $current_date) {
@@ -1019,6 +1123,9 @@ public function klasifikasi_karyawan(Request $request)
 
     private function getPendingIzin()
     {
+        $admin = auth()->user();
+        $akses = $admin->aksesAdmin;
+
         $izinRecords = Izin::orderBy('tgl_ijin', 'asc')->where('approve2', '')->where('rejected_by', '')->get();
 
         // Merge izin records by no_ijin
@@ -1031,6 +1138,8 @@ public function klasifikasi_karyawan(Request $request)
             return $firstRow;
         })->values();
 
+        $filteredIzin = [];
+        $izinRecords = [];
         foreach ($mergedIzin as $izin) {
             $pekerjaan = DataPekerjaan::where('nip', $izin->nip)->first();
             $izin->divisi = $pekerjaan ? $pekerjaan->divisi : null;
@@ -1042,9 +1151,13 @@ public function klasifikasi_karyawan(Request $request)
             $izin->status = 'Menunggu approve 1';
 
             if ($izin->approve2 != null || $izin->approve1 != '') $izin->status = 'Menunggu approve 2';
+
+            if($akses->divisi != null && $izin->divisi == $akses->divisi) $filteredIzin[] = $izin;
+            else $izinRecords[] = $izin;
         }
 
-        return $mergedIzin;
+        if($akses->divisi == null) return $izinRecords;
+        else return $filteredIzin;
     }
 
     private function getIzin($nip)

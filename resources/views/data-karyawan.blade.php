@@ -23,35 +23,67 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($karyawans->take(5) as $dataKaryawan)
-                                @php
-                                    $pribadi = $dataKaryawan->dataPribadi();
-                                    $pekerjaan = $dataKaryawan->dataPekerjaan();
-                                @endphp
-                                <tr class="data-tr cursor-pointer" onclick="viewDetails('{{ $pekerjaan->nip }}')">
-                                    <td>
-                                        <div class="d-flex px-2 py-1">
-                                            <div>
-                                                <img src="../assets/img/pp.png" class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
-                                            </div>
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">{{ $pribadi->nama }}</h6>
-                                                <p class="text-xs text-secondary mb-0">{{ $pribadi->nip }}</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <p class="text-xs font-weight-bold mb-0">{{ $pekerjaan->jabatan }} {{ $pekerjaan->bagian }}</p>
-                                        <p class="text-xs text-secondary mb-0">{{ $pekerjaan->divisi }}</p>
-                                    </td>
-                                    <td class="align-middle text-center text-sm">
-                                        <p class="text-xs font-weight-bold mb-0">{{ $pribadi->no_hp }}</p>
-                                    </td>
-                                    <td class="align-middle text-center">
-                                        <p class="text-xs font-weight-bold mb-0">{{ $pribadi->tgl_lahir }}</p>
-                                    </td>
-                                </tr>
-                                @endforeach
+                                @if (count($dataKaryawan) == 1)
+                                    @foreach($karyawans as $dataKaryawan)
+                                        @php
+                                            $pribadi = $dataKaryawan->dataPribadi();
+                                            $pekerjaan = $dataKaryawan->dataPekerjaan();
+                                        @endphp
+                                        <tr class="data-tr cursor-pointer" onclick="viewDetails('{{ $pekerjaan->nip }}')">
+                                            <td>
+                                                <div class="d-flex px-2 py-1">
+                                                    <div>
+                                                        <img src="../assets/img/pp.png" class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
+                                                    </div>
+                                                    <div class="d-flex flex-column justify-content-center">
+                                                        <h6 class="mb-0 text-sm">{{ $pribadi->nama }}</h6>
+                                                        <p class="text-xs text-secondary mb-0">{{ $pribadi->nip }}</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <p class="text-xs font-weight-bold mb-0">{{ $pekerjaan->jabatan }} {{ $pekerjaan->bagian }}</p>
+                                                <p class="text-xs text-secondary mb-0">{{ $pekerjaan->divisi }}</p>
+                                            </td>
+                                            <td class="align-middle text-center text-sm">
+                                                <p class="text-xs font-weight-bold mb-0">{{ $pribadi->no_hp }}</p>
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                <p class="text-xs font-weight-bold mb-0">{{ $pribadi->tgl_lahir }}</p>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @else
+                                    @foreach($karyawans->take(5) as $dataKaryawan)
+                                        @php
+                                            $pribadi = $dataKaryawan->dataPribadi();
+                                            $pekerjaan = $dataKaryawan->dataPekerjaan();
+                                        @endphp
+                                        <tr class="data-tr cursor-pointer" onclick="viewDetails('{{ $pekerjaan->nip }}')">
+                                            <td>
+                                                <div class="d-flex px-2 py-1">
+                                                    <div>
+                                                        <img src="../assets/img/pp.png" class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
+                                                    </div>
+                                                    <div class="d-flex flex-column justify-content-center">
+                                                        <h6 class="mb-0 text-sm">{{ $pribadi->nama }}</h6>
+                                                        <p class="text-xs text-secondary mb-0">{{ $pribadi->nip }}</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <p class="text-xs font-weight-bold mb-0">{{ $pekerjaan->jabatan }} {{ $pekerjaan->bagian }}</p>
+                                                <p class="text-xs text-secondary mb-0">{{ $pekerjaan->divisi }}</p>
+                                            </td>
+                                            <td class="align-middle text-center text-sm">
+                                                <p class="text-xs font-weight-bold mb-0">{{ $pribadi->no_hp }}</p>
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                <p class="text-xs font-weight-bold mb-0">{{ $pribadi->tgl_lahir }}</p>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endif
                             </tbody>
                         </table>
                     </div>
@@ -115,10 +147,6 @@
                 });
             })
             .catch(error => console.error('Error fetching karyawans:', error));
-    }
-
-    function viewDetails(nip) {
-        window.location.href = `/data-karyawan/${nip}`;
     }
 </script>
 @push('custom-scripts')

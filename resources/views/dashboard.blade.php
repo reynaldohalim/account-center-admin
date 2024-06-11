@@ -2,70 +2,77 @@
 @section('main-content')
 
 <div class="container-fluid py-4 row">
-    <div class="row">
-        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-            <div class="card">
-                <div class="card-header p-3 pt-2">
-                    <div
-                        class="icon icon-lg icon-shape bg-gradient-dark shadow-dark text-center border-radius-xl mt-n4 position-absolute">
-                        <i class="material-icons opacity-10">manage_accounts</i>
+    @if ($akses->tipe_admin != 1)
+        <div class="row">
+            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4 admin-item">
+                <a href="../manajemen-hak-akses">
+                    <div class="card">
+                        <div class="card-header p-3 pt-2">
+                            <div
+                                class="icon icon-lg icon-shape bg-gradient-dark shadow-dark text-center border-radius-xl mt-n4 position-absolute">
+                                <i class="material-icons opacity-10">manage_accounts</i>
+                            </div>
+                        </div>
+                        <div class="text-end pt-1 card-footer">
+                            <p class="text-sm mb-0 text-capitalize">Master Admin</p>
+                            <h6 class="mb-0">Manajemen Hak Akses</h6>
+                        </div>
                     </div>
-                </div>
-                <div class="text-end pt-1 card-footer">
-                    <p class="text-sm mb-0 text-capitalize">Master Admin</p>
-                    <h6 class="mb-0">Manajemen Hak Akses</h6>
+                </a>
+            </div>
+            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                <div class="card">
+                    <div class="card-header pt-3">
+                        <div
+                            class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10">person</i>
+                        </div>
+                        <div class="text-end pt-1">
+                            <p class="text-sm mb-0 text-capitalize">Kehadiran tertinggi</p>
+                        </div>
+                    </div>
+                    <div class="card-footer pt-0 pb-2 text-end">
+                        <h5 class="mb-0">98%</h5>
+                        <h6>MRK</h6>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-            <div class="card">
-                <div class="card-header pt-3">
-                    <div
-                        class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
-                        <i class="material-icons opacity-10">person</i>
+            <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                <div class="card">
+                    <div class="card-header pt-3">
+                        <div
+                            class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
+                            <i class="material-icons opacity-10">person</i>
+                        </div>
+                        <div class="text-end pt-1">
+                            <p class="text-sm mb-0 text-capitalize">Kehadiran terendah</p>
+                        </div>
                     </div>
-                    <div class="text-end pt-1">
-                        <p class="text-sm mb-0 text-capitalize">Kehadiran tertinggi</p>
+                    <div class="card-footer pt-0 pb-2 text-end">
+                        <h5 class="mb-0">87%</h5>
+                        <h6>UMM</h6>
                     </div>
-                </div>
-                <div class="card-footer pt-0 pb-2 text-end">
-                    <h5 class="mb-0">98%</h5>
-                    <h6>MRK</h6>
                 </div>
             </div>
-        </div>
-        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-            <div class="card">
-                <div class="card-header pt-3">
-                    <div
-                        class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
-                        <i class="material-icons opacity-10">person</i>
+            <div class="col-xl-3 col-sm-6">
+                <a href="../pengaturan-libur">
+                    <div class="card">
+                        <div class="card-header p-3 pt-2">
+                            <div
+                                class="icon icon-lg icon-shape bg-gradient-info shadow-info text-center border-radius-xl mt-n4 position-absolute">
+                                <i class="material-icons opacity-10">edit_note</i>
+                            </div>
+                        </div>
+                        <div class="text-end pt-1 card-footer">
+                            <p class="text-sm mb-0 text-capitalize">Admin</p>
+                            <h6 class="mb-0">Pengaturan Libur</h6>
+                        </div>
                     </div>
-                    <div class="text-end pt-1">
-                        <p class="text-sm mb-0 text-capitalize">Kehadiran terendah</p>
-                    </div>
-                </div>
-                <div class="card-footer pt-0 pb-2 text-end">
-                    <h5 class="mb-0">87%</h5>
-                    <h6>UMM</h6>
-                </div>
+                </a>
             </div>
         </div>
-        <div class="col-xl-3 col-sm-6">
-            <div class="card">
-                <div class="card-header p-3 pt-2">
-                    <div
-                        class="icon icon-lg icon-shape bg-gradient-info shadow-info text-center border-radius-xl mt-n4 position-absolute">
-                        <i class="material-icons opacity-10">edit_note</i>
-                    </div>
-                </div>
-                <div class="text-end pt-1 card-footer">
-                    <p class="text-sm mb-0 text-capitalize">Admin</p>
-                    <h6 class="mb-0">Pengajuan Pembaruan Data</h6>
-                </div>
-            </div>
-        </div>
-    </div>
+    @endif
+
     <div class="row mt-4">
         <div class="col-lg-4 col-md-6 mt-4 mb-4">
             <div class="card z-index-2  ">
@@ -103,7 +110,7 @@
                             <div class="timeline timeline-one-side collapse" id="collapseTugas" aria-labelledby="tugas_heading"
                             data-parent="#collapseIzinCuti">
                                 @foreach ($chartData->tugas as $karyawan)
-                                    <div class="timeline-block mb-3">
+                                    <div class="timeline-block mb-3" onclick="viewDetails('{{ $karyawan->nip }}')">
                                         <span class="timeline-step">
                                             <img src="../assets/img/pp.png" class="avatar avatar-sm me-1" alt="xd">
                                         </span>
@@ -122,7 +129,7 @@
                             <div class="timeline timeline-one-side collapse" id="collapsedispensasi" aria-labelledby="dispensasi_heading"
                             data-parent="#collapseIzinCuti">
                                 @foreach ($chartData->dispensasi as $karyawan)
-                                    <div class="timeline-block mb-3">
+                                    <div class="timeline-block mb-3" onclick="viewDetails('{{ $karyawan->nip }}')">
                                         <span class="timeline-step">
                                             <img src="../assets/img/pp.png" class="avatar avatar-sm me-1" alt="xd">
                                         </span>
@@ -141,7 +148,7 @@
                             <div class="timeline timeline-one-side collapse" id="collapsecuti" aria-labelledby="cuti_heading"
                             data-parent="#collapseIzinCuti">
                                 @foreach ($chartData->cuti as $karyawan)
-                                    <div class="timeline-block mb-3">
+                                    <div class="timeline-block mb-3" onclick="viewDetails('{{ $karyawan->nip }}')">
                                         <span class="timeline-step">
                                             <img src="../assets/img/pp.png" class="avatar avatar-sm me-1" alt="xd">
                                         </span>
@@ -163,7 +170,7 @@
                             <div class="timeline timeline-one-side collapse" id="collapsesakit" aria-labelledby="sakit_heading"
                             data-parent="#collapseIzinCuti">
                                 @foreach ($chartData->sakit as $karyawan)
-                                    <div class="timeline-block mb-3">
+                                    <div class="timeline-block mb-3" onclick="viewDetails('{{ $karyawan->nip }}')">
                                         <span class="timeline-step">
                                             <img src="../assets/img/pp.png" class="avatar avatar-sm me-1" alt="xd">
                                         </span>
@@ -236,8 +243,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($izin->slice(0,5) as $item)
-                                    <tr>
+                                @foreach(array_slice($izin, 0, 5) as $item)
+                                    <tr onclick="viewDetails('{{ $item->nip }}')">
                                         <td>
                                             <div class="d-flex px-2 py-1">
                                                 <img src="../assets/img/pp.png" class="avatar avatar-sm me-3"
@@ -276,7 +283,7 @@
                 <div class="card-body p-3">
                     <div class="timeline timeline-one-side">
                         @foreach (array_slice($chartData->error, 0, 4) as $karyawan)
-                            <div class="timeline-block mb-3">
+                            <div class="timeline-block mb-3" onclick="viewDetails('{{ $karyawan->nip }}')">
                                 <span class="timeline-step">
                                     <img src="../assets/img/pp.png" class="avatar avatar-sm me-1" alt="xd">
                                 </span>
@@ -291,7 +298,7 @@
                     <div class="timeline timeline-one-side collapse" id="collapseerror" aria-labelledby="error_heading"
                     data-parent="#card_error">
                         @foreach (array_slice($chartData->error, 4) as $karyawan)
-                            <div class="timeline-block mb-3">
+                            <div class="timeline-block mb-3" onclick="viewDetails('{{ $karyawan->nip }}')">
                                 <span class="timeline-step">
                                     <img src="../assets/img/pp.png" class="avatar avatar-sm me-1" alt="xd">
                                 </span>
@@ -321,270 +328,270 @@
 @push('custom-scripts')
 <script>
     if (document.getElementById("chart_kehadiran")) {
-    var ctx = document.getElementById("chart_error").getContext("2d");
-    new Chart(ctx, {
-        type: "bar",
-        data: {
-            labels: [
-                @foreach ($chartData->errorCount as $date=>$count)
-                    "{{$date}}",
-                @endforeach
-            ],
-            datasets: [{
-                label: "Tanpa izin",
-                tension: 0.4,
-                borderWidth: 0,
-                borderRadius: 4,
-                borderSkipped: false,
-                backgroundColor: "rgba(255, 255, 255, .8)",
-                data: [
+        var ctx = document.getElementById("chart_error").getContext("2d");
+        new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels: [
                     @foreach ($chartData->errorCount as $date=>$count)
-                    "{{$count}}",
-                @endforeach
+                        "{{$date}}",
+                    @endforeach
                 ],
-                maxBarThickness: 6
-            }],
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false,
-                }
+                datasets: [{
+                    label: "Tanpa izin",
+                    tension: 0.4,
+                    borderWidth: 0,
+                    borderRadius: 4,
+                    borderSkipped: false,
+                    backgroundColor: "rgba(255, 255, 255, .8)",
+                    data: [
+                        @foreach ($chartData->errorCount as $date=>$count)
+                        "{{$count}}",
+                    @endforeach
+                    ],
+                    maxBarThickness: 6
+                }],
             },
-            interaction: {
-                intersect: false,
-                mode: 'index',
-            },
-            scales: {
-                y: {
-                    grid: {
-                        drawBorder: false,
-                        display: true,
-                        drawOnChartArea: true,
-                        drawTicks: false,
-                        borderDash: [5, 5],
-                        color: 'rgba(255, 255, 255, .2)'
-                    },
-                    ticks: {
-                        suggestedMin: 0,
-                        suggestedMax: 500,
-                        beginAtZero: true,
-                        padding: 10,
-                        font: {
-                            size: 14,
-                            weight: 300,
-                            family: "Roboto",
-                            style: 'normal',
-                            lineHeight: 2
-                        },
-                        color: "#fff"
-                    },
-                },
-                x: {
-                    grid: {
-                        drawBorder: false,
-                        display: true,
-                        drawOnChartArea: true,
-                        drawTicks: false,
-                        borderDash: [5, 5],
-                        color: 'rgba(255, 255, 255, .2)'
-                    },
-                    ticks: {
-                        display: true,
-                        color: '#f8f9fa',
-                        padding: 10,
-                        font: {
-                            size: 14,
-                            weight: 300,
-                            family: "Roboto",
-                            style: 'normal',
-                            lineHeight: 2
-                        },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false,
                     }
                 },
+                interaction: {
+                    intersect: false,
+                    mode: 'index',
+                },
+                scales: {
+                    y: {
+                        grid: {
+                            drawBorder: false,
+                            display: true,
+                            drawOnChartArea: true,
+                            drawTicks: false,
+                            borderDash: [5, 5],
+                            color: 'rgba(255, 255, 255, .2)'
+                        },
+                        ticks: {
+                            suggestedMin: 0,
+                            suggestedMax: 500,
+                            beginAtZero: true,
+                            padding: 10,
+                            font: {
+                                size: 14,
+                                weight: 300,
+                                family: "Roboto",
+                                style: 'normal',
+                                lineHeight: 2
+                            },
+                            color: "#fff"
+                        },
+                    },
+                    x: {
+                        grid: {
+                            drawBorder: false,
+                            display: true,
+                            drawOnChartArea: true,
+                            drawTicks: false,
+                            borderDash: [5, 5],
+                            color: 'rgba(255, 255, 255, .2)'
+                        },
+                        ticks: {
+                            display: true,
+                            color: '#f8f9fa',
+                            padding: 10,
+                            font: {
+                                size: 14,
+                                weight: 300,
+                                family: "Roboto",
+                                style: 'normal',
+                                lineHeight: 2
+                            },
+                        }
+                    },
+                },
             },
-        },
-    });
+        });
 
-    var ctx2 = document.getElementById("chart_kehadiran").getContext("2d");
+        var ctx2 = document.getElementById("chart_kehadiran").getContext("2d");
 
-    new Chart(ctx2, {
-        type: "line",
-        data: {
-            labels: [
-                @foreach ($chartData->kehadiranCount as $date=>$count)
-                    "{{$date}}",
-                @endforeach
-            ],
-            datasets: [{
-                label: "Kehadiran",
-                tension: 0,
-                borderWidth: 0,
-                pointRadius: 5,
-                pointBackgroundColor: "rgba(255, 255, 255, .8)",
-                pointBorderColor: "transparent",
-                borderColor: "rgba(255, 255, 255, .8)",
-                borderWidth: 4,
-                backgroundColor: "transparent",
-                fill: true,
-                data: [
+        new Chart(ctx2, {
+            type: "line",
+            data: {
+                labels: [
                     @foreach ($chartData->kehadiranCount as $date=>$count)
-                        "{{$count}}",
+                        "{{$date}}",
                     @endforeach
                 ],
-                maxBarThickness: 6
-            }],
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false,
-                }
+                datasets: [{
+                    label: "Kehadiran",
+                    tension: 0,
+                    borderWidth: 0,
+                    pointRadius: 5,
+                    pointBackgroundColor: "rgba(255, 255, 255, .8)",
+                    pointBorderColor: "transparent",
+                    borderColor: "rgba(255, 255, 255, .8)",
+                    borderWidth: 4,
+                    backgroundColor: "transparent",
+                    fill: true,
+                    data: [
+                        @foreach ($chartData->kehadiranCount as $date=>$count)
+                            "{{$count}}",
+                        @endforeach
+                    ],
+                    maxBarThickness: 6
+                }],
             },
-            interaction: {
-                intersect: false,
-                mode: 'index',
-            },
-            scales: {
-                y: {
-                    grid: {
-                        drawBorder: false,
-                        display: true,
-                        drawOnChartArea: true,
-                        drawTicks: false,
-                        borderDash: [5, 5],
-                        color: 'rgba(255, 255, 255, .2)'
-                    },
-                    ticks: {
-                        display: true,
-                        color: '#f8f9fa',
-                        padding: 10,
-                        font: {
-                            size: 14,
-                            weight: 300,
-                            family: "Roboto",
-                            style: 'normal',
-                            lineHeight: 2
-                        },
-                    }
-                },
-                x: {
-                    grid: {
-                        drawBorder: false,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
                         display: false,
-                        drawOnChartArea: false,
-                        drawTicks: false,
-                        borderDash: [5, 5]
-                    },
-                    ticks: {
-                        display: true,
-                        color: '#f8f9fa',
-                        padding: 10,
-                        font: {
-                            size: 14,
-                            weight: 300,
-                            family: "Roboto",
-                            style: 'normal',
-                            lineHeight: 2
-                        },
                     }
                 },
+                interaction: {
+                    intersect: false,
+                    mode: 'index',
+                },
+                scales: {
+                    y: {
+                        grid: {
+                            drawBorder: false,
+                            display: true,
+                            drawOnChartArea: true,
+                            drawTicks: false,
+                            borderDash: [5, 5],
+                            color: 'rgba(255, 255, 255, .2)'
+                        },
+                        ticks: {
+                            display: true,
+                            color: '#f8f9fa',
+                            padding: 10,
+                            font: {
+                                size: 14,
+                                weight: 300,
+                                family: "Roboto",
+                                style: 'normal',
+                                lineHeight: 2
+                            },
+                        }
+                    },
+                    x: {
+                        grid: {
+                            drawBorder: false,
+                            display: false,
+                            drawOnChartArea: false,
+                            drawTicks: false,
+                            borderDash: [5, 5]
+                        },
+                        ticks: {
+                            display: true,
+                            color: '#f8f9fa',
+                            padding: 10,
+                            font: {
+                                size: 14,
+                                weight: 300,
+                                family: "Roboto",
+                                style: 'normal',
+                                lineHeight: 2
+                            },
+                        }
+                    },
+                },
             },
-        },
-    });
+        });
 
-    var ctx3 = document.getElementById("chart_izincuti").getContext("2d");
+        var ctx3 = document.getElementById("chart_izincuti").getContext("2d");
 
-    new Chart(ctx3, {
-        type: "line",
-        data: {
-            labels: [
-                @foreach ($chartData->izinCount as $date=>$count)
-                    "{{$date}}",
-                @endforeach
-            ],
-            datasets: [{
-                label: "Izin",
-                tension: 0,
-                borderWidth: 0,
-                pointRadius: 5,
-                pointBackgroundColor: "rgba(255, 255, 255, .8)",
-                pointBorderColor: "transparent",
-                borderColor: "rgba(255, 255, 255, .8)",
-                borderWidth: 4,
-                backgroundColor: "transparent",
-                fill: true,
-                data: [
+        new Chart(ctx3, {
+            type: "line",
+            data: {
+                labels: [
                     @foreach ($chartData->izinCount as $date=>$count)
-                        "{{$count}}",
+                        "{{$date}}",
                     @endforeach
                 ],
-                maxBarThickness: 6
-            }],
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false,
-                }
+                datasets: [{
+                    label: "Izin",
+                    tension: 0,
+                    borderWidth: 0,
+                    pointRadius: 5,
+                    pointBackgroundColor: "rgba(255, 255, 255, .8)",
+                    pointBorderColor: "transparent",
+                    borderColor: "rgba(255, 255, 255, .8)",
+                    borderWidth: 4,
+                    backgroundColor: "transparent",
+                    fill: true,
+                    data: [
+                        @foreach ($chartData->izinCount as $date=>$count)
+                            "{{$count}}",
+                        @endforeach
+                    ],
+                    maxBarThickness: 6
+                }],
             },
-            interaction: {
-                intersect: false,
-                mode: 'index',
-            },
-            scales: {
-                y: {
-                    grid: {
-                        drawBorder: false,
-                        display: true,
-                        drawOnChartArea: true,
-                        drawTicks: false,
-                        borderDash: [5, 5],
-                        color: 'rgba(255, 255, 255, .2)'
-                    },
-                    ticks: {
-                        display: true,
-                        padding: 10,
-                        color: '#f8f9fa',
-                        font: {
-                            size: 14,
-                            weight: 300,
-                            family: "Roboto",
-                            style: 'normal',
-                            lineHeight: 2
-                        },
-                    }
-                },
-                x: {
-                    grid: {
-                        drawBorder: false,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
                         display: false,
-                        drawOnChartArea: false,
-                        drawTicks: false,
-                        borderDash: [5, 5]
-                    },
-                    ticks: {
-                        display: true,
-                        color: '#f8f9fa',
-                        padding: 10,
-                        font: {
-                            size: 14,
-                            weight: 300,
-                            family: "Roboto",
-                            style: 'normal',
-                            lineHeight: 2
-                        },
                     }
                 },
+                interaction: {
+                    intersect: false,
+                    mode: 'index',
+                },
+                scales: {
+                    y: {
+                        grid: {
+                            drawBorder: false,
+                            display: true,
+                            drawOnChartArea: true,
+                            drawTicks: false,
+                            borderDash: [5, 5],
+                            color: 'rgba(255, 255, 255, .2)'
+                        },
+                        ticks: {
+                            display: true,
+                            padding: 10,
+                            color: '#f8f9fa',
+                            font: {
+                                size: 14,
+                                weight: 300,
+                                family: "Roboto",
+                                style: 'normal',
+                                lineHeight: 2
+                            },
+                        }
+                    },
+                    x: {
+                        grid: {
+                            drawBorder: false,
+                            display: false,
+                            drawOnChartArea: false,
+                            drawTicks: false,
+                            borderDash: [5, 5]
+                        },
+                        ticks: {
+                            display: true,
+                            color: '#f8f9fa',
+                            padding: 10,
+                            font: {
+                                size: 14,
+                                weight: 300,
+                                family: "Roboto",
+                                style: 'normal',
+                                lineHeight: 2
+                            },
+                        }
+                    },
+                },
             },
-        },
-    });
-}
+        });
+    }
 </script>
 @endpush

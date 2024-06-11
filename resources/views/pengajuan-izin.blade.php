@@ -168,8 +168,8 @@
                         <textarea id="rejectReason" class="form-control" placeholder="Enter rejection reason" style="display: none;"></textarea>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-success" id="approve1Button">Approve 1</button>
-                        <button type="button" class="btn btn-success" id="approve2Button">Approve 2</button>
+                        <button type="button" class="btn btn-outline-success @if ($akses->tipe_admin != 1) d-none @endif" id="approve1Button">Approve 1</button>
+                        <button type="button" class="btn btn-success @if ($akses->tipe_admin == 1) d-none @endif" id="approve2Button">Approve 2</button>
                         <button type="button" class="btn btn-outline-primary" id="rejectButton">Tolak</button>
                     </div>
                 </div>

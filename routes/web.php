@@ -14,13 +14,7 @@ Route::post('register', [RegisterController::class, 'register']);
 
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('login', [LoginController::class, 'login']);
-Route::post('logout', [LoginController::class, 'logout'])->name('logout');
-
-// Route::middleware(['auth'])->group(function () {
-//     Route::get('/dashboard', function () {
-//         return view('dashboard');
-//     })->name('dashboard');
-// });
+Route::get('logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -34,7 +28,9 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/data-karyawan/{nip}', [DashboardController::class, 'update'])->name('data_karyawan.update');
     Route::put('/data-keluarga/{id}', [DashboardController::class, 'updateKeluarga'])->name('data_keluarga.update');
     Route::put('/pendidikan/{id}', [DashboardController::class, 'updatePendidikan'])->name('pendidikan.update');
-
+    Route::put('/bahasa/{id}', [DashboardController::class, 'updateBahasa'])->name('bahasa.update');
+    Route::put('/organisasi/{id}', [DashboardController::class, 'updateOrganisasi'])->name('organisasi.update');
+    Route::post('/pengalamankerja/{id}', [DashboardController::class, 'updatePengalamanKerja'])->name('pengalamankerja.update');
 
     //Libur Karyawan
     Route::get('pengaturan-libur', [DashboardController::class, 'pengaturan_libur']);

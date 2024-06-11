@@ -23,7 +23,7 @@ class AksesAdmin extends Model
         'bagian',
         'jabatan',
         'group',
-        'approval_izin',
+        'tipe_admin',
     ];
 
     public function admin()
