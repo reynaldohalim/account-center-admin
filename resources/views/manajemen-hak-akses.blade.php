@@ -3,7 +3,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <div class="container-fluid py-4">
         <div class="row">
-            <div class="col-lg-10 col-md-10 mx-auto">
+            <div class="col-lg-8 col-md-8 mx-auto">
                 <div class="row gy-4 col-12">
                     <div class="card widget-card border-light shadow-sm mt-5 accordion" id="accordionExample">
                         <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2" id="headingOne">
@@ -94,7 +94,7 @@
                                         <option value="">Semua</option>
                                     </select>
                                 </div>
-                                <div class="col-12 col-md-4 notFound">
+                                {{-- <div class="col-12 col-md-4 notFound">
                                     <label class="form-label">Akses Jabatan:</label>
                                     <select class="form-control" id="akses_jabatan" name="jabatan">
                                         <option value="">Semua</option>
@@ -111,20 +111,20 @@
                                     <select class="form-control" id="akses_group" name="group">
                                         <option value="">Semua</option>
                                     </select>
-                                </div>
+                                </div> --}}
                                 <div class="col-12 col-md-4 notFound">
-                                    <label class="form-label">Approval izin:</label>
-                                    <select class="form-control" id="approval_izin" name="approval_izin">
-                                        <option value="0" selected>Tidak ada</option>
-                                        <option value="1">Approve1</option>
-                                        <option value="2">Approve2</option>
+                                    <label class="form-label">Tipe admin:</label>
+                                    <select class="form-control" id="tipe_admin" name="tipe_admin">
+                                        <option value="0" selected>Master Admin</option>
+                                        <option value="1">Kepala Bagian</option>
+                                        <option value="2">Admin</option>
                                     </select>
                                 </div>
 
                                 <div class="col-12 notFound">
-                                    <button type="button" class="btn btn-primary me-2" id="deleteAccess">Hapus
+                                    <button type="button" class="btn btn-outline-primary me-2" id="deleteAccess">Hapus
                                         Akses</button>
-                                    <button type="button" class="btn btn-outline-primary" id="addAccess">Tambah
+                                    <button type="button" class="btn btn-outline-success" id="addAccess">Tambah
                                         Akses</button>
                                 </div>
                             </form>
@@ -134,7 +134,7 @@
             </div>
         </div>
 
-        <div class="col-12 col-lg-12 col-xl-12 mt-3">
+        <div class="col-9 col-lg-9 col-xl-9 mt-3 mx-auto">
             <br>
             <div class="card widget-card border-light shadow-sm mt-4 mb-5">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
@@ -152,21 +152,13 @@
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
                                         Akses Divisi</th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        Akses Bagian</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        Akses Jabatan</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        Akses Posisi</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        Akses Group</th>
-                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        Approval</th>
+                                        Tipe Admin</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($aksesAdmin as $admin)
                                     <tr class="data-tr text-sm"
-                                        onclick="getDetailAkses({{ $admin->nip }})">
+                                        onclick="getDetailAkses('{{ $admin->nip }}')">
                                         <td>
                                             <div class="d-flex px-2 py-1">
                                                 <div>
@@ -180,9 +172,14 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <p class="text-xs font-weight-bold mb-0 align-middle">{{ $admin->divisi }}</p>
+                                            @if (!$admin->divisi)
+                                                <p class="text-xs font-weight-bold mb-0 align-middle">Semua</p>
+                                            @else
+                                                <p class="text-xs font-weight-bold mb-0 align-middle">{{ $admin->divisi }}</p>
+                                            @endif
+
                                         </td>
-                                        <td>
+                                        {{-- <td>
                                             <p class="text-xs font-weight-bold mb-0">{{ $admin->bagian }}</p>
                                         </td>
                                         <td>
@@ -193,9 +190,15 @@
                                         </td>
                                         <td>
                                             <p class="text-xs font-weight-bold mb-0">{{ $admin->group }}</p>
-                                        </td>
+                                        </td> --}}
                                         <td>
-                                            <p class="text-xs font-weight-bold mb-0">{{ $admin->approval_izin }}</p>
+                                            @if ($admin->tipe_admin == 0)
+                                                <p class="text-xs font-weight-bold mb-0">Master Admin</p>
+                                            @elseif ($admin->tipe_admin == 1)
+                                                <p class="text-xs font-weight-bold mb-0">Kepala Bagian</p>
+                                            @elseif ($admin->tipe_admin == 2)
+                                                <p class="text-xs font-weight-bold mb-0">Master Admin</p>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach
@@ -253,8 +256,8 @@
                             .bagian : '');
                         populateDropdown('akses_group', data.groupOptions, data.aksesAdmin ? data.aksesAdmin
                             .group : '');
-                        document.getElementById('approval_izin').value = data.aksesAdmin ? data.aksesAdmin
-                            .approval_izin : 0;
+                        document.getElementById('tipe_admin').value = data.aksesAdmin ? data.aksesAdmin
+                            .tipe_admin : 0;
 
                         if (document.getElementById('akses_divisi').value == '')
                             document.getElementById('deleteAccess').classList.add('d-none');
@@ -276,6 +279,9 @@
         document.getElementById('addAccess').addEventListener('click', function() {
             let form = document.getElementById('accessForm');
             let formData = new FormData(form);
+            for (let pair of formData.entries()) {
+                console.log(pair[0] + ', ' + pair[1]); // pair[0] is the key, pair[1] is the value
+            }
 
             fetch('{{ route('manajemen-hak-akses.add') }}', {
                     method: 'POST',

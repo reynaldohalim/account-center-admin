@@ -24,7 +24,23 @@
                                 <div class="card-body pt-0 pb-1">
                                     <ul>
                                         @foreach ($pembaruan['pembaruanData'] as $tabel)
-                                            <li><a class="text-s ps-3">{{ $tabel }}</a></li>
+                                            <li><a class="text-s ps-3 cursor-pointer" onclick="viewDetails('{{ $pembaruan['nip'] }}')">
+                                                @if ($tabel == 'data_pribadi')
+                                                    Data Pekerjaan
+                                                @elseif ($tabel == 'data_lainlain')
+                                                    Data Lain-lain
+                                                @elseif ($tabel == 'data_keluarga')
+                                                    Data Keluarga
+                                                @elseif ($tabel == 'pendidikan')
+                                                    Pendidikan
+                                                @elseif ($tabel == 'bahasa')
+                                                    Bahasa
+                                                @elseif ($tabel == 'organisasi')
+                                                    Organisasi
+                                                @elseif ($tabel == 'pengalaman_kerja')
+                                                    Pekerjaan
+                                                @endif
+                                            </a></li>
                                         @endforeach
                                     </ul>
                                 </div>

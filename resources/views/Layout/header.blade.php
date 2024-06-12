@@ -30,20 +30,28 @@
                 @endphp
                 <h5>{{ \Carbon\Carbon::now()->translatedFormat('l, d M Y') }}</h5>
             </div>
-            <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+            {{-- <div class="ms-md-auto pe-md-3 d-flex align-items-center">
                 <div class="input-group input-group-outline">
                     <label class="form-label">Cari karyawan...</label>
                     <input type="text" id="searchKaryawan" class="form-control" onkeyup="searchKaryawan()">
                 </div>
+            </div> --}}
+            <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+                <form action="{{ route('data_karyawan') }}" method="GET" class="input-group input-group-outline">
+                    {{-- <label class="form-label">Cari karyawan...</label> --}}
+                    <input type="text" name="search" class="form-control" placeholder="Cari karyawan...">
+                    <button type="submit" class="btn btn-primary d-none">Search</button>
+                </form>
             </div>
+
             <ul class="navbar-nav justify-content-end">
-                <li class="nav-item px-3 d-flex align-items-center">
+                {{-- <li class="nav-item px-3 d-flex align-items-center">
                     <a href="javascript:;" class="nav-link text-body p-0">
                         <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer"></i>
                     </a>
-                </li>
+                </li> --}}
                 {{-- notifikasi --}}
-                <li class="nav-item dropdown pe-2 d-flex align-items-center">
+                {{-- <li class="nav-item dropdown pe-2 d-flex align-items-center">
                     <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fa fa-bell cursor-pointer"></i>
                     </a>
@@ -112,9 +120,9 @@
                             </a>
                         </li>
                     </ul>
-                </li>
+                </li> --}}
                 <li class="nav-item d-flex align-items-center">
-                    <a href="../pages/sign-in.html" class="nav-link text-body font-weight-bold px-0">
+                    <a href="#" class="nav-link text-body font-weight-bold px-0">
                         <i class="fa fa-user me-sm-1"></i>
                         <span class="d-sm-inline d-none">{{ $dataPribadiAdmin->nama }}</span>
                     </a>
@@ -124,35 +132,57 @@
     </div>
 </nav>
 <script>
+    // function searchKaryawan() {
+    //     const searchInput = document.getElementById('searchKaryawan').value.toLowerCase();
+
+    //     if (searchInput.length > 0) {
+    //         fetch(`/search-karyawan?query=${searchInput}`)
+    //             .then(response => response.json())
+    //             .then(data => {
+    //                 const rows = document.querySelectorAll('.data-tr');
+    //                 rows.forEach(row => row.style.display = 'none'); // Hide all rows initially
+
+    //                 data.forEach(karyawan => {
+    //                     rows.forEach(row => {
+    //                         const nama = row.querySelector('td div div h6').innerText.toLowerCase();
+    //                         if (nama.includes(karyawan.dataPribadi.nama.toLowerCase())) {
+    //                             row.style.display = '';
+    //                         }
+    //                     });
+    //                 });
+    //             })
+    //             .catch(error => console.error('Error searching karyawans:', error));
+    //     } else {
+    //         const rows = document.querySelectorAll('.data-tr');
+    //         rows.forEach(row => row.style.display = ''); // Show all rows if search input is empty
+    //     }
+    // }
+
+    // document.getElementById('searchKaryawan').addEventListener('keyup', function(event) {
+    //     searchKaryawan();
+    // });
+
     function searchKaryawan() {
-        const searchInput = document.getElementById('searchKaryawan').value.toLowerCase();
-
-        if (searchInput.length > 0) {
-            fetch(`/search-karyawan?query=${searchInput}`)
-                .then(response => response.json())
-                .then(data => {
-                    const rows = document.querySelectorAll('.data-tr');
-                    rows.forEach(row => row.style.display = 'none'); // Hide all rows initially
-
-                    data.forEach(karyawan => {
-                        rows.forEach(row => {
-                            const nama = row.querySelector('td div div h6').innerText.toLowerCase();
-                            if (nama.includes(karyawan.dataPribadi.nama.toLowerCase())) {
-                                row.style.display = '';
-                            }
-                        });
-                    });
-                })
-                .catch(error => console.error('Error searching karyawans:', error));
-        } else {
-            const rows = document.querySelectorAll('.data-tr');
-            rows.forEach(row => row.style.display = ''); // Show all rows if search input is empty
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("searchInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementsByTagName("table");
+        for (i = 0; i < table.length; i++) {
+            tr = table[i].getElementsByTagName("tr");
+            for (var j = 0; j < tr.length; j++) {
+                td = tr[j].getElementsByTagName("td")[0]; // Assuming first column contains name
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[j].style.display = "";
+                    } else {
+                        tr[j].style.display = "none";
+                    }
+                }
+            }
         }
     }
 
-    document.getElementById('searchKaryawan').addEventListener('keyup', function(event) {
-        searchKaryawan();
-    });
 </script>
 
 

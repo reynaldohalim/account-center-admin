@@ -48,23 +48,48 @@ class DashboardController extends Controller
         // $today = date('Y-m-d');
         $chartData = $this->generateDashboardCharts($today, 5);
 
+
         $pageTitle = 'Halaman Utama';
-        $breadcrumb = ['Admin', $pageTitle];
+
+        $tipe_admin = '';
+        if($akses->tipe_admin == 0) $tipe_admin = 'Master Admin';
+        else if($akses->tipe_admin == 1) $tipe_admin = 'Kepala Bagian '. $akses->divisi;
+        else $tipe_admin = 'Admin';
+        $breadcrumb = [$tipe_admin, $pageTitle];
 
         return view('dashboard', compact('akses', 'dataPribadiAdmin', 'izin', 'countIzin', 'pageTitle', 'breadcrumb', 'chartData'));
     }
 
     //Data Karyawan
-    public function data_karyawan()
+    public function data_karyawan(Request $request)
     {
         $admin = auth()->user();
         $akses = $admin->aksesAdmin;
         $dataPribadiAdmin = $admin->dataPribadi;
         $pageTitle = 'Data Karyawan';
-        $breadcrumb = ['Admin', $pageTitle];
+
+        $tipe_admin = '';
+        if ($akses->tipe_admin == 0) $tipe_admin = 'Master Admin';
+        else if ($akses->tipe_admin == 1) $tipe_admin = 'Kepala Bagian ' . $akses->divisi;
+        else $tipe_admin = 'Admin';
+        $breadcrumb = [$tipe_admin, $pageTitle];
 
         $nips = DataPekerjaan::distinct();
-        if($akses->divisi != null) $nips = $nips->where('divisi', $akses->divisi);
+        if ($akses->divisi != null) $nips = $nips->where('divisi', $akses->divisi);
+
+        // Check for search query
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $nips = $nips->where(function ($query) use ($search) {
+                $query->where('nip', 'LIKE', "%{$search}%")
+                    ->orWhere('divisi', 'LIKE', "%{$search}%")
+                    ->orWhere('jabatan', 'LIKE', "%{$search}%")
+                    ->orWhere('bagian', 'LIKE', "%{$search}%")
+                    ->orWhereHas('dataPribadi', function ($query) use ($search) {
+                        $query->where('nama', 'LIKE', "%{$search}%");
+                    });
+            });
+        }
 
         $nips = $nips->pluck('nip');
 
@@ -108,20 +133,6 @@ class DashboardController extends Controller
         });
 
         return response()->json($result);
-    }
-
-    public function searchKaryawan(Request $request)
-    {
-        $query = $request->get('query');
-        if (!$query) {
-            return response()->json([]);
-        }
-
-        $results = DataKaryawan::whereHas('dataPribadi', function ($q) use ($query) {
-            $q->where('nama', 'LIKE', '%' . $query . '%');
-        })->get();
-
-        return response()->json($results);
     }
 
     //Karyawan Details
@@ -285,14 +296,19 @@ class DashboardController extends Controller
     //Libur Karyawan
     public function pengaturan_libur()
     {
-        $pageTitle = 'Pengaturan Libur';
-        $breadcrumb = ['Admin', $pageTitle];
-
         $admin = auth()->user();
         $akses = $admin->aksesAdmin;
         $dataPribadiAdmin = $admin->dataPribadi;
 
         $liburKaryawan = LiburKaryawan::all();
+
+        $pageTitle = 'Pengaturan Libur';
+
+        $tipe_admin = '';
+        if($akses->tipe_admin == 0) $tipe_admin = 'Master Admin';
+        else if($akses->tipe_admin == 1) $tipe_admin = 'Kepala Bagian '. $akses->divisi;
+        else $tipe_admin = 'Admin';
+        $breadcrumb = [$tipe_admin, $pageTitle];
 
         return view('pengaturan-libur', compact('akses', 'pageTitle', 'breadcrumb', 'dataPribadiAdmin', 'liburKaryawan'));
     }
@@ -339,9 +355,6 @@ class DashboardController extends Controller
     //pengajuan pembaruan
     public function pengajuan_pembaruan()
     {
-        $pageTitle = 'Pengajuan Pembaruan';
-        $breadcrumb = ['Admin', $pageTitle];
-
         $admin = auth()->user();
         $akses = $admin->aksesAdmin;
         $dataPribadiAdmin = $admin->dataPribadi;
@@ -355,6 +368,13 @@ class DashboardController extends Controller
             ];
         })->toArray(); // Convert to array to avoid collection issues in Blade
 
+        $pageTitle = 'Pengajuan Pembaruan';
+
+        $tipe_admin = '';
+        if($akses->tipe_admin == 0) $tipe_admin = 'Master Admin';
+        else if($akses->tipe_admin == 1) $tipe_admin = 'Kepala Bagian '. $akses->divisi;
+        else $tipe_admin = 'Admin';
+        $breadcrumb = [$tipe_admin, $pageTitle];
 
         return view('pengajuan-pembaruan', compact('akses', 'pageTitle', 'breadcrumb', 'dataPribadiAdmin', 'arrPembaruan'));
     }
@@ -443,12 +463,17 @@ class DashboardController extends Controller
     //Pengajuan Izin
     public function pengajuan_izin()
     {
-        $pageTitle = 'Pengajuan Izin';
-        $breadcrumb = ['Admin', $pageTitle];
-
         $admin = auth()->user();
         $akses = $admin->aksesAdmin;
         $dataPribadiAdmin = $admin->dataPribadi;
+
+        $pageTitle = 'Pengajuan Izin';
+
+        $tipe_admin = '';
+        if($akses->tipe_admin == 0) $tipe_admin = 'Master Admin';
+        else if($akses->tipe_admin == 1) $tipe_admin = 'Kepala Bagian '. $akses->divisi;
+        else $tipe_admin = 'Admin';
+        $breadcrumb = [$tipe_admin, $pageTitle];
 
         $izin = $this->getPendingIzin();
         return view('pengajuan-izin', compact('akses', 'pageTitle', 'breadcrumb', 'dataPribadiAdmin', 'izin'));
@@ -545,7 +570,12 @@ class DashboardController extends Controller
         }
 
         $pageTitle = 'Klasifikasi Karyawan';
-        $breadcrumb = ['Admin', $pageTitle];
+
+        $tipe_admin = '';
+        if($akses->tipe_admin == 0) $tipe_admin = 'Master Admin';
+        else if($akses->tipe_admin == 1) $tipe_admin = 'Kepala Bagian '. $akses->divisi;
+        else $tipe_admin = 'Admin';
+        $breadcrumb = [$tipe_admin, $pageTitle];
 
         $admin = auth()->user();
         $akses = $admin->aksesAdmin;
@@ -556,12 +586,17 @@ class DashboardController extends Controller
     //notifikasi
     public function notifikasi()
     {
-        $pageTitle = 'Notifikasi';
-        $breadcrumb = ['Admin', $pageTitle];
-
         $admin = auth()->user();
         $akses = $admin->aksesAdmin;
         $dataPribadiAdmin = $admin->dataPribadi;
+
+        $pageTitle = 'Notifikasi';
+
+        $tipe_admin = '';
+        if($akses->tipe_admin == 0) $tipe_admin = 'Master Admin';
+        else if($akses->tipe_admin == 1) $tipe_admin = 'Kepala Bagian '. $akses->divisi;
+        else $tipe_admin = 'Admin';
+        $breadcrumb = [$tipe_admin, $pageTitle];
 
         return view('notifikasi', compact('akses', 'pageTitle', 'breadcrumb', 'dataPribadiAdmin'));
     }
@@ -569,18 +604,22 @@ class DashboardController extends Controller
     // IAM Manajemen Hak Akses
     public function manajemen_hak_akses()
     {
-        $pageTitle = 'Manajemen Hak Akses';
-        $breadcrumb = ['Admin', $pageTitle];
-
         $admin = auth()->user();
         $akses = $admin->aksesAdmin;
         $dataPribadiAdmin = $admin->dataPribadi;
 
         $aksesAdmin = AksesAdmin::get();
-
         foreach ($aksesAdmin as $admin) {
             $admin->nama = DataPribadi::where('nip', $admin->nip)->first()->nama;
         }
+
+        $pageTitle = 'Manajemen Hak Akses';
+
+        $tipe_admin = '';
+        if($akses->tipe_admin == 0) $tipe_admin = 'Master Admin';
+        else if($akses->tipe_admin == 1) $tipe_admin = 'Kepala Bagian '. $akses->divisi;
+        else $tipe_admin = 'Admin';
+        $breadcrumb = [$tipe_admin, $pageTitle];
 
 
         return view('manajemen-hak-akses', compact('akses', 'pageTitle', 'breadcrumb', 'dataPribadiAdmin', 'aksesAdmin'));
@@ -623,7 +662,7 @@ class DashboardController extends Controller
             'bagian' => 'nullable|string',
             'jabatan' => 'nullable|string',
             'group' => 'nullable|string',
-            'tipe_admin' => 'required|integer',
+            'tipe_admin' => 'nullable|integer',
         ]);
 
         // Check if the NIP exists in the Admin model
@@ -650,7 +689,7 @@ class DashboardController extends Controller
         $aksesAdmin->bagian = $validatedData['bagian'];
         $aksesAdmin->jabatan = $validatedData['jabatan'];
         $aksesAdmin->group = $validatedData['group'];
-        $aksesAdmin->approval_izin = $validatedData['approval_izin'];
+        $aksesAdmin->tipe_admin = $validatedData['tipe_admin'];
 
         if ($aksesAdmin->save()) {
             return response()->json(['status' => 'success']);
@@ -715,11 +754,17 @@ class DashboardController extends Controller
     //Ganti password
     public function ganti_password()
     {
-        $pageTitle = 'Ganti Password';
-        $breadcrumb = ['Admin', $pageTitle];
-
         $admin = Auth::user();
+        $akses = $admin->aksesAdmin;
         $dataPribadiAdmin = $admin->dataPribadi;
+
+        $pageTitle = 'Ganti Password';
+
+        $tipe_admin = '';
+        if($akses->tipe_admin == 0) $tipe_admin = 'Master Admin';
+        else if($akses->tipe_admin == 1) $tipe_admin = 'Kepala Bagian '. $akses->divisi;
+        else $tipe_admin = 'Admin';
+        $breadcrumb = [$tipe_admin, $pageTitle];
 
         return view('ganti-password', compact('pageTitle', 'breadcrumb', 'dataPribadiAdmin'));
     }
@@ -962,11 +1007,18 @@ class DashboardController extends Controller
 
         $karyawans = DataPekerjaan::get();
         if($akses->divisi != null) $karyawans = $karyawans->where('divisi', $akses->divisi);
+        $nips = $karyawans->pluck('nip')->toArray();
 
         $karyawanCount = $karyawans->count();
         foreach ($workdays as $current_date) {
-            $kehadiranCount[$current_date] = Absensi::where('tgl', 'like', $current_date . '%')->distinct()->count('nip');
-            $izinCount[$current_date] = Izin::where('tgl_ijin', $current_date)->whereNotNull('approve2')->whereNot('approve2', '')->distinct()->count('no_ijin');
+            $kehadiranToday = Absensi::where('tgl', 'like', $current_date . '%')->distinct()->pluck('nip')->toArray();
+            $kehadiranToday = array_intersect($nips, $kehadiranToday);
+
+            $izinToday = Izin::where('tgl_ijin', $current_date)->whereNotNull('approve2')->whereNot('approve2', '')->distinct()->pluck('nip')->toArray();
+            $izinToday = array_intersect($nips, $izinToday);
+
+            $kehadiranCount[$current_date] = count($kehadiranToday);
+            $izinCount[$current_date] = count($izinToday);
             $errorCount[$current_date] = $karyawanCount - $kehadiranCount[$current_date] - $izinCount[$current_date];
         }
 
@@ -1143,7 +1195,7 @@ class DashboardController extends Controller
         foreach ($mergedIzin as $izin) {
             $pekerjaan = DataPekerjaan::where('nip', $izin->nip)->first();
             $izin->divisi = $pekerjaan ? $pekerjaan->divisi : null;
-            $izin->posisi = $pekerjaan ? $pekerjaan->jabatan : null;
+            $izin->jabatan = $pekerjaan ? $pekerjaan->jabatan : null;
 
             $pribadi = DataPribadi::where('nip', $izin->nip)->first();
             $izin->nama = $pribadi ? $pribadi->nama : null;
@@ -1176,28 +1228,28 @@ class DashboardController extends Controller
                 $izin_itemDivisi = $dataPekerjaan->divisi;
 
                 // Find other izin items on the same date that have 'approve2' not null
-                $checkAnotherIzin = Izin::where('tgl_ijin', $izin_item->tgl_ijin)->whereNotNull('approve2')->orWhereNot('approve2', '')->get();
+                // $checkAnotherIzin = Izin::where('tgl_ijin', $izin_item->tgl_ijin)->whereNotNull('approve2')->orWhereNot('approve2', '')->get();
 
-                // Initialize a temporary array for related izin items
-                $relatedIzinItems = [];
+                // // Initialize a temporary array for related izin items
+                // $relatedIzinItems = [];
 
-                // Loop through the found izin items
-                foreach ($checkAnotherIzin as $check) {
-                    // Get the related dataPekerjaan for the current check item
-                    $check->dataPekerjaan = DataPekerjaan::where('nip', $check->nip)->first();
+                // // Loop through the found izin items
+                // foreach ($checkAnotherIzin as $check) {
+                //     // Get the related dataPekerjaan for the current check item
+                //     $check->dataPekerjaan = DataPekerjaan::where('nip', $check->nip)->first();
 
-                    // If the dataPekerjaan exists and the division matches
-                    if ($check->dataPekerjaan && $check->dataPekerjaan->divisi == $izin_itemDivisi) {
-                        // Get the related dataPribadi for the current check item
-                        $check->dataPribadi = DataPribadi::where('nip', $check->nip)->first();
+                //     // If the dataPekerjaan exists and the division matches
+                //     if ($check->dataPekerjaan && $check->dataPekerjaan->divisi == $izin_itemDivisi) {
+                //         // Get the related dataPribadi for the current check item
+                //         $check->dataPribadi = DataPribadi::where('nip', $check->nip)->first();
 
-                        // Add the current check item to the temporary array
-                        $relatedIzinItems[] = $check;
-                    }
-                }
+                //         // Add the current check item to the temporary array
+                //         $relatedIzinItems[] = $check;
+                //     }
+                // }
 
                 // Assign the temporary array to the anotherIzin property
-                $izin_item->anotherIzin = $relatedIzinItems;
+                $izin_item->anotherIzin = $this->getRelatedIzin($izin_item->tgl_ijin, $izin_itemDivisi, $nip);
             }
         }
 
@@ -1213,5 +1265,29 @@ class DashboardController extends Controller
         })->values();
 
         return $mergedIzin;
+    }
+
+    private function getRelatedIzin($tgl, $divisi, $nip){
+        $checkAnotherIzin = Izin::where('tgl_ijin', $tgl)->whereNotNull('approve2')->WhereNot('approve2', '')->whereNot('nip', $nip)->get();
+
+        // Initialize a temporary array for related izin items
+        $relatedIzinItems = [];
+
+        // Loop through the found izin items
+        foreach ($checkAnotherIzin as $check) {
+            // Get the related dataPekerjaan for the current check item
+            $check->dataPekerjaan = DataPekerjaan::where('nip', $check->nip)->first();
+
+            // If the dataPekerjaan exists and the division matches
+            if ($check->dataPekerjaan && $check->dataPekerjaan->divisi == $divisi) {
+                // Get the related dataPribadi for the current check item
+                $check->dataPribadi = DataPribadi::where('nip', $check->nip)->first();
+
+                // Add the current check item to the temporary array
+                $relatedIzinItems[] = $check;
+            }
+        }
+
+        return $relatedIzinItems;
     }
 }

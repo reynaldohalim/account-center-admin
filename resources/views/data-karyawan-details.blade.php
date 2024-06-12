@@ -1582,103 +1582,103 @@
                                                         class="form-label">No. Ijin</label>
                                                     <input type="text" class="form-control"
                                                         id="no_ijin{{ $dataIzin->no_ijin }}"
-                                                        value="{{ $dataIzin->no_ijin }}">
+                                                        value="{{ $dataIzin->no_ijin }}" disabled>
                                                 </div>
                                                 <div class="col-12 col-md-6">
                                                     <label for="tgl_ijin{{ $dataIzin->no_ijin }}"
                                                         class="form-label">Tanggal Ijin</label>
                                                     <input type="text" class="form-control"
                                                         id="tgl_ijin{{ $dataIzin->no_ijin }}"
-                                                        value="{{ $dataIzin->tgl_ijin }}">
+                                                        value="{{ $dataIzin->tgl_ijin }}" disabled>
                                                 </div>
                                                 <div class="col-12 col-md-6">
                                                     <label for="jenis_ijin{{ $dataIzin->no_ijin }}"
                                                         class="form-label">Jenis Ijin</label>
                                                     <input type="text" class="form-control"
                                                         id="jenis_ijin{{ $dataIzin->no_ijin }}"
-                                                        value="{{ $dataIzin->jenis_ijin }}. {{ $dataIzin->nama_jenis_izin }}">
+                                                        value="{{ $dataIzin->jenis_ijin }}. {{ $dataIzin->nama_jenis_izin }}" disabled>
                                                 </div>
                                                 <div class="col-12">
                                                     <label for="keterangan{{ $dataIzin->no_ijin }}"
                                                         class="form-label">Keterangan</label>
-                                                    <textarea class="form-control" id="keterangan{{ $dataIzin->no_ijin }}">{{ $dataIzin->keterangan }}</textarea>
+                                                    <textarea class="form-control" id="keterangan{{ $dataIzin->no_ijin }}" disabled>{{ $dataIzin->keterangan }}</textarea>
                                                 </div>
                                                 <div class="col-12 col-md-6">
                                                     <label for="jam_in{{ $dataIzin->no_ijin }}" class="form-label">Jam
                                                         In</label>
                                                     <input type="text" class="form-control"
                                                         id="jam_in{{ $dataIzin->no_ijin }}"
-                                                        value="{{ $dataIzin->jam_in }}">
+                                                        value="{{ $dataIzin->jam_in }}" disabled>
                                                 </div>
                                                 <div class="col-12 col-md-6">
                                                     <label for="jam_out{{ $dataIzin->no_ijin }}"
                                                         class="form-label">Jam Out</label>
                                                     <input type="text" class="form-control"
                                                         id="jam_out{{ $dataIzin->no_ijin }}"
-                                                        value="{{ $dataIzin->jam_out }}">
+                                                        value="{{ $dataIzin->jam_out }}" disabled>
                                                 </div>
                                                 <div class="col-12 col-md-6">
                                                     <label for="gaji_dibayar{{ $dataIzin->no_ijin }}"
                                                         class="form-label">Gaji Dibayar</label>
                                                     <input type="text" class="form-control"
                                                         id="gaji_dibayar{{ $dataIzin->no_ijin }}"
-                                                        value="{{ $dataIzin->gaji_dibayar }}">
+                                                        value="{{ $dataIzin->gaji_dibayar }}" disabled>
                                                 </div>
                                                 <div class="col-12 col-md-6">
                                                     <label for="potong_cuti{{ $dataIzin->no_ijin }}"
                                                         class="form-label">Potong Cuti</label>
                                                     <input type="text" class="form-control"
                                                         id="potong_cuti{{ $dataIzin->no_ijin }}"
-                                                        value="{{ $dataIzin->potong_cuti }}">
+                                                        value="{{ $dataIzin->potong_cuti }}" disabled>
                                                 </div>
                                                 <div class="col-12 col-md-6">
                                                     <label for="no_referensi{{ $dataIzin->no_ijin }}"
                                                         class="form-label">No. Referensi</label>
                                                     <input type="text" class="form-control"
                                                         id="no_referensi{{ $dataIzin->no_ijin }}"
-                                                        value="{{ $dataIzin->no_referensi }}">
+                                                        value="{{ $dataIzin->no_referensi }}" disabled>
                                                 </div>
                                                 <div class="col-12 col-md-6">
                                                     <label for="entry_by{{ $dataIzin->no_ijin }}"
                                                         class="form-label">Entry By</label>
                                                     <input type="text" class="form-control"
                                                         id="entry_by{{ $dataIzin->no_ijin }}"
-                                                        value="{{ $dataIzin->entry_by }}">
+                                                        value="{{ $dataIzin->entry_by }}" disabled>
                                                 </div>
                                                 <div class="col-12 col-md-6">
                                                     <label for="tgl_entry{{ $dataIzin->no_ijin }}"
                                                         class="form-label">Tanggal Entry</label>
                                                     <input type="text" class="form-control"
                                                         id="tgl_entry{{ $dataIzin->no_ijin }}"
-                                                        value="{{ $dataIzin->tgl_entry }}">
+                                                        value="{{ $dataIzin->tgl_entry }}" disabled>
                                                 </div>
                                                 <div class="col-12 col-md-6">
                                                     <label for="approve1{{ $dataIzin->no_ijin }}"
                                                         class="form-label">Approve 1</label>
                                                     <input type="text" class="form-control"
                                                         id="approve1{{ $dataIzin->no_ijin }}"
-                                                        value="{{ $dataIzin->approve1 }}">
+                                                        value="{{ $dataIzin->approve1 }}" disabled>
                                                 </div>
                                                 <div class="col-12 col-md-6">
                                                     <label for="tgl_approve1{{ $dataIzin->no_ijin }}"
                                                         class="form-label">Tanggal Approve 1</label>
                                                     <input type="text" class="form-control"
                                                         id="tgl_approve1{{ $dataIzin->no_ijin }}"
-                                                        value="{{ $dataIzin->tgl_approve1 }}">
+                                                        value="{{ $dataIzin->tgl_approve1 }}" disabled>
                                                 </div>
                                                 <div class="col-12 col-md-6">
                                                     <label for="approve2{{ $dataIzin->no_ijin }}"
                                                         class="form-label">Approve 2</label>
                                                     <input type="text" class="form-control"
                                                         id="approve2{{ $dataIzin->no_ijin }}"
-                                                        value="{{ $dataIzin->approve2 }}">
+                                                        value="{{ $dataIzin->approve2 }}" disabled>
                                                 </div>
                                                 <div class="col-12 col-md-6">
                                                     <label for="tgl_approve2{{ $dataIzin->no_ijin }}"
                                                         class="form-label">Tanggal Approve 2</label>
                                                     <input type="text" class="form-control"
                                                         id="tgl_approve2{{ $dataIzin->no_ijin }}"
-                                                        value="{{ $dataIzin->tgl_approve2 }}">
+                                                        value="{{ $dataIzin->tgl_approve2 }}" disabled>
                                                 </div>
 
                                                 <div class="col-12">
@@ -1844,7 +1844,7 @@
                                                     @csrf
                                                     <input type="hidden" name="id"
                                                         value="{{ $dataIzin->no_ijin }}">
-                                                    <button type="submit" class="btn btn-success@if ($akses->tipe_admin == 1) d-none @endif">Approve 2</button>
+                                                    <button type="submit" class="btn btn-success @if ($akses->tipe_admin == 1 || $dataIzin->approve1 == '') d-none @endif">Approve 2</button>
                                                 </form>
                                                 <form method="POST" action="{{ route('izin.reject') }}"
                                                     onsubmit="return confirm('Apakah anda yakin ingin MENOLAK pengajuan ini?');">

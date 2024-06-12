@@ -20,11 +20,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     //Data Karyawan
-    Route::get('data-karyawan', [DashboardController::class, 'data_karyawan']);
+    Route::get('data-karyawan', [DashboardController::class, 'data_karyawan'])->name('data_karyawan');
     Route::get('/data-karyawan/{nip}', [DashboardController::class, 'viewDetails'])->name('data_karyawan.details');
     Route::get('/absensi/detail/{type}/{id}/{nip}', [DashboardController::class, 'getDetail'])->name('absensi.detail');
     Route::get('/fetch-all-karyawans/{divisi}', [DashboardController::class, 'fetchAllKaryawans']);
-    Route::get('/search-karyawan', [DashboardController::class, 'searchKaryawan'])->name('search.karyawan');
     Route::put('/data-karyawan/{nip}', [DashboardController::class, 'update'])->name('data_karyawan.update');
     Route::put('/data-keluarga/{id}', [DashboardController::class, 'updateKeluarga'])->name('data_keluarga.update');
     Route::put('/pendidikan/{id}', [DashboardController::class, 'updatePendidikan'])->name('pendidikan.update');

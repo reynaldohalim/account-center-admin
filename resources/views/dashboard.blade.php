@@ -170,7 +170,7 @@
                             <div class="timeline timeline-one-side collapse" id="collapsesakit" aria-labelledby="sakit_heading"
                             data-parent="#collapseIzinCuti">
                                 @foreach ($chartData->sakit as $karyawan)
-                                    <div class="timeline-block mb-3" onclick="viewDetails('{{ $karyawan->nip }}')">
+                                    <div class="timeline-block mb-3 xcursor-pointer" onclick="viewDetails('{{ $karyawan->nip }}')">
                                         <span class="timeline-step">
                                             <img src="../assets/img/pp.png" class="avatar avatar-sm me-1" alt="xd">
                                         </span>
@@ -236,7 +236,7 @@
                                         Divisi</th>
                                     <th
                                         class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        Posisi</th>
+                                        Jabatan</th>
                                     <th
                                         class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
                                         Tanggal Ijin</th>
@@ -244,7 +244,7 @@
                             </thead>
                             <tbody>
                                 @foreach(array_slice($izin, 0, 5) as $item)
-                                    <tr onclick="viewDetails('{{ $item->nip }}')">
+                                    <tr class="cursor-pointer" onclick="viewDetails('{{ $item->nip }}')">
                                         <td>
                                             <div class="d-flex px-2 py-1">
                                                 <img src="../assets/img/pp.png" class="avatar avatar-sm me-3"
@@ -262,7 +262,7 @@
                                             </div>
                                         </td>
                                         <td class="align-middle text-center text-sm">
-                                            <span class="text-xs font-weight-bold"> {{$item->posisi}} </span>
+                                            <span class="text-xs font-weight-bold"> {{$item->jabatan}} </span>
                                         </td>
                                         <td class="align-middle text-center text-sm">
                                             <span class="text-xs font-weight-bold"> {{$item->tgl_ijin}} </span>
@@ -283,7 +283,7 @@
                 <div class="card-body p-3">
                     <div class="timeline timeline-one-side">
                         @foreach (array_slice($chartData->error, 0, 4) as $karyawan)
-                            <div class="timeline-block mb-3" onclick="viewDetails('{{ $karyawan->nip }}')">
+                            <div class="timeline-block mb-3 cursor-pointer" onclick="viewDetails('{{ $karyawan->nip }}')">
                                 <span class="timeline-step">
                                     <img src="../assets/img/pp.png" class="avatar avatar-sm me-1" alt="xd">
                                 </span>
@@ -298,7 +298,7 @@
                     <div class="timeline timeline-one-side collapse" id="collapseerror" aria-labelledby="error_heading"
                     data-parent="#card_error">
                         @foreach (array_slice($chartData->error, 4) as $karyawan)
-                            <div class="timeline-block mb-3" onclick="viewDetails('{{ $karyawan->nip }}')">
+                            <div class="timeline-block mb-3 cursor-pointer" onclick="viewDetails('{{ $karyawan->nip }}')">
                                 <span class="timeline-step">
                                     <img src="../assets/img/pp.png" class="avatar avatar-sm me-1" alt="xd">
                                 </span>

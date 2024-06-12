@@ -47,6 +47,11 @@ class DataPekerjaan extends Model
         return $this->belongsTo(DataKaryawan::class, 'nip', 'nip');
     }
 
+    public function dataPribadi()
+    {
+        return $this->belongsTo(DataPribadi::class, 'nip', 'nip');
+    }
+
     public function aksesAdmin()
     {
         return $this->belongsTo(AksesAdmin::class, 'nip', 'nip');
